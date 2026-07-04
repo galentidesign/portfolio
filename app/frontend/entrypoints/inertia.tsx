@@ -1,7 +1,18 @@
 import { createInertiaApp } from '@inertiajs/react'
+import type { ResolvedComponent } from '@inertiajs/react'
+
+// Explicit resolver instead of `pages: '../pages'` so test files never enter
+// the production bundle.
+const pages = import.meta.glob<{ default: ResolvedComponent }>([
+  '../pages/**/*.tsx',
+  '!**/*.test.tsx',
+])
 
 void createInertiaApp({
-  pages: '../pages',
+  resolve: async (name) => {
+    const page = await pages[`../pages/${name}.tsx`]!()
+    return page.default
+  },
 
   strictMode: true,
 
