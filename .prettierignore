@@ -1,0 +1,10 @@
+node_modules
+public
+vendor
+tmp
+log
+coverage
+Gemfile.lock
+package-lock.json
+test-results
+playwright-report
