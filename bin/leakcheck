@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Leak check: fails if any tracked file matches a deny-listed pattern,
+# or if git history carries a non-approved author/committer identity.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+DENYLIST=".leakcheck.txt"
+STATUS=0
+
+# Content scan: tracked text files, excluding the denylist itself.
+while IFS= read -r pattern; do
+  [[ -z "$pattern" || "$pattern" == \#* ]] && continue
+  if hits=$(git grep -I -n -i -E --untracked -e "$pattern" -- ':!'"$DENYLIST"); then
+    echo "LEAK: pattern '$pattern' matched:"
+    echo "$hits"
+    STATUS=1
+  fi
+done < "$DENYLIST"
+
+# Identity scan: every author/committer in history must be the public identity.
+ALLOWED_EMAIL="299908360+galentidesign@users.noreply.github.com"
+ALLOWED_NAME="J Galenti"
+if git rev-parse --verify HEAD >/dev/null 2>&1 && bad=$(git log --format='%an <%ae>%n%cn <%ce>' | sort -u | grep -v -F "$ALLOWED_NAME <$ALLOWED_EMAIL>"); then
+  echo "LEAK: non-public git identity in history:"
+  echo "$bad"
+  STATUS=1
+fi
+
+if [[ $STATUS -eq 0 ]]; then
+  echo "leak check: clean"
+fi
+exit $STATUS

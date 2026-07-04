@@ -1,0 +1,8 @@
+# Leak-check deny-list — one case-insensitive extended regex per line.
+# Extend as content lands (Study A internal tool names, etc.).
+/Users/jsci
+ai/nume
+ai/coblend
+\bnume\b
+thejustscience@gmail\.com
+justscience
