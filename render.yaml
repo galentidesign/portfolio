@@ -8,7 +8,9 @@ services:
     name: portfolio
     runtime: ruby
     plan: starter
-    buildCommand: bundle install && npm ci && bin/rails assets:precompile
+    # No asset pipeline (propshaft skipped) — build assets via Vite directly;
+    # `assets:precompile` would fail on its missing `assets:clean` dependency.
+    buildCommand: bundle install && npm ci && bin/vite build
     preDeployCommand: bin/rails db:migrate
     startCommand: bundle exec puma -C config/puma.rb
     healthCheckPath: /up
