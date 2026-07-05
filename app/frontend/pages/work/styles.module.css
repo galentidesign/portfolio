@@ -1,0 +1,104 @@
+.page {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  min-height: 100dvh;
+  padding-bottom: var(--space-10);
+}
+
+.container {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--density-pad);
+}
+
+/* Block 1: Thesis */
+
+.thesis-block {
+  padding-top: var(--space-8);
+}
+
+.annotation {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  margin-bottom: var(--space-4);
+}
+
+.thesis {
+  font-family: var(--type-display-family);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
+  margin: 0;
+  max-width: 22ch;
+}
+
+/* Block 2: Proof */
+
+.proof-block {
+  margin-top: var(--space-9);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+@media (width >= 720px) {
+  .card-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Block 3: System */
+
+.system-block {
+  margin-top: var(--space-9);
+}
+
+/* Block 4: Act */
+
+.act-block {
+  margin-top: var(--space-9);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.mailto-link {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-accent);
+  text-decoration: underline;
+  border-radius: var(--radius-control);
+}
+
+.mailto-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.github-link {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+  text-decoration: underline;
+  border-radius: var(--radius-control);
+}
+
+.github-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
