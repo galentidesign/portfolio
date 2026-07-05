@@ -25,4 +25,21 @@ RSpec.describe "System", type: :request do
       expect(response.body).to include('data-skin="debug"')
     end
   end
+
+  describe "GET /system/gallery" do
+    it "returns 200 and renders the system/gallery Inertia page" do
+      get "/system/gallery"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("data-page")
+      expect(response.body).to include("system/gallery")
+    end
+
+    it "honours ?skin=debug for the gallery axe matrix" do
+      get "/system/gallery", params: { skin: "debug" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('data-skin="debug"')
+    end
+  end
 end
