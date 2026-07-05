@@ -38,6 +38,8 @@ jobs:
         run: npm run lint:css
       - name: Token discipline
         run: npm run lint:tokens
+      - name: Manifest drift
+        run: bin/rails manifest:verify
       - name: TypeScript
         run: npm run typecheck
 

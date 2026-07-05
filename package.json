@@ -19,6 +19,7 @@
     "prettier": "^3.9.4",
     "stylelint": "^17.14.0",
     "stylelint-config-standard": "^40.0.0",
+    "tsx": "^4.23.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.62.1",
     "vite": "^7.3.6",
@@ -33,6 +34,7 @@
     "lint:tokens": "node config/lint/token-lint.mjs",
     "tokens:build": "node app/frontend/ds/tokens/build.mjs",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
+    "meta:export": "tsx scripts/export-meta.mjs",
     "test:unit": "vitest run",
     "test:e2e": "playwright test"
   },

@@ -1,0 +1,20 @@
+slug: beta
+name: Beta
+tier: hero
+status: stable
+description: Fixture beta component.
+
+variants: {}
+
+props:
+  - name: label
+    type: 'string'
+    description: Button label text.
+
+tokens:
+  - --color-ink
+  - --type-body-size
+
+links:
+  repo: app/frontend/ds/components/Beta
+  figma: null

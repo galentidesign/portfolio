@@ -1,0 +1,28 @@
+slug: alpha
+name: Alpha
+tier: gallery
+status: stable
+description: Fixture alpha component.
+
+variants:
+  variant: [default, alt]
+
+props:
+  - name: variant
+    type: "'default' | 'alt'"
+    default: "'default'"
+    description: Variant axis.
+  - name: size
+    type: "'sm' | 'md'"
+    description: Size (required, no default).
+
+tokens:
+  - --color-accent
+  - --color-ink
+  - --color-surface-sunken
+  - --radius-control
+  - --space-2
+
+links:
+  repo: app/frontend/ds/components/Alpha
+  figma: null
