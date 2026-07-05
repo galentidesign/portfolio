@@ -1,0 +1,105 @@
+/**
+ * Assembly motion layer — entry contract (story/assembly/README.md).
+ *
+ * Framework-free (pure DOM + GSAP, no React). Owns GSAP registration, the
+ * single ScrollTrigger pin, the master timeline with per-beat labels, and the
+ * `data-beat-active` bookkeeping. `AssemblyOpening` dynamic-imports this when
+ * motion is allowed; reduced motion never downloads it.
+ */
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import {
+  applyInitialStates,
+  beatForProgress,
+  buildMasterTimeline,
+  createBeatContext,
+  setActiveBeat,
+  type BeatId,
+  type Timeline,
+} from './timeline'
+
+export interface AssemblyMotionOptions {
+  /** Fired once when the sequence completes or is skipped. */
+  onComplete?: () => void
+}
+
+export interface AssemblyMotionHandle {
+  /** Jump to the end of the sequence instantly (skip is never animated). */
+  skipToEnd: () => void
+  /** Tear down triggers and revert inline styles (reduced-motion flip). */
+  destroy: () => void
+}
+
+export function mountAssemblyMotion(
+  section: HTMLElement,
+  opts?: AssemblyMotionOptions,
+): AssemblyMotionHandle {
+  gsap.registerPlugin(ScrollTrigger)
+
+  let completed = false
+  const complete = () => {
+    if (completed) return
+    completed = true
+    opts?.onComplete?.()
+  }
+
+  let master: Timeline | null = null
+  let trigger: ScrollTrigger | null = null
+  let active: BeatId | null = null
+
+  const ctx = gsap.context(() => {
+    const beatCtx = createBeatContext(section)
+
+    // (1) Initial states FIRST — the flip below reveals the layered stage, and
+    //     setting the before-state first prevents a flash of unstyled stage.
+    applyInitialStates(beatCtx)
+    // (2) Flip the CSS geometry on (steps become stacked layers).
+    section.dataset.motion = 'on'
+    // (3) One master timeline (labels named per beat id) + one pinning trigger.
+    master = buildMasterTimeline(beatCtx)
+    trigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: '+=400%',
+      scrub: true,
+      pin: true,
+      animation: master,
+      onUpdate: (self) => {
+        // Map the scrubbed playhead to the active beat; toggle only on change
+        // so the DOM write happens ~5 times across the whole scroll, not per
+        // frame (the e2e/perf capture keys on data-beat-active).
+        const id = beatForProgress(self.progress)
+        if (id !== active) {
+          active = id
+          setActiveBeat(section, id)
+        }
+      },
+      onLeave: complete,
+    })
+
+    // Exactly one step is active from frame one.
+    active = 'tokens'
+    setActiveBeat(section, 'tokens')
+  }, section)
+
+  return {
+    skipToEnd: () => {
+      // A skip is never animated: land the final state instantly so nothing is
+      // mid-flight, release the pin so the caller's scroll to #gateway lands
+      // cleanly, then complete once. The caller owns scroll + focus.
+      master?.progress(1)
+      trigger?.kill()
+      complete()
+    },
+    destroy: () => {
+      // Reduced-motion flip: reverting the context kills the trigger and
+      // restores every inline style; dropping the flag returns the pixel-
+      // perfect static base. Clear the active hook so nothing lingers.
+      ctx.revert()
+      delete section.dataset.motion
+      section
+        .querySelectorAll('[data-beat-active]')
+        .forEach((el) => el.removeAttribute('data-beat-active'))
+    },
+  }
+}
