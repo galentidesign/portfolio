@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "name": "rails-era",
+    "label": "Rails era",
+    "era": "2014",
+    "colorScheme": "light",
+    "default": false,
+    "hidden": false,
+    "description": "2014 product web — flat and dense. Gray chrome, Bootstrap blue, hard corners, Helvetica-era type at 14px, jQuery easing.",
+    "fonts": [
+      {
+        "family": "Source Sans 3",
+        "file": "source-sans-3-latin-wght.woff2",
+        "weight": "200 900",
+        "style": "normal",
+        "display": "swap",
+        "preload": true
+      },
+      {
+        "family": "Source Code Pro",
+        "file": "source-code-pro-latin-wght.woff2",
+        "weight": "200 900",
+        "style": "normal",
+        "display": "swap",
+        "preload": true
+      }
+    ]
+  },
+  "raw": {
+    "color": {
+      "white": "#ffffff",
+      "chrome-100": "#f5f5f5",
+      "well-200": "#e8e8e8",
+      "silver-300": "#dddddd",
+      "gray-500": "#808080",
+      "gray-600": "#6b6b6b",
+      "gray-700": "#595959",
+      "gray-900": "#333333",
+      "blue-100": "#d9edf7",
+      "blue-600": "#2c689c",
+      "navy-800": "#204d74",
+      "green-100": "#dff0d8",
+      "green-700": "#3c763d",
+      "gold-100": "#fcf8e3",
+      "gold-700": "#8a6d3b",
+      "red-100": "#f2dede",
+      "red-700": "#a94442"
+    },
+    "font": {
+      "sans": "'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      "mono": "'Source Code Pro', Consolas, Monaco, 'Andale Mono', monospace"
+    }
+  },
+  "semantic": {
+    "color": {
+      "surface": "{raw.color.white}",
+      "surface-raised": "{raw.color.chrome-100}",
+      "surface-sunken": "{raw.color.well-200}",
+      "surface-overlay": "{raw.color.white}",
+      "ink": "{raw.color.gray-900}",
+      "ink-muted": "{raw.color.gray-700}",
+      "ink-faint": "{raw.color.gray-600}",
+      "accent": "{raw.color.blue-600}",
+      "accent-ink": "{raw.color.white}",
+      "accent-muted": "{raw.color.blue-100}",
+      "line": "{raw.color.silver-300}",
+      "line-strong": "{raw.color.gray-500}",
+      "focus": "{raw.color.navy-800}",
+      "positive": "{raw.color.green-700}",
+      "positive-surface": "{raw.color.green-100}",
+      "caution": "{raw.color.gold-700}",
+      "caution-surface": "{raw.color.gold-100}",
+      "critical": "{raw.color.red-700}",
+      "critical-surface": "{raw.color.red-100}"
+    },
+    "radius": {
+      "control": "2px",
+      "surface": "3px",
+      "pill": "999px"
+    },
+    "type": {
+      "display-family": "{raw.font.sans}",
+      "display-size": "clamp(2.25rem, 1.9rem + 1.75vw, 3.25rem)",
+      "display-weight": "700",
+      "display-line": "1.1",
+      "display-tracking": "0em",
+      "heading-family": "{raw.font.sans}",
+      "heading-size": "clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem)",
+      "heading-weight": "700",
+      "heading-line": "1.2",
+      "heading-tracking": "0em",
+      "title-family": "{raw.font.sans}",
+      "title-size": "1.125rem",
+      "title-weight": "700",
+      "title-line": "1.3",
+      "title-tracking": "0em",
+      "body-family": "{raw.font.sans}",
+      "body-size": "0.875rem",
+      "body-weight": "400",
+      "body-line": "1.5",
+      "body-tracking": "0em",
+      "small-family": "{raw.font.sans}",
+      "small-size": "0.75rem",
+      "small-weight": "400",
+      "small-line": "1.4",
+      "small-tracking": "0em",
+      "mono-family": "{raw.font.mono}",
+      "mono-size": "0.8125rem",
+      "mono-weight": "400",
+      "mono-line": "1.5",
+      "mono-tracking": "0em"
+    },
+    "density": {
+      "row": "2.25rem",
+      "control": "2.125rem",
+      "control-sm": "1.875rem",
+      "gap": "var(--space-3)",
+      "pad": "clamp(0.75rem, 0.5rem + 1.5vw, 1.25rem)"
+    },
+    "motion": {
+      "duration-xs": "60ms",
+      "duration-sm": "100ms",
+      "duration-md": "160ms",
+      "duration-lg": "260ms",
+      "duration-xl": "400ms",
+      "ease-enter": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+      "ease-exit": "cubic-bezier(0.55, 0.085, 0.68, 0.53)",
+      "ease-move": "cubic-bezier(0.455, 0.03, 0.515, 0.955)"
+    },
+    "shadow": {
+      "raised": "0 1px 1px rgb(0 0 0 / 5%)",
+      "overlay": "0 3px 9px rgb(0 0 0 / 30%)"
+    }
+  }
+}
