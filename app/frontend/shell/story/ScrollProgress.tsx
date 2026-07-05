@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styles from './scrollProgress.module.css'
 
 /**
@@ -7,6 +7,11 @@ import styles from './scrollProgress.module.css'
  * Fixed top, full-width, 3px track; accent fill driven by scroll fraction via
  * transform: scaleX. rAF-throttled scroll + resize listeners.
  *
+ * The per-frame fill update writes style.transform on the DOM node directly —
+ * a React render per scroll frame is real main-thread work that bursts past
+ * the §9.3 budget at 4× CPU throttle. React state is only used for the
+ * visibility flip (does the document scroll at all), which changes rarely.
+ *
  * Position updates are state, not motion — they happen under reduced motion
  * too. No CSS transition is added here, so the fill snaps directly to each
  * new scaleX value (simplest reduced-motion-compliant implementation).
@@ -14,8 +19,8 @@ import styles from './scrollProgress.module.css'
  * Hidden entirely when the document does not overflow (no scrollable range).
  */
 export function ScrollProgress() {
-  const [progress, setProgress] = useState(0)
   const [visible, setVisible] = useState(false)
+  const fillRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     let rafId: number | null = null
@@ -29,7 +34,9 @@ export function ScrollProgress() {
         return
       }
       setVisible(true)
-      setProgress(el.scrollTop / scrollable)
+      if (fillRef.current !== null) {
+        fillRef.current.style.transform = `scaleX(${el.scrollTop / scrollable})`
+      }
     }
 
     function schedule() {
@@ -47,13 +54,15 @@ export function ScrollProgress() {
       window.removeEventListener('resize', schedule)
       if (rafId !== null) cancelAnimationFrame(rafId)
     }
-  }, [])
+  }, [visible])
+  // `visible` in deps: the fill node only exists once visible flips true, and
+  // the effect must re-run then so the first measure() can reach fillRef.
 
   if (!visible) return null
 
   return (
     <div aria-hidden="true" data-testid="scroll-progress" className={styles.track}>
-      <div className={styles.fill} style={{ transform: `scaleX(${progress})` }} />
+      <div ref={fillRef} className={styles.fill} style={{ transform: 'scaleX(0)' }} />
     </div>
   )
 }
