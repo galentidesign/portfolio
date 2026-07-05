@@ -1,0 +1,35 @@
+/* ── Engine note aside ──────────────────────────────────────────────────────
+ * Designed callout for chapter engine details.
+ * Semantic tokens only.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+.note {
+  width: calc(100% - 2 * var(--density-pad));
+  max-width: 48rem;
+  margin-inline: auto;
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  border-left: 2px solid var(--color-accent);
+  border-radius: var(--radius-surface);
+  background-color: var(--color-surface-raised);
+}
+
+.note-text {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  margin: 0;
+}
+
+.note-text a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.note-text a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

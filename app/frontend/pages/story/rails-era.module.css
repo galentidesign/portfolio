@@ -1,0 +1,136 @@
+/* ── rails-era.module.css ────────────────────────────────────────────────────
+ * Chapter 1 — Rails era — page-specific layout and artifact frame.
+ * Semantic tokens only; skin-neutral structure. The skin (rails-era) brings
+ * the 2014 visual look through tokens — this file is layout, not decoration.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Wide section: artifact frame breaks past the 48rem prose width ─────── */
+
+.section-wide {
+  max-width: 56rem;
+  margin-inline: auto;
+  padding-inline: var(--density-pad);
+  padding-block: var(--space-7);
+  min-height: 45vh;
+  border-bottom: 1px solid var(--color-line);
+}
+
+/* Prose-width constraint: headings and annotation paragraphs inside the wide
+   section stay at 48rem for comfortable reading. */
+
+.prose-width {
+  max-width: 48rem;
+}
+
+/* ── Artifact figure ──────────────────────────────────────────────────────── */
+
+.artifact-figure {
+  margin-block: var(--space-5) var(--space-4);
+}
+
+/* ── Browser chrome frame ─────────────────────────────────────────────────── */
+
+.artifact-frame {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-raised);
+  overflow: hidden;
+}
+
+/* Chrome title bar: three window dots + address bar */
+.chrome-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.chrome-dots {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.chrome-dot {
+  display: block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-line);
+}
+
+.chrome-address {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-muted);
+  background-color: var(--color-surface-sunken);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  padding-block: var(--space-1);
+  padding-inline: var(--space-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Exhibit body (inert — live DS components as visual evidence) ─────────── */
+
+.exhibit-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Toolbar row: primary action, secondary action, filter field */
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ── Frame caption (visible narrative text below the artifact) ────────────── */
+
+.frame-caption {
+  margin-top: var(--space-3);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  color: var(--color-ink-muted);
+  max-width: 48rem;
+}
+
+/* ── Stack strip: era technology markers ─────────────────────────────────── */
+
+.stack-strip {
+  list-style: none;
+  margin: var(--space-4) 0;
+  padding: 0;
+}
+
+.stack-item {
+  display: inline;
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* Separator dot between stack items; skips the first item */
+.stack-item + .stack-item::before {
+  content: ' · ';
+  color: var(--color-ink-faint);
+}

@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
+import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
+import { SkinProvider } from '@/shell/skin/SkinProvider'
 import RailsEra from './rails-era'
 import ReactEra from './react-era'
 import Agentic from './agentic'
@@ -30,19 +32,41 @@ vi.mock('@inertiajs/react', async (importOriginal) => ({
 // ---------------------------------------------------------------------------
 
 describe('RailsEra page', () => {
+  function renderPage() {
+    return render(
+      <MotionPrefProvider>
+        <SkinProvider>
+          <RailsEra />
+        </SkinProvider>
+      </MotionPrefProvider>,
+    )
+  }
+
+  beforeEach(() => {
+    // Force reduced motion so EraRetheme takes the instant (synchronous) swap
+    // path in jsdom — no GSAP, no async dynamic import.
+    document.documentElement.dataset.motion = 'reduced'
+  })
+
+  afterEach(() => {
+    delete document.documentElement.dataset.motion
+    delete document.documentElement.dataset.skin
+    localStorage.clear()
+  })
+
   it('renders the chapter h1', () => {
-    render(<RailsEra />)
+    renderPage()
     expect(screen.getByRole('heading', { level: 1, name: 'The Rails era' })).toBeInTheDocument()
   })
 
   it('has a handoff link to the React era chapter', () => {
-    render(<RailsEra />)
+    renderPage()
     const link = screen.getByRole('link', { name: /next: the react era/i })
     expect(link).toHaveAttribute('href', '/story/react-era')
   })
 
   it('labels the first section with aria-labelledby pointing to an h2', () => {
-    render(<RailsEra />)
+    renderPage()
     const heading = screen.getByRole('heading', { level: 2, name: 'Era artifacts' })
     expect(heading).toBeInTheDocument()
     expect(heading).toHaveAttribute('id', 'rails-era-artifacts')
@@ -50,9 +74,28 @@ describe('RailsEra page', () => {
     expect(section).toHaveAttribute('aria-labelledby', 'rails-era-artifacts')
   })
 
-  it('shows the re-theme annotation', () => {
-    render(<RailsEra />)
-    expect(screen.getByText(/this chapter will re-theme the whole site/i)).toBeInTheDocument()
+  it('mounts the era-retheme boundary with the rails-era skin marked', () => {
+    renderPage()
+    expect(screen.getByTestId('era-retheme')).toHaveAttribute('data-era-skin', 'rails-era')
+  })
+
+  it('flips the site skin to rails-era under reduced motion', () => {
+    renderPage()
+    expect(document.documentElement.dataset.skin).toBe('rails-era')
+  })
+
+  it('renders the artifact exhibit as inert', () => {
+    const { container } = renderPage()
+    const exhibit = container.querySelector('[data-testid="artifact-exhibit"]')
+    expect(exhibit).not.toBeNull()
+    expect(exhibit).toHaveAttribute('inert')
+  })
+
+  it('renders the project-tracker table with fictional rows', () => {
+    const { container } = renderPage()
+    const caption = container.querySelector('caption')
+    expect(caption).toHaveTextContent('Project tracker')
+    expect(container.textContent).toContain('Trackside')
   })
 })
 
