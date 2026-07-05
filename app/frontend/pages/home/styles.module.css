@@ -1,5 +1,5 @@
 /* ── Home (story landing) ────────────────────────────────────────────────────
- * Three sections: assembly slot (hero), prologue slot, chapter gateway.
+ * Assembly opening (owns the hero), prologue slot, chapter gateway.
  * Semantic tokens only — never raw primitives.
  * Bottom padding clears the fixed escape hatch (--space-10).
  * ───────────────────────────────────────────────────────────────────────── */
@@ -11,70 +11,6 @@
   color: var(--color-ink);
   min-height: 100dvh;
   padding-bottom: var(--space-10);
-}
-
-/* ── Assembly slot — ≥60vh hero ─────────────────────────────────────────────── */
-
-.assembly {
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--color-line);
-}
-
-.assembly-content {
-  max-width: 48rem;
-  margin-inline: auto;
-  padding-inline: var(--density-pad);
-  padding-block: var(--space-9);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.heading {
-  font-family: var(--type-display-family);
-  font-size: var(--type-display-size);
-  font-weight: var(--type-display-weight);
-  line-height: var(--type-display-line);
-  letter-spacing: var(--type-display-tracking);
-  margin: 0;
-}
-
-.subline {
-  font-family: var(--type-body-family);
-  font-size: var(--type-body-size);
-  font-weight: var(--type-body-weight);
-  line-height: var(--type-body-line);
-  letter-spacing: var(--type-body-tracking);
-  color: var(--color-ink-muted);
-  margin: 0;
-  max-width: 38rem;
-}
-
-/* ── Shared annotation style (build-in-public marker) ──────────────────────── */
-
-.annotation {
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  line-height: var(--type-mono-line);
-  letter-spacing: var(--type-mono-tracking);
-  color: var(--color-ink-faint);
-  margin: 0;
-}
-
-/* ── Prologue slot — short band ─────────────────────────────────────────────── */
-
-.prologue {
-  border-bottom: 1px solid var(--color-line);
-}
-
-.prologue-content {
-  max-width: 48rem;
-  margin-inline: auto;
-  padding-inline: var(--density-pad);
-  padding-block: var(--space-7);
 }
 
 /* ── Chapter gateway ────────────────────────────────────────────────────────── */

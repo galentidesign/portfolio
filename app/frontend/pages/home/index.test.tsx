@@ -23,6 +23,12 @@ vi.mock('@inertiajs/react', async (importOriginal) => ({
   ),
 }))
 
+// The assembly opening needs the motion-pref context; pin the gate to
+// reduced so the page renders its static base with no dynamic import.
+vi.mock('@/ds/motion/useMotionPref', () => ({
+  useMotionPref: () => ({ reduced: true, manualReduced: false, setManualReduced: vi.fn() }),
+}))
+
 // ---------------------------------------------------------------------------
 // Heading
 // ---------------------------------------------------------------------------
@@ -68,18 +74,27 @@ describe('Home chapter gateway', () => {
 })
 
 // ---------------------------------------------------------------------------
-// Slot annotations (build-in-public markers)
+// Assembly opening integration
 // ---------------------------------------------------------------------------
 
-describe('Home slot annotations', () => {
-  it('shows the assembly opening annotation', () => {
+describe('Home assembly opening', () => {
+  it('mounts the assembly opening section', () => {
     render(<Home />)
-    expect(screen.getByText(/assembly opening — lands with M5/i)).toBeInTheDocument()
+    expect(screen.getByTestId('assembly-opening')).toBeInTheDocument()
+    expect(screen.getByTestId('skip-intro')).toBeInTheDocument()
   })
 
-  it('shows the prologue slot annotation', () => {
+  it('gives the skip control its gateway landing target', () => {
+    const { container } = render(<Home />)
+    const gateway = container.querySelector('section#gateway')
+    expect(gateway).toBeInTheDocument()
+    expect(gateway).toHaveAttribute('tabindex', '-1')
+  })
+
+  it('mounts the prologue beat between opening and gateway', () => {
     render(<Home />)
-    expect(screen.getByText(/prologue · 2004–2013 — lands with M5/i)).toBeInTheDocument()
+    expect(screen.getByTestId('prologue-beat')).toBeInTheDocument()
+    expect(screen.getByText(/Prologue · 2004–2013/)).toBeInTheDocument()
   })
 })
 

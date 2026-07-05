@@ -1,5 +1,7 @@
 import { Head } from '@inertiajs/react'
 import { Card } from '@/ds/components/Card/Card'
+import { AssemblyOpening } from '@/story/assembly/AssemblyOpening'
+import { PrologueBeat } from '@/story/prologue/PrologueBeat'
 import styles from './styles.module.css'
 
 export default function Home() {
@@ -7,27 +9,19 @@ export default function Home() {
     <>
       <Head title="J Galenti" />
       <main id="main" className={styles.page}>
-        {/* ── Assembly slot ──────────────────────────────────────────────────── */}
-        <section className={styles.assembly}>
-          <div className={styles['assembly-content']}>
-            <h1 className={styles.heading}>J Galenti</h1>
-            <p className={styles.subline}>
-              Design technologist — design systems, production code, and the agentic playbook
-              between them.
-            </p>
-            <p className={styles.annotation}>assembly opening — lands with M5</p>
-          </div>
-        </section>
+        {/* ── Assembly opening (owns the hero h1) ─────────────────────────── */}
+        <AssemblyOpening />
 
-        {/* ── Prologue slot ──────────────────────────────────────────────────── */}
-        <section className={styles.prologue} aria-label="Prologue">
-          <div className={styles['prologue-content']}>
-            <p className={styles.annotation}>prologue · 2004–2013 — lands with M5</p>
-          </div>
-        </section>
+        {/* ── Prologue — the 2004–2013 passage between opening and gateway ── */}
+        <PrologueBeat />
 
-        {/* ── Chapter gateway ────────────────────────────────────────────────── */}
-        <section className={styles.gateway} aria-labelledby="chapter-gateway-heading">
+        {/* ── Chapter gateway — the skip control's landing target ─────────── */}
+        <section
+          id="gateway"
+          tabIndex={-1}
+          className={styles.gateway}
+          aria-labelledby="chapter-gateway-heading"
+        >
           <div className={styles['gateway-content']}>
             <h2 id="chapter-gateway-heading" className={styles['gateway-heading']}>
               Chapters
