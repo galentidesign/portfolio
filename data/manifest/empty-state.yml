@@ -1,0 +1,78 @@
+slug: empty-state
+name: Empty State
+tier: gallery
+status: stable
+description: Centered content slot for empty states with optional icon, title, description, and action.
+
+variants: {}
+
+props:
+  - name: title
+    type: string
+    description: >-
+      Rendered as a styled <p> with title-role type — not a heading. Consumers
+      own the heading structure in their page.
+  - name: description
+    type: string
+    description: Optional descriptive text; centered with limited max-width for readability.
+  - name: icon
+    type: ReactNode
+    description: Decorative icon or glyph slot, wrapped aria-hidden.
+  - name: action
+    type: ReactNode
+    description: Slot for a button, link, or other interactive element the consumer provides.
+
+tokens:
+  - --color-ink
+  - --color-ink-faint
+  - --color-ink-muted
+  - --color-line-strong
+  - --radius-surface
+  - --space-2
+  - --space-3
+  - --space-5
+  - --space-8
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+  - --type-title-family
+  - --type-title-line
+  - --type-title-size
+  - --type-title-tracking
+  - --type-title-weight
+
+a11y:
+  keyboard:
+    - keys: '—'
+      does: Not interactive; carries no keyboard behavior of its own.
+  aria:
+    - title is a styled <p>, not a heading — consumers own page heading hierarchy.
+    - icon and icon-wrapper are aria-hidden (decorative).
+  contrast: >-
+    Uses ink-on-surface (title), ink-muted-on-surface (description), and
+    ink-faint-on-surface (icon) pairs — all documented semantic pairs.
+
+usage:
+  do:
+    - Use description to guide users on how to resolve the empty state.
+    - Provide an action when there's a clear next step users can take.
+    - Place a heading at the page level and treat EmptyState title as supporting content.
+  dont:
+    - Treat the title as a heading — always own page heading structure separately.
+    - Put complex interactive content in the action slot without considering focus management.
+    - Render title-only when guidance text would help users recover.
+
+example: |
+  import { EmptyState } from '@/ds/components/EmptyState/EmptyState'
+
+  <EmptyState
+    title="No results found"
+    description="Try adjusting your search terms or clearing filters to see more results."
+    action={<button onClick={reset}>Reset filters</button>}
+  />
+
+links:
+  repo: app/frontend/ds/components/EmptyState
+  figma: null

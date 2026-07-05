@@ -1,0 +1,160 @@
+slug: dialog
+name: Modal / Dialog
+tier: hero
+status: stable
+description: Controlled modal dialog built on native <dialog> with focus trap and motion.
+
+variants:
+  size: [sm, md]
+
+props:
+  - name: open
+    type: 'boolean'
+    description: >-
+      Fully controlled — owner must flip this to show/hide the dialog. When true,
+      calls showModal(); when false, calls close().
+    playground: false
+  - name: onClose
+    type: '() => void'
+    description: >-
+      Fired when the user dismisses the dialog via Esc (if dismissible), backdrop
+      click (if dismissible), or the × button (if dismissible). Owner must set
+      open=false in response.
+  - name: title
+    type: 'string'
+    description: >-
+      Heading text rendered in the header; wired to aria-labelledby so the dialog
+      is semantically labelled.
+  - name: description
+    type: 'string'
+    description: >-
+      Supporting text below the title; wired to aria-describedby when present.
+      Optional; omit if no supplementary context is needed.
+  - name: size
+    type: "'sm' | 'md'"
+    default: "'md'"
+    description: >-
+      Max-width constraint. sm = 26rem, md = 34rem. Choose sm for simple
+      confirmations, md for workflows with longer content.
+  - name: dismissible
+    type: 'boolean'
+    default: 'true'
+    description: >-
+      When false, removes the × button and blocks Esc and backdrop click from
+      closing. Use only for required actions that cannot be skipped (e.g.,
+      critical onboarding steps).
+  - name: footer
+    type: 'ReactNode'
+    description: >-
+      Action row slot rendered in a flex-end row at the bottom of the panel.
+      Typically holds Cancel and primary action buttons; layout is row-based
+      with trailing-aligned content.
+  - name: children
+    type: 'ReactNode'
+    description: Dialog body content. May include form inputs, descriptive text, or rich layouts.
+
+tokens:
+  - --color-focus
+  - --color-ink
+  - --color-ink-muted
+  - --color-surface-overlay
+  - --color-surface-sunken
+  - --density-control-sm
+  - --density-pad
+  - --motion-duration-md
+  - --motion-duration-sm
+  - --motion-ease-enter
+  - --motion-ease-exit
+  - --radius-control
+  - --radius-surface
+  - --shadow-overlay
+  - --space-1
+  - --space-2
+  - --space-3
+  - --space-4
+  - --space-5
+  - --space-6
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+  - --type-title-family
+  - --type-title-line
+  - --type-title-size
+  - --type-title-tracking
+  - --type-title-weight
+
+a11y:
+  keyboard:
+    - keys: Esc
+      does: >-
+        Closes the dialog when dismissible=true; preventDefault always fires to
+        block browser auto-close. When dismissible=false, Esc has no effect.
+    - keys: Tab
+      does: Focusable in document order; focus stays within the dialog layer.
+  aria:
+    - >-
+      aria-labelledby points to the title heading, making the dialog semantically
+      named for screen readers.
+    - >-
+      aria-describedby points to the description element when present, providing
+      supplementary context without cluttering the visual layout.
+    - >-
+      Initial focus is set to the dialog element itself if no child carries
+      [autofocus]; this ensures focus is programmatically managed. When dismissed,
+      browser returns focus to the element that triggered the dialog.
+    - >-
+      Backdrop click dismissal requires both pointerdown and click to occur on the
+      backdrop (not inside the panel). A text-selection drag that begins inside
+      the panel and releases over the backdrop does not trigger dismissal,
+      protecting in-progress user input.
+  contrast: >-
+    Title uses --color-ink on --color-surface-overlay, description uses
+    --color-ink-muted on the same background, close button uses --color-ink-muted
+    (hover: --color-ink) on --color-surface-sunken, focus indicator uses
+    --color-focus — all documented token pairings meeting WCAG contrast in every
+    shipped skin.
+
+usage:
+  do:
+    - Use dismissible=false only for required, non-optional workflows the user cannot skip.
+    - Provide a clear, concise title and supporting description so users understand context and stakes.
+    - Pair Cancel with a primary action button in the footer to give users an explicit exit path.
+  dont:
+    - Don't use a dialog for alerts or confirmations that fit inline on the page without disruption.
+    - Don't trap users with dismissible=false unless there is a clear, actionable completion button.
+    - Don't open a dialog from inside another dialog's footer; cascade modals confuse navigation and focus.
+
+example: |
+  import { Dialog } from '@/ds/components/Dialog/Dialog'
+  import { useState } from 'react'
+
+  function DeleteItem() {
+    const [open, setOpen] = useState(false)
+    return (
+      <>
+        <button onClick={() => setOpen(true)}>Delete</button>
+        <Dialog
+          open={open}
+          onClose={() => setOpen(false)}
+          title="Delete item?"
+          description="This action cannot be undone."
+          footer={
+            <>
+              <button onClick={() => setOpen(false)}>Cancel</button>
+              <button onClick={() => { /* delete */ setOpen(false) }}>
+                Delete
+              </button>
+            </>
+          }
+        >
+          <p>Are you sure you want to permanently delete this item?</p>
+        </Dialog>
+      </>
+    )
+  }
+
+links:
+  repo: app/frontend/ds/components/Dialog
+  figma: null

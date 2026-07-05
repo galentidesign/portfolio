@@ -1,0 +1,73 @@
+slug: badge
+name: Badge / Tag
+tier: gallery
+status: stable
+description: Labels and status indicators at two sizes.
+
+variants:
+  tone: [neutral, accent, positive, caution, critical]
+  size: [sm, md]
+
+props:
+  - name: tone
+    type: "'neutral' | 'accent' | 'positive' | 'caution' | 'critical'"
+    default: "'neutral'"
+    description: Color tone — each pairs a verified WCAG-compliant ink and surface.
+  - name: size
+    type: "'sm' | 'md'"
+    default: "'md'"
+    description: Badge size — sm reduces padding-inline and padding-block.
+  - name: children
+    type: ReactNode
+    description: Badge content.
+
+tokens:
+  - --color-accent
+  - --color-accent-muted
+  - --color-caution
+  - --color-caution-surface
+  - --color-critical
+  - --color-critical-surface
+  - --color-ink-muted
+  - --color-positive
+  - --color-positive-surface
+  - --color-surface-sunken
+  - --radius-pill
+  - --space-1
+  - --space-2
+  - --space-3
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+
+a11y:
+  keyboard:
+    - keys: '—'
+      does: Not interactive; carries no keyboard behavior of its own.
+  aria:
+    - Badge is a presentational span with no ARIA attributes; content is directly readable.
+  contrast: >-
+    Neutral uses surface-sunken-ink-muted, accent uses accent-muted-accent, positive uses
+    positive-surface-positive, caution uses caution-surface-caution, and critical uses
+    critical-surface-critical — all documented token pairings that pass WCAG in every shipped skin by construction.
+
+usage:
+  do:
+    - Use neutral for secondary or inactive labels.
+    - Use accent, positive, caution, or critical to communicate status or category.
+    - Pair with semantic text content to reinforce meaning beyond color alone.
+  dont:
+    - Don't rely on color alone to communicate critical information — always pair with text.
+    - Don't use badges to replace inline icons where a more specific signal would clarify intent.
+    - Don't nest interactive content inside a badge; it is a presentational label.
+
+example: |
+  import { Badge } from '@/ds/components/Badge/Badge'
+
+  <Badge tone="positive">Ready</Badge>
+
+links:
+  repo: app/frontend/ds/components/Badge
+  figma: null

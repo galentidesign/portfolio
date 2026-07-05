@@ -1,0 +1,93 @@
+slug: code-block
+name: Code Block
+tier: gallery
+status: stable
+description: Display code verbatim with optional label and copy button.
+
+variants: {}
+
+props:
+  - name: code
+    type: 'string'
+    description: Code to display verbatim in `<pre><code>`; no highlighting at v1.
+  - name: label
+    type: 'string'
+    description: Optional filename or language chip in the header row.
+  - name: copyable
+    type: 'boolean'
+    default: 'true'
+    description: >-
+      Show a copy-to-clipboard button. When false and label is undefined, the
+      header row is entirely hidden.
+
+tokens:
+  - --color-focus
+  - --color-ink
+  - --color-ink-muted
+  - --color-line
+  - --color-line-strong
+  - --color-surface-sunken
+  - --density-control-sm
+  - --motion-duration-xs
+  - --motion-ease-move
+  - --radius-control
+  - --radius-surface
+  - --space-2
+  - --space-3
+  - --space-4
+  - --type-mono-family
+  - --type-mono-line
+  - --type-mono-size
+  - --type-mono-tracking
+  - --type-mono-weight
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+
+a11y:
+  keyboard:
+    - keys: Tab
+      does: Focuses the pre element, bringing it into focus order.
+    - keys: Arrow keys
+      does: Scroll the code block when focused (browser default for overflow).
+    - keys: Enter / Space
+      does: Activates the copy button.
+  aria:
+    - >-
+      The pre element uses role="group" (not "region") to provide an accessible
+      name via aria-label without creating a LANDMARK that would duplicate on
+      pages with multiple code blocks.
+    - >-
+      aria-label defaults to "Code" but is overridden by the label prop,
+      providing context for screen reader users.
+    - >-
+      Copy success is announced via a live region (aria-live="polite") that
+      reads "Copied to clipboard".
+  contrast: >-
+    Uses the documented ink-on-surface (code text), ink-muted-on-surface-sunken
+    (label text), and focus-on-surface (button focus ring) semantic token
+    pairings.
+
+usage:
+  do:
+    - Use label to provide context (filename, language, or purpose).
+    - Keep copyable enabled unless the snippet is read-only reference material.
+    - Display multi-line code verbatim, including whitespace and formatting.
+  dont:
+    - Don't use for syntax-highlighted or formatted code; this component renders verbatim only.
+    - Don't disable the copy button without a reason; users expect it on code.
+    - Don't rely on color or visual formatting to convey code structure — this component has no highlighting.
+
+example: |
+  import { CodeBlock } from '@/ds/components/CodeBlock/CodeBlock'
+
+  <CodeBlock
+    code={`function hello() {\n  console.log('world')\n}`}
+    label="example.js"
+  />
+
+links:
+  repo: app/frontend/ds/components/CodeBlock
+  figma: null

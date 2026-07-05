@@ -1,0 +1,91 @@
+slug: card
+name: Card
+tier: gallery
+status: stable
+description: Container for content with optional header, footer, and link affordance.
+
+variants: {}
+
+props:
+  - name: title
+    type: 'string'
+    description: Styled row content, deliberately not a heading — consumers add their own heading semantics in children.
+  - name: href
+    type: 'string'
+    description: When provided, renders the entire card as a single <a> block link.
+  - name: flush
+    type: 'boolean'
+    default: 'false'
+    description: Removes inner padding for media or table cards.
+  - name: footer
+    type: 'ReactNode'
+    description: Footer content, rendered with border-top separation.
+  - name: children
+    type: 'ReactNode'
+    description: Main card content.
+  - name: ref
+    type: 'Ref<HTMLDivElement | HTMLAnchorElement>'
+    description: Forwarded to the root element (div or anchor).
+
+tokens:
+  - --color-focus
+  - --color-ink
+  - --color-ink-muted
+  - --color-line
+  - --color-surface-raised
+  - --density-pad
+  - --motion-duration-xs
+  - --motion-ease-move
+  - --radius-surface
+  - --shadow-raised
+  - --space-3
+  - --space-4
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+  - --type-title-family
+  - --type-title-line
+  - --type-title-size
+  - --type-title-tracking
+  - --type-title-weight
+
+a11y:
+  keyboard:
+    - keys: Enter
+      does: When href is provided, follows the link (native anchor semantics).
+    - keys: Tab
+      does: When interactive (href present), focusable in document order; focus outline visible.
+    - keys: '—'
+      does: When not interactive, Card carries no keyboard behavior of its own.
+  aria:
+    - When href is provided, the card is a native anchor link with standard link semantics.
+    - Title is deliberately not semantic (not a heading); consumers add heading semantics in children.
+    - Focus outline uses --color-focus for WCAG contrast compliance.
+  contrast: >-
+    Title and body use --color-ink on --color-surface-raised; footer uses
+    --color-ink-muted on the same surface. Focus outline uses --color-focus
+    for sufficient contrast against the card background.
+
+usage:
+  do:
+    - Use for grouping related content with visual separation and contained styling.
+    - Use href to make the entire card a link target; consumers see hover transform feedback.
+    - Use flush to remove padding when the card contains media, tables, or full-bleed content.
+    - Use footer for secondary information like timestamps or metadata.
+  dont:
+    - Don't use Card as a heading container; add your own heading semantics inside children.
+    - Don't nest interactive elements (buttons, links) inside a card with href; the whole card is already a link.
+    - Don't use flush without a clear reason; it removes all inner spacing and may harm readability.
+
+example: |
+  import { Card } from '@/ds/components/Card/Card'
+
+  <Card title="Card Title" footer="Last updated: Today">
+    Main card content goes here.
+  </Card>
+
+links:
+  repo: app/frontend/ds/components/Card
+  figma: null

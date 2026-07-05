@@ -1,0 +1,92 @@
+slug: tabs
+name: Tabs
+tier: gallery
+status: stable
+description: Tabbed panels with roving tabindex and automatic activation.
+
+variants: {}
+
+props:
+  - name: items
+    type: 'readonly TabItem[]'
+    description: >-
+      Tab definitions; TabItem is { id: string; label: string; content: ReactNode }.
+  - name: selected
+    type: 'string'
+    description: Controlled selected tab id — pair with onChange.
+  - name: defaultSelected
+    type: 'string'
+    description: Uncontrolled initial selection; defaults to the first item.
+  - name: onChange
+    type: '(id: string) => void'
+    description: Fires with the item id on click or keyboard selection, in both modes.
+  - name: label
+    type: 'string'
+    default: "'Tabs'"
+    description: aria-label for the tablist.
+
+tokens:
+  - --color-accent
+  - --color-focus
+  - --color-ink
+  - --color-ink-muted
+  - --color-line
+  - --density-control-sm
+  - --motion-duration-xs
+  - --motion-ease-move
+  - --space-2
+  - --space-4
+  - --space-5
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+
+a11y:
+  keyboard:
+    - keys: ArrowRight / ArrowLeft
+      does: Moves focus and automatically selects the adjacent tab, wrapping at the ends.
+    - keys: Home / End
+      does: Jumps focus and selection to the first or last tab.
+    - keys: Tab
+      does: Single tab stop at the selected tab (roving tabindex).
+  aria:
+    - >-
+      tablist holds aria-label; each tab role carries aria-selected (true/false)
+      and aria-controls pointing to its panel.
+    - >-
+      tabpanel role is wired via aria-labelledby to its tab; all panels stay
+      mounted in the DOM (inactive ones hidden) so every aria-controls idref
+      resolves, enabling state preservation during tab switches.
+    - >-
+      tabpanel has tabIndex 0 so keyboard users can reach panel content that
+      contains no focusable elements; hidden panels are display:none and inert.
+  contrast: >-
+    Unselected tabs use --color-ink-muted, selected and hovered tabs use
+    --color-ink; the active tab indicator (bottom border) uses --color-accent;
+    focus outline uses --color-focus.
+
+usage:
+  do:
+    - Give each tab a short, scannable label — one or two words.
+    - Order tabs by likely use; the first tab is the default selection.
+    - Label the tablist so assistive tech users know which group of tabs they're navigating.
+  dont:
+    - Don't lazy-load panel content; mount everything upfront.
+    - Don't use tabs as primary navigation between pages; prefer routing-based nav.
+    - Don't disable specific tabs via styling — the component treats all tabs as selectable.
+
+example: |
+  import { Tabs, type TabItem } from '@/ds/components/Tabs/Tabs'
+
+  const items: readonly TabItem[] = [
+    { id: 'overview', label: 'Overview', content: <p>Overview content</p> },
+    { id: 'details', label: 'Details', content: <p>Details content</p> },
+  ]
+
+  <Tabs items={items} label="Content sections" />
+
+links:
+  repo: app/frontend/ds/components/Tabs
+  figma: null

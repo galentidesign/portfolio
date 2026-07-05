@@ -1,0 +1,84 @@
+slug: skin-switcher
+name: Skin Switcher
+tier: gallery
+status: stable
+description: Segmented radio group that switches the active skin — filters and displays only non-hidden skins from the SkinProvider context.
+
+variants: {}
+
+props:
+  - name: legend
+    type: 'string'
+    default: "'Skin'"
+    description: >-
+      Visually-hidden group label announced to assistive technology. Customize
+      for context (e.g., "Color scheme", "Theme") — the text guides users
+      navigating with a screen reader.
+
+tokens:
+  - --color-accent-muted
+  - --color-focus
+  - --color-ink
+  - --color-ink-muted
+  - --color-line-strong
+  - --color-surface
+  - --density-control-sm
+  - --motion-duration-xs
+  - --motion-ease-move
+  - --radius-pill
+  - --space-3
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+
+a11y:
+  keyboard:
+    - keys: Tab
+      does: Moves focus into the radio group; navigates between items in document order.
+    - keys: Space
+      does: Selects the focused radio and calls setSkin() to update the document skin.
+    - keys: Arrow keys (left/up, right/down)
+      does: >-
+        Move focus and selection between radios within the group (native radio
+        group semantics).
+  aria:
+    - >-
+      The fieldset with a real <legend> provides the group name ("Skin" by default)
+      announced on entry.
+    - >-
+      Each radio input is wrapped in a <label> paired to its skin display name
+      (e.g., "Galenti", "Noir"), announcing the current selection and the
+      switcher's purpose.
+    - >-
+      Hidden skins (hidden: true in the skin registry) never render, so their
+      labels and inputs never appear in the accessibility tree.
+    - >-
+      The checked radio has the HTML checked attribute; the label carries a
+      data-checked attribute for visual indication without requiring aria-checked
+      override.
+  contrast: >-
+    Unchecked text uses --color-ink-muted on --color-surface; checked text uses
+    --color-ink on --color-accent-muted (a pair documented in the design token
+    registry). Focus indication uses --color-focus (a dedicated semantic outline
+    color guaranteed WCAG-compliant in every shipped skin).
+
+usage:
+  do:
+    - Place at the root or in a persistent layout header so users can switch skins across the entire app.
+    - Customize the legend to reflect the app's terminology (e.g., "Theme" instead of "Skin").
+    - Rely on the SkinProvider to manage persistence — the switcher writes to localStorage and updates the document root data-skin attribute.
+  dont:
+    - Do not use inside a component gallery or playground to control a single component's appearance; wrap the component tree instead.
+    - Do not hardcode skin options; always consume them from SkinProvider so hidden skins remain excluded.
+    - Do not style or disable the switcher itself based on the current skin — it must remain accessible regardless of which skin is active.
+
+example: |
+  import { SkinSwitcher } from '@/ds/components/SkinSwitcher/SkinSwitcher'
+
+  <SkinSwitcher legend="Color scheme" />
+
+links:
+  repo: app/frontend/ds/components/SkinSwitcher
+  figma: null

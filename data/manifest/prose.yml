@@ -1,0 +1,98 @@
+slug: prose
+name: Prose
+tier: gallery
+status: stable
+description: Typographic container for long-form content.
+
+variants: {}
+
+props:
+  - name: children
+    type: 'ReactNode'
+    description: >-
+      Long-form content with semantic HTML elements. Expects h1–h3 headings,
+      paragraphs, lists, blockquotes, code blocks, and horizontal rules;
+      automatically styled for readability and accessibility.
+  - name: ref
+    type: 'Ref<HTMLDivElement>'
+    description: Forwarded to the root container div.
+
+tokens:
+  - --color-accent
+  - --color-focus
+  - --color-ink
+  - --color-ink-faint
+  - --color-ink-muted
+  - --color-line
+  - --color-line-strong
+  - --color-surface-sunken
+  - --radius-control
+  - --radius-surface
+  - --space-1
+  - --space-2
+  - --space-3
+  - --space-4
+  - --space-5
+  - --space-6
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+  - --type-heading-family
+  - --type-heading-line
+  - --type-heading-size
+  - --type-heading-tracking
+  - --type-heading-weight
+  - --type-mono-family
+  - --type-mono-size
+  - --type-title-family
+  - --type-title-line
+  - --type-title-size
+  - --type-title-tracking
+  - --type-title-weight
+
+a11y:
+  keyboard:
+    - keys: '—'
+      does: Not interactive; carries no keyboard behavior of its own. Links and buttons within content follow their native semantics.
+  aria:
+    - >-
+      A container for semantic HTML; accessibility relies on the heading hierarchy (h1–h3), link mark-up, list structure, and blockquote semantics of its children.
+    - >-
+      Link focus indicators use the documented focus token; list markers fade
+      to an accessible secondary color; code snippets invert onto a surface
+      token.
+  contrast: >-
+    Body text uses ink-on-surface, links use accent-on-surface with underline,
+    list markers fade to ink-faint, blockquotes use ink-muted with a strong
+    border — all documented token pairings.
+
+usage:
+  do:
+    - Wrap long-form content (articles, documentation, blog posts) in Prose for instant readability and a11y.
+    - Structure content with h1 for page title, h2 for major sections, h3 for subsections.
+    - Nest links, code, blockquotes, and lists directly inside paragraphs or as siblings.
+  dont:
+    - Don't reach for Prose when content is short or sparse; use inline text instead.
+    - Don't skip semantic structure — use <strong> for importance, <code> for code, <blockquote> for citations.
+    - Don't nest Prose containers; it's a leaf wrapper that styles children, not a wrapper-of-wrappers.
+
+example: |
+  import { Prose } from '@/ds/components/Prose/Prose'
+
+  <Prose>
+    <h1>Article Title</h1>
+    <p>Introduction with <strong>emphasis</strong> and a <a href="#section">link</a>.</p>
+    <h2>Major Section</h2>
+    <p>Body text automatically inherits sizing, line-height, and measure from tokens.</p>
+    <ul>
+      <li>Bullet point one</li>
+      <li>Bullet point two</li>
+    </ul>
+    <pre><code>const prose = await readme()</code></pre>
+  </Prose>
+
+links:
+  repo: app/frontend/ds/components/Prose
+  figma: null

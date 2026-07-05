@@ -1,0 +1,79 @@
+slug: tooltip
+name: Tooltip
+tier: gallery
+status: stable
+description: Plain-text hint shown on hover or focus, anchored to a single trigger.
+
+variants:
+  position: [top, bottom]
+
+props:
+  - name: content
+    type: 'string'
+    description: >-
+      Plain text only. Tooltips must never hold interactive content — the tip
+      is transient, unfocusable, and pointer-events: none, so any control
+      inside would be unreachable by keyboard and pointer alike.
+  - name: position
+    type: "'top' | 'bottom'"
+    default: "'top'"
+    description: >-
+      Preferred side. Measured at show time; flips to the other side when the
+      viewport would clip the tooltip.
+  - name: children
+    type: "ReactElement<{ 'aria-describedby'?: string }>"
+    description: >-
+      Exactly one focusable trigger element. Receives aria-describedby (joined
+      with any existing value) while the tooltip is visible.
+
+tokens:
+  - --color-ink
+  - --color-surface
+  - --motion-duration-sm
+  - --motion-ease-enter
+  - --radius-control
+  - --shadow-raised
+  - --space-1
+  - --space-2
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+  - --z-overlay
+
+a11y:
+  keyboard:
+    - keys: Focus (Tab)
+      does: Shows the tooltip immediately. Blur hides it.
+    - keys: Escape
+      does: Dismisses the tooltip instantly, keeping focus on the trigger.
+  aria:
+    - aria-describedby is set on the trigger while the tooltip is visible; any existing value is preserved and joined.
+    - The tooltip carries role="tooltip" and a unique id wired to the trigger.
+    - 'The tooltip is unfocusable (pointer-events: none) and transient — announced as description, not interactive content.'
+  contrast: >-
+    Uses the ink-on-surface pair inverted — ink as background, surface as text.
+    Both skins hold that pair at ≥ 7:1 by construction, and contrast is
+    symmetric, so the inversion passes WCAG in every skin.
+
+usage:
+  do:
+    - Provide brief, helpful text — one to two short sentences at most.
+    - Use on buttons, links, and form labels where context is unclear.
+    - Write text that supplements the trigger's label rather than repeating it.
+  dont:
+    - Put essential actions or controls inside a tooltip — it is transient and inaccessible to keyboard users.
+    - Attach to a non-focusable element; keyboard users would never see it.
+    - Use for long-form explanation — link to help docs instead.
+
+example: |
+  import { Tooltip } from '@/ds/components/Tooltip/Tooltip'
+
+  <Tooltip content="Saves your changes immediately">
+    <button type="button">Save</button>
+  </Tooltip>
+
+links:
+  repo: app/frontend/ds/components/Tooltip
+  figma: null

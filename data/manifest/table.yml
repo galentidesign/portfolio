@@ -1,0 +1,140 @@
+slug: table
+name: Table
+tier: hero
+status: stable
+description: Accessible sortable data table with controlled sort, custom cell renderers, and empty state.
+
+variants: {}
+
+props:
+  - name: caption
+    type: 'string'
+    description: >-
+      Table caption text (required for accessibility). Rendered as a real
+      <caption> element; visually hidden by default via captionHidden.
+  - name: captionHidden
+    type: 'boolean'
+    default: 'true'
+    description: >-
+      Visually hides the caption with the standard clip pattern while keeping
+      it accessible to screen readers.
+  - name: columns
+    type: 'readonly TableColumn<T>[]'
+    description: >-
+      Column definitions — each specifies key, header, optional align
+      (start | end), optional sortable flag, and optional render override.
+  - name: rows
+    type: 'readonly T[]'
+    description: >-
+      Data rows rendered in the provided order. The component never sorts
+      internally; the owner manages ordering.
+  - name: rowKey
+    type: '(row: T) => string'
+    description: Derives a stable React key from each row object.
+  - name: sort
+    type: 'TableSort | undefined'
+    description: >-
+      Controlled sort state ({ key: string; dir: "asc" | "desc" }). Reflected
+      as aria-sort on the active column header.
+  - name: onSortChange
+    type: '((sort: TableSort) => void) | undefined'
+    description: >-
+      Called when a sortable column header button is clicked. New column →
+      { key, dir: "asc" }; active column → toggles asc ↔ desc.
+  - name: empty
+    type: 'ReactNode | undefined'
+    description: Rendered in a single full-span <td> when rows is empty.
+
+tokens:
+  - --color-focus
+  - --color-ink
+  - --color-ink-muted
+  - --color-line
+  - --color-line-strong
+  - --density-control-sm
+  - --density-row
+  - --motion-duration-xs
+  - --motion-ease-move
+  - --space-1
+  - --space-2
+  - --space-3
+  - --space-7
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+
+a11y:
+  keyboard:
+    - keys: Tab
+      does: Focusable sortable column headers; focuses the sort button within the th.
+    - keys: Enter / Space
+      does: Activates the sort button on a sortable column header (native button semantics).
+    - keys: Arrow Up / Down (overflow container)
+      does: >-
+        The container role="region" with tabIndex={0} and aria-label={caption}
+        lets keyboard users navigate the overflow-x scroll without pointer.
+  aria:
+    - >-
+      Column headers are real <th> elements with scope="col", establishing
+      structural semantics for data cells.
+    - >-
+      Sortable column headers render a native <button> inside the th; aria-sort
+      reflects the sort state (ascending, descending, or absent for unsorted).
+    - >-
+      Caption is a real <caption> element, visually hidden by default but
+      always in the accessibility tree; set captionHidden={false} to show it
+      visually on complex tables.
+    - >-
+      Empty state is a single <td> with colSpan={columns.length}, announced as
+      one cell spanning all columns.
+  contrast: >-
+    Headers and captions use --color-ink-muted on --color-surface (per the
+    default skin). Body cells use --color-ink on --color-surface. Focus
+    indicators use --color-focus. Borders use --color-line and
+    --color-line-strong for visual hierarchy.
+
+usage:
+  do:
+    - Mark columns sortable when users should control the data order.
+    - Use custom render() to format dates, numbers, or conditional badges.
+    - Show the caption visibly (captionHidden={false}) for complex tables with multiple sections.
+  dont:
+    - Don't render null or undefined values directly; define a custom render() or default string.
+    - Don't put unrelated interactive elements (buttons, links) directly in cells; use render() to wrap them.
+    - Don't forget to provide an empty node when rows can be empty; users need to know the table is filtered, not broken.
+
+example: |
+  import { Table } from '@/ds/components/Table/Table'
+  import type { TableColumn } from '@/ds/components/Table/Table'
+
+  interface Item {
+    id: string
+    name: string
+    status: 'active' | 'inactive'
+  }
+
+  const columns: readonly TableColumn<Item>[] = [
+    { key: 'name', header: 'Name', sortable: true },
+    { key: 'status', header: 'Status', sortable: true },
+  ]
+
+  <Table
+    caption="Items list"
+    columns={columns}
+    rows={items}
+    rowKey={(item) => item.id}
+    sort={sort}
+    onSortChange={setSort}
+    empty="No items found."
+  />
+
+links:
+  repo: app/frontend/ds/components/Table
+  figma: null

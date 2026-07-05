@@ -1,0 +1,103 @@
+slug: menu
+name: Select / Menu
+tier: gallery
+status: stable
+description: Menu button with a roving-focus action menu — WAI-ARIA APG menu button pattern on the native popover API.
+
+variants:
+  align: [start, end]
+
+props:
+  - name: label
+    type: 'string'
+    description: Trigger button text; also wired as the menu aria-label.
+  - name: items
+    type: 'readonly MenuItem[] — { id: string; label: string; disabled?: boolean; onSelect: () => void }'
+    description: >-
+      Action items. Disabled items stay focusable and are announced as disabled
+      (aria-disabled), but activation is a no-op.
+  - name: align
+    type: "'start' | 'end'"
+    default: "'start'"
+    description: >-
+      Menu alignment relative to the trigger: start aligns left edges, end
+      aligns right edges.
+
+tokens:
+  - --color-accent-muted
+  - --color-focus
+  - --color-ink
+  - --color-ink-faint
+  - --color-line
+  - --color-line-strong
+  - --color-surface-overlay
+  - --color-surface-sunken
+  - --density-control
+  - --density-control-sm
+  - --motion-duration-sm
+  - --motion-duration-xs
+  - --motion-ease-enter
+  - --motion-ease-move
+  - --radius-control
+  - --radius-surface
+  - --shadow-overlay
+  - --space-1
+  - --space-2
+  - --space-3
+  - --space-4
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+  - --z-overlay
+
+a11y:
+  keyboard:
+    - keys: Enter / Space
+      does: Trigger only — opens the menu and focuses the first item.
+    - keys: ArrowDown (trigger) / ArrowDown (menu)
+      does: From trigger, opens and focuses first item; in menu, moves focus down and wraps to first.
+    - keys: ArrowUp (trigger) / ArrowUp (menu)
+      does: From trigger, opens and focuses last item; in menu, moves focus up and wraps to last.
+    - keys: Home / End
+      does: In menu, jump to the first or last item.
+    - keys: Escape
+      does: Closes the menu and returns focus to the trigger.
+    - keys: Tab
+      does: Closes the menu and allows natural tab order to proceed (trigger refocused, then to next page element).
+    - keys: Any printable character
+      does: Typeahead search — accumulates keystrokes to prefix-match item labels (case-insensitive), wrapping from the current item. Buffer resets after 500ms of inactivity.
+  aria:
+    - 'Roving focus: exactly one menu item carries tabIndex 0; all others are -1 (APG roving tabindex pattern).'
+    - Disabled items are focusable (tabIndex in the roving sequence) but show aria-disabled="true" and do not activate.
+    - Trigger has aria-haspopup="menu", aria-expanded reflects open state, and aria-controls points to the menu element.
+    - Menu element carries role="menu", aria-label (same as trigger label), and all items carry role="menuitem".
+  contrast: >-
+    Trigger uses ink-on-surface with accent-muted highlighting on focus/hover. Menu uses
+    accent-muted on item focus, ink-faint for disabled items. Focus outlines use the
+    documented focus token pair (outline in --color-focus, applied to trigger and items).
+
+usage:
+  do:
+    - Use for single-select or discrete multi-action scenarios with keyboard-first navigation.
+    - Disable individual items to indicate actions the user cannot currently take (stay focusable).
+    - Use end alignment when horizontal space is tight on the left edge.
+  dont:
+    - Don't use this menu for bulk operations on many items — use a different pattern.
+    - Don't hide the entire menu; disable specific items instead.
+    - Don't add many items (20+) if users need typeahead — long lists make discovery difficult.
+
+example: |
+  import { Menu, type MenuItem } from '@/ds/components/Menu/Menu'
+
+  const items: MenuItem[] = [
+    { id: 'archive', label: 'Archive', onSelect: () => handleArchive() },
+    { id: 'delete', label: 'Delete', disabled: true, onSelect: () => {} },
+  ]
+
+  <Menu label="Actions" items={items} align="start" />
+
+links:
+  repo: app/frontend/ds/components/Menu
+  figma: null

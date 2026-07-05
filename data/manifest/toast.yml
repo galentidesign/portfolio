@@ -1,0 +1,131 @@
+slug: toast
+name: Toast / Banner
+tier: gallery
+status: stable
+description: Transient notifications (toast) and static in-flow banners.
+
+variants:
+  tone: [neutral, positive, caution, critical]
+
+props:
+  - name: tone
+    type: "'neutral' | 'positive' | 'caution' | 'critical'"
+    default: "'neutral'"
+    description: Semantic intent and color scheme. Uses WCAG-verified token pairs for each tone.
+  - name: inline
+    type: 'boolean'
+    default: 'false'
+    description: >-
+      Banner mode: renders as a static, always-visible, in-flow element. Ignores
+      the open prop and disables auto-hide. Use for persistent alerts within page
+      content.
+  - name: open
+    type: 'boolean'
+    default: 'true'
+    description: >-
+      Toast mode only: controls visibility. When false, the component unmounts
+      completely. Inline mode ignores this prop.
+  - name: title
+    type: 'string'
+    description: >-
+      Optional heading. Uses body typography with title weight. Omit when a body
+      message alone suffices.
+  - name: onDismiss
+    type: '() => void'
+    description: >-
+      Callback fired by the × dismiss button or the auto-hide timer. When
+      provided, renders a dismissible button. Required for auto-hide to work.
+  - name: autoHideMs
+    type: 'number'
+    description: >-
+      Toast mode only: milliseconds before auto-dismissing. Pauses on hover or
+      focus; resumes with the full duration on blur/leave. Requires onDismiss to
+      be set.
+  - name: children
+    type: 'ReactNode'
+    description: >-
+      Body content. Uses --type-small-* when title is present; otherwise uses
+      --type-body-*. Inline mode always renders body typography.
+
+tokens:
+  - --color-caution
+  - --color-caution-surface
+  - --color-critical
+  - --color-critical-surface
+  - --color-focus
+  - --color-ink
+  - --color-line-strong
+  - --color-positive
+  - --color-positive-surface
+  - --color-surface-raised
+  - --density-control-sm
+  - --motion-duration-sm
+  - --motion-ease-enter
+  - --radius-control
+  - --radius-surface
+  - --shadow-overlay
+  - --space-2
+  - --space-3
+  - --space-4
+  - --space-5
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+  - --type-title-weight
+  - --z-toast
+
+a11y:
+  keyboard:
+    - keys: Enter / Space
+      does: Activates the dismiss button when focused.
+  aria:
+    - >-
+      Live region: role="status" with aria-live="polite" announces content
+      updates without interrupting the user.
+    - >-
+      Auto-hide with pause-on-hover/focus: timer pauses when the toast receives
+      hover or focus events, preventing premature dismissal. Timer resumes with
+      its full duration on blur or mouse leave, avoiding timer stacking.
+    - >-
+      Dismiss button: aria-label="Dismiss" and aria-hidden icon prevent
+      redundant announcements; the × is decorative.
+  contrast: >-
+    Neutral and line-bordered toasts use ink-on-surface pairs; positive, caution,
+    and critical use their respective semantic surface and ink token pairs
+    (positive-surface + positive, caution-surface + caution, critical-surface +
+    critical), all verified WCAG-passing in every shipped skin.
+
+usage:
+  do:
+    - Use inline mode for persistent, page-level alerts (e.g., form validation errors).
+    - Use toast mode for transient, time-sensitive notifications (e.g., save confirmation).
+    - Set autoHideMs between 3–5 seconds for user-dismissible notifications.
+    - Pair auto-hide with a dismiss button; users expect both exits.
+  dont:
+    - Don't overlay critical information in a toast; use inline banners for required acknowledgment.
+    - Don't set autoHideMs without onDismiss; auto-hide is disarmed without a callback.
+    - Don't rely on auto-hide alone for mobile or keyboard users; always include a dismiss button.
+
+example: |
+  import { Toast } from '@/ds/components/Toast/Toast'
+
+  <Toast
+    tone="positive"
+    title="Success"
+    open={saved}
+    onDismiss={() => setSaved(false)}
+    autoHideMs={4000}
+  >
+    Your changes have been saved.
+  </Toast>
+
+links:
+  repo: app/frontend/ds/components/Toast
+  figma: null

@@ -1,0 +1,163 @@
+slug: nav
+name: Nav (shell + palette)
+tier: hero
+status: stable
+description: Site shell bar with brand, primary navigation, and ⌘K command palette.
+
+variants: {}
+
+props:
+  - name: brand
+    type: '{ label: string; href: string }'
+    description: Brand name and link href. Appears at the nav bar's left edge.
+  - name: items
+    type: 'readonly NavItem[]'
+    description: >-
+      Primary navigation links. NavItem: { label: string; href: string; current?: boolean }.
+      Set current=true to mark the link with aria-current="page" and the accent underline.
+  - name: actions
+    type: 'readonly PaletteAction[] | undefined'
+    description: >-
+      Command palette actions. Presence enables the palette trigger and global ⌘K/Ctrl+K listener.
+      PaletteAction: { id: string; label: string; group?: string; keywords?: readonly string[]; perform: () => void }.
+  - name: label
+    type: 'string'
+    default: "'Primary'"
+    description: >-
+      Accessible name for the nav landmark — must be unique when a page hosts
+      more than one Nav (the component doc page itself is the canonical case).
+  - name: skipTargetId
+    type: 'string'
+    default: "'main'"
+    description: DOM id of the landmark element the skip link jumps to.
+    playground: false
+  - name: enableShortcut
+    type: 'boolean'
+    default: 'true'
+    description: >-
+      Mount a global ⌘K / Ctrl+K listener to open the palette (when actions
+      are provided). Hosts that mount more than one Nav (e.g. a demo page)
+      should disable this on all but one instance.
+    playground: false
+
+tokens:
+  - --color-accent
+  - --color-accent-muted
+  - --color-focus
+  - --color-ink
+  - --color-ink-faint
+  - --color-ink-muted
+  - --color-line
+  - --color-surface
+  - --color-surface-overlay
+  - --density-control
+  - --density-pad
+  - --density-row
+  - --motion-duration-sm
+  - --motion-duration-xs
+  - --motion-ease-enter
+  - --motion-ease-move
+  - --radius-control
+  - --radius-surface
+  - --shadow-overlay
+  - --space-1
+  - --space-2
+  - --space-3
+  - --space-4
+  - --space-5
+  - --space-6
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-weight
+  - --type-mono-family
+  - --type-mono-line
+  - --type-mono-size
+  - --type-mono-tracking
+  - --type-mono-weight
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+  - --type-title-family
+  - --type-title-line
+  - --type-title-size
+  - --type-title-tracking
+  - --type-title-weight
+  - --z-nav
+  - --z-palette
+  - --z-skip
+
+a11y:
+  keyboard:
+    - keys: Tab
+      does: Nav brand, nav links, and palette trigger are focusable in document order; skip link appears when focused.
+    - keys: Enter
+      does: Activates brand link and nav links; opens palette from trigger button.
+    - keys: ⌘K / Ctrl+K (global)
+      does: >-
+        Toggles the palette — opens when closed, closes when open (including
+        while focus is in the palette input). Fires even when focus is in an
+        editable element, since the modifier is always held (standard palette
+        etiquette); key repeats are ignored while open.
+    - keys: ArrowDown / ArrowUp
+      does: In palette, navigate through filtered options with wrap-around (Down from last wraps to first, Up from first wraps to last).
+    - keys: Home / End
+      does: In palette, jump to the first or last option.
+    - keys: Enter
+      does: In palette, performs the active (highlighted) action and closes the palette.
+    - keys: Escape
+      does: In palette, closes the dialog. Focus returns to the palette trigger button.
+  aria:
+    - Skip link is the first focusable element, visually hidden until :focus-visible, and marked with semantic link role.
+    - Primary nav landmark has aria-label="Primary" for screen reader disambiguation.
+    - Current nav item is marked with aria-current="page" (paired with accent underline for sighted users).
+    - Palette trigger has aria-haspopup="dialog" and aria-expanded reflects the palette's open/closed state.
+    - >-
+      Palette input is a combobox: aria-expanded=true when results exist, aria-controls points to the listbox id,
+      aria-activedescendant tracks the highlighted option. When no results exist, aria-expanded=false and aria-controls is omitted.
+    - >-
+      Palette options are in a listbox (role="listbox") with each option having role="option" and aria-selected reflecting highlight state.
+      Group headers have role="presentation" to keep the accessibility tree flat (no empty header rows for ungrouped actions).
+    - No-results message has role="status" (live region) so screen readers announce "No matching commands" without re-reading the entire palette.
+    - >-
+      Keyboard order equals visual order: the grouped-option map is flattened once and drives both keyboard navigation and rendering,
+      so the highlighted option and the Enter key's target are always the same action (M2 fix for grouped interleaved results).
+    - >-
+      The first option is auto-highlighted on palette open and re-highlighted after every query change,
+      enabling the "type-then-Enter" gesture without arrow presses.
+  contrast: >-
+    Nav uses ink-on-surface and muted-ink-on-surface; the current item's accent underline pairs ink with accent.
+    Palette uses surface-overlay background with ink and muted-ink text; active options highlight with accent-muted background.
+    All color pairs pass WCAG contrast in every shipped skin.
+
+usage:
+  do:
+    - Use brand/items to scaffold the site shell navigation structure; palette actions are always optional.
+    - Keep palette actions grouped and keyword-searchable — "Toggle motion" with keyword "animation" is better than "animation settings".
+    - Return focus explicitly after palette action handlers complete (the palette's onClose already handles dialog focus restoration).
+  dont:
+    - Don't render the palette trigger without actions; it serves no purpose and confuses screen readers.
+    - Don't use skipTargetId to skip over critical page content — always skip to the main landmark (<main id="...">).
+    - Don't rely on Escape or ⌘K for single-purpose actions that belong in a dedicated button or menu.
+
+example: |
+  import { Nav } from '@/ds/components/Nav/Nav'
+
+  <Nav
+    brand={{ label: 'Jgalenti', href: '/' }}
+    items={[
+      { label: 'Work', href: '/work', current: true },
+      { label: 'About', href: '/about' },
+    ]}
+    actions={[
+      { id: 'home', label: 'Home', group: 'Navigate', perform: () => navigate('/') },
+      { id: 'toggle-skin', label: 'Switch skin', group: 'Preferences', keywords: ['theme'], perform: toggleSkin },
+    ]}
+    skipTargetId="main"
+  />
+
+links:
+  repo: app/frontend/ds/components/Nav
+  figma: null

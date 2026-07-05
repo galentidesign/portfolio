@@ -1,0 +1,124 @@
+slug: button
+name: Button
+tier: hero
+status: stable
+description: Actions at three emphasis levels.
+
+variants:
+  variant: [primary, secondary, ghost]
+  size: [sm, md]
+
+props:
+  - name: variant
+    type: "'primary' | 'secondary' | 'ghost'"
+    default: "'primary'"
+    description: Emphasis level — one primary per view carries the main action.
+  - name: size
+    type: "'sm' | 'md'"
+    default: "'md'"
+    description: >-
+      Control size. md matches --density-control, sm matches
+      --density-control-sm and drops to the small type role.
+  - name: busy
+    type: 'boolean'
+    default: 'false'
+    description: >-
+      Shows an inline spinner, suppresses onClick activation, and sets
+      aria-busy. Deliberately does not disable the button, so focus is not
+      lost mid-submit.
+  - name: href
+    type: 'string'
+    description: >-
+      Renders an <a> with identical styling instead of a <button>. Combine
+      with disabled for aria-disabled + tabIndex -1 with the href removed and
+      clicks prevented.
+  - name: iconStart
+    type: 'ReactNode'
+    description: Decorative icon slot rendered before children; wrapped in aria-hidden.
+  - name: type
+    type: "'button' | 'submit'"
+    default: "'button'"
+    description: Native button type. Ignored in href/anchor mode.
+  - name: disabled
+    type: 'boolean'
+    description: >-
+      Disables the button — native disabled in button mode, aria-disabled in
+      anchor mode.
+  - name: onClick
+    type: 'React.MouseEventHandler'
+    description: Click handler. Suppressed while busy.
+  - name: ref
+    type: 'Ref<HTMLButtonElement | HTMLAnchorElement>'
+    description: Forwarded to the root element (button or anchor).
+
+tokens:
+  - --color-accent
+  - --color-accent-ink
+  - --color-accent-muted
+  - --color-focus
+  - --color-ink
+  - --color-ink-faint
+  - --color-line-strong
+  - --color-surface-sunken
+  - --density-control
+  - --density-control-sm
+  - --motion-duration-xl
+  - --motion-duration-xs
+  - --motion-ease-move
+  - --radius-control
+  - --space-2
+  - --space-3
+  - --space-4
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+
+a11y:
+  keyboard:
+    - keys: Enter / Space
+      does: Activates (native button semantics; Space scrolls nowhere).
+    - keys: Enter
+      does: Follows the link in href/anchor mode.
+    - keys: Tab
+      does: >-
+        Focusable in document order; a disabled anchor leaves the tab order
+        (tabIndex -1).
+  aria:
+    - busy sets aria-busy and suppresses activation without removing focus.
+    - >-
+      Anchor mode with disabled sets aria-disabled, removes the href, and
+      prevents clicks — announced as disabled without vanishing from the
+      accessibility tree.
+    - The iconStart slot and the busy spinner are aria-hidden (decorative).
+  contrast: >-
+    Primary uses the accent-ink-on-accent pair, secondary and ghost use
+    ink-on-surface and accent-on-surface — all documented token pairings that
+    pass WCAG in every shipped skin by construction.
+
+usage:
+  do:
+    - Use one primary per view for the main action.
+    - Use busy for in-flight submits — it keeps focus where the user left it.
+    - Use href mode when the action is navigation styled as a button.
+  dont:
+    - Don't reach for ghost when the action is the main event.
+    - Don't disable a button to represent loading — that drops focus; use busy.
+    - Don't put interactive content in iconStart; the slot is aria-hidden.
+
+example: |
+  import { Button } from '@/ds/components/Button/Button'
+
+  <Button variant="primary" busy={saving} onClick={save}>
+    Save changes
+  </Button>
+
+links:
+  repo: app/frontend/ds/components/Button
+  figma: null

@@ -1,0 +1,78 @@
+slug: skeleton
+name: Skeleton / Loading
+tier: gallery
+status: stable
+description: Shimmering placeholder shapes for content that is still loading.
+
+variants:
+  shape: [text, block, circle]
+
+props:
+  - name: shape
+    type: "'text' | 'block' | 'circle'"
+    default: "'text'"
+    description: Shape of the loading placeholder.
+  - name: lines
+    type: 'number'
+    default: '3'
+    description: >-
+      Number of text bars to render (text shape only). The last bar is
+      automatically set to 60% width to suggest incomplete text.
+  - name: width
+    type: 'string'
+    description: >-
+      CSS length for block and circle shapes; circle uses it for both width
+      and height. Defaults to 100% for block and 3rem for circle.
+  - name: height
+    type: 'string'
+    default: "'6rem'"
+    description: CSS length for block height only. Ignored for text and circle shapes.
+
+tokens:
+  - --color-surface-raised
+  - --color-surface-sunken
+  - --motion-duration-xl
+  - --radius-control
+  - --radius-pill
+  - --radius-surface
+  - --space-2
+
+a11y:
+  keyboard:
+    - keys: '—'
+      does: Not interactive; a non-decorative loading region should have its own keyboard semantics (aria-live, aria-busy).
+  aria:
+    - >-
+      Root is always aria-hidden; Skeleton is purely decorative. The consuming
+      region owns loading semantics — pair with aria-busy on a live region and
+      a visually-hidden "Loading…" message.
+    - Shimmer animation respects prefers-reduced-motion via motion-duration tokens (animation duration → 0ms).
+  contrast: >-
+    Uses --color-surface-sunken (bar background) and --color-surface-raised
+    (shimmer gradient) from the semantic token palette.
+
+usage:
+  do:
+    - Use text shape for paragraph or list item loading states with multiple lines.
+    - Use block shape for image, card, or content area placeholders.
+    - Use circle shape for avatar, profile picture, or icon placeholders.
+  dont:
+    - Don't nest interactive content inside Skeleton; it's always aria-hidden.
+    - Don't rely on Skeleton for loading semantics; pair it with aria-busy and a visually-hidden status message on the containing region.
+    - Don't force animation to stop under reduced-motion; motion tokens handle it automatically.
+
+example: |
+  import { Skeleton } from '@/ds/components/Skeleton/Skeleton'
+
+  {isLoading ? (
+    <div aria-busy="true" aria-hidden="true">
+      <Skeleton shape="circle" width="3rem" />
+      <Skeleton shape="text" lines={2} />
+    </div>
+  ) : (
+    <CardContent />
+  )}
+
+links:
+  repo: app/frontend/ds/components/Skeleton
+  figma: null

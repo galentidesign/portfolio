@@ -1,0 +1,102 @@
+slug: form-field
+name: Form Field
+tier: hero
+status: stable
+description: Labeled input or textarea with hint, error, and required states.
+
+variants: {}
+
+props:
+  - name: label
+    type: 'string'
+    description: Always-visible label — never use a placeholder as a label substitute.
+  - name: hint
+    type: 'string'
+    description: Helper text rendered below the control; linked via aria-describedby.
+  - name: error
+    type: 'string'
+    description: Validation error text; its presence sets the invalid state.
+  - name: required
+    type: 'boolean'
+    default: 'false'
+    description: Adds the native required attr and a decorative aria-hidden asterisk marker.
+  - name: multiline
+    type: 'boolean'
+    default: 'false'
+    description: Renders a <textarea> instead of an <input>; the rows prop passes through.
+  - name: id
+    type: 'string'
+    playground: false
+    description: Explicit field id for the control; falls back to a stable React useId-generated value.
+  - name: ref
+    type: 'Ref<HTMLInputElement | HTMLTextAreaElement>'
+    description: Forwarded ref to the underlying control element.
+
+tokens:
+  - --color-critical
+  - --color-focus
+  - --color-ink
+  - --color-ink-faint
+  - --color-ink-muted
+  - --color-line-strong
+  - --color-surface-raised
+  - --color-surface-sunken
+  - --density-control
+  - --motion-duration-xs
+  - --motion-ease-move
+  - --radius-control
+  - --space-1
+  - --space-2
+  - --space-3
+  - --type-body-family
+  - --type-body-line
+  - --type-body-size
+  - --type-body-tracking
+  - --type-body-weight
+  - --type-small-family
+  - --type-small-line
+  - --type-small-size
+  - --type-small-tracking
+  - --type-small-weight
+
+a11y:
+  keyboard:
+    - keys: Tab
+      does: Focusable in document order; controlled by native input/textarea semantics.
+    - keys: Enter
+      does: Submits form or inserts newline (textarea); native input/textarea behavior.
+  aria:
+    - label is wired to the control via htmlFor/id; accessible name is the label text.
+    - aria-describedby references the hint id, error id, or both when present.
+    - aria-invalid is set to true when error is provided; absent otherwise.
+    - required attribute sets native required semantics; the asterisk is aria-hidden (visual only).
+  contrast: >-
+    Uses ink-on-surface for labels and hint (--color-ink, --color-ink-muted),
+    critical-on-surface for errors (--color-critical), and focus for the ring
+    (--color-focus) — all documented token pairs passing WCAG in every shipped
+    skin by construction.
+
+usage:
+  do:
+    - Set error with a specific, actionable message — the field wires aria-invalid and aria-describedby for you.
+    - Use hint to guide users with formatting or validation rules before submission.
+    - Use required only for fields that are semantically required by the form.
+  dont:
+    - Use placeholder as a label substitute; always provide a visible label.
+    - Communicate an error visually outside the error prop — only the prop wires the ARIA state.
+    - Disable a field to represent loading state; manage loading externally and show status as help text.
+
+example: |
+  import { FormField } from '@/ds/components/FormField/FormField'
+
+  <FormField
+    label="Email"
+    hint="We'll never share your email"
+    error={validationError}
+    required
+    type="email"
+  />
+
+links:
+  repo: app/frontend/ds/components/FormField
+  figma: null
