@@ -6,9 +6,13 @@ Modules only.
 
 ## Commands
 
-- `bin/dev` — rails + vite dev servers
+- `bin/dev` — rails + vite dev servers (runs the token build first)
+- `npm run tokens:build` — compile `ds/tokens/*.tokens.json` → `generated/`
+  (CSS per skin, `skins.ts`, `skins.json`); required before rails boots
 - `bin/rspec` — rails tests · `npm run test:unit` — vitest · `npm run test:e2e` — playwright
 - `bin/rubocop` · `npm run lint` · `npm run typecheck` · `npm run format:check`
+- `npm run lint:css` + `npm run lint:tokens` — token discipline (no `--raw-*`
+  outside generated token CSS)
 - `bin/leakcheck` — deny-list content gate; must pass before any commit
 
 ## Rules

@@ -26,6 +26,8 @@ jobs:
           node-version-file: .node-version
           cache: npm
       - run: npm ci
+      - name: Token build
+        run: npm run tokens:build
       - name: RuboCop
         run: bin/rubocop
       - name: ESLint
@@ -34,6 +36,8 @@ jobs:
         run: npm run format:check
       - name: stylelint
         run: npm run lint:css
+      - name: Token discipline
+        run: npm run lint:tokens
       - name: TypeScript
         run: npm run typecheck
 
@@ -62,6 +66,8 @@ jobs:
           node-version-file: .node-version
           cache: npm
       - run: npm ci
+      - name: Token build
+        run: npm run tokens:build
       - name: Prepare database
         run: bin/rails db:prepare
       - name: RSpec
