@@ -39,9 +39,11 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@gsap/react": "2.1.2",
     "@inertiajs/react": "^3.6.0",
     "@inertiajs/vite": "^3.6.0",
     "@vitejs/plugin-react": "^5.2.0",
+    "gsap": "3.15.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
