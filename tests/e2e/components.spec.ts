@@ -62,12 +62,19 @@ test('dialog: open md dialog from its demo, axe scan open state, Escape restores
   await expect(trigger).toBeFocused()
 })
 
-test('nav: palette opens via ⌘K, query + Enter performs, reopen + Escape restores focus', async ({
+test('nav: demo palette opens via trigger, query + Enter performs, reopen + Escape restores focus', async ({
   page,
 }) => {
   await gotoComponent(page, 'nav')
 
-  await page.keyboard.press('ControlOrMeta+k')
+  // The global ⌘K belongs to the real site shell since M4 (the demo pins
+  // enableShortcut={false}), so the demo palette opens via its visible
+  // trigger. Scoped to the Variants region: the site shell and the
+  // playground stage each mount their own trigger.
+  const demoTrigger = page
+    .getByRole('region', { name: 'Variants' })
+    .getByRole('button', { name: 'Search & commands' })
+  await demoTrigger.click()
   const input = page.getByRole('combobox', { name: 'Search commands' })
   await expect(input).toBeFocused()
 
@@ -80,17 +87,11 @@ test('nav: palette opens via ⌘K, query + Enter performs, reopen + Escape resto
   await expect(page.getByText('Last action: Writing')).toBeVisible()
 
   // Reopen and close with Escape — focus returns to the demo's trigger.
-  // Scoped to the Variants region: the playground stage mounts a second Nav
-  // (shortcut disabled), so the page legitimately has two palette triggers.
-  await page.keyboard.press('ControlOrMeta+k')
+  await demoTrigger.click()
   await expect(input).toBeFocused()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('combobox')).toBeHidden()
-  await expect(
-    page
-      .getByRole('region', { name: 'Variants' })
-      .getByRole('button', { name: 'Search & commands' }),
-  ).toBeFocused()
+  await expect(demoTrigger).toBeFocused()
 })
 
 test('button: playground — choose size sm → stage reflects it and snippet shows size="sm"', async ({
