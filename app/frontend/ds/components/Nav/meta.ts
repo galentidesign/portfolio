@@ -47,5 +47,13 @@ export const meta = {
       default: 'true',
       description: 'Mount a global ⌘K / Ctrl+K listener to open the palette.',
     },
+    {
+      name: 'linkAs',
+      type: 'ElementType',
+      default: "'a'",
+      description:
+        'Element type rendered for the brand and item links — pass a router Link ' +
+        'for client-side navigation. The skip link stays a plain <a> (same-document jump).',
+    },
   ],
 } as const satisfies ComponentMeta

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type Ref } from 'react'
+import { useState, useRef, useEffect, type ElementType, type Ref } from 'react'
 import styles from './styles.module.css'
 import { Palette, type PaletteAction } from './palette'
 
@@ -21,6 +21,12 @@ export interface NavProps {
    * more than one Nav (or any other named navigation landmark).
    */
   label?: string
+  /**
+   * Element type rendered for the brand and item links — pass a router Link
+   * for client-side navigation. The skip link stays a plain anchor (it's a
+   * same-document jump). Default 'a'.
+   */
+  linkAs?: ElementType
   ref?: Ref<HTMLElement>
 }
 
@@ -31,6 +37,7 @@ export function Nav({
   skipTargetId = 'main',
   enableShortcut = true,
   label = 'Primary',
+  linkAs: LinkComponent = 'a',
   ref,
 }: NavProps) {
   const [paletteOpen, setPaletteOpen] = useState(false)
@@ -80,23 +87,23 @@ export function Nav({
         </a>
 
         {/* Brand */}
-        <a href={brand.href} className={styles.brand}>
+        <LinkComponent href={brand.href} className={styles.brand}>
           {brand.label}
-        </a>
+        </LinkComponent>
 
         {/* Primary nav */}
         <nav aria-label={label}>
           <ul className={styles['nav-list']}>
             {items.map((item) => (
               <li key={item.href} className={styles['nav-item']}>
-                <a
+                <LinkComponent
                   href={item.href}
                   className={styles['nav-link']}
                   {...(item.current ? { 'aria-current': 'page' as const } : {})}
                   data-current={item.current ? '' : undefined}
                 >
                   {item.label}
-                </a>
+                </LinkComponent>
               </li>
             ))}
           </ul>

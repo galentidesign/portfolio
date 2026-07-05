@@ -39,6 +39,14 @@ props:
       are provided). Hosts that mount more than one Nav (e.g. a demo page)
       should disable this on all but one instance.
     playground: false
+  - name: linkAs
+    type: 'ElementType'
+    default: "'a'"
+    description: >-
+      Element type rendered for the brand and item links — pass a router Link
+      for client-side navigation. The skip link stays a plain anchor
+      (same-document jump). ElementType is not a controllable type so the
+      playground auto-skips it.
 
 tokens:
   - --color-accent

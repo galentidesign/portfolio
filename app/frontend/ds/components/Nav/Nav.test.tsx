@@ -483,3 +483,49 @@ describe('Nav landmark label', () => {
     expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument()
   })
 })
+
+// ── linkAs prop ───────────────────────────────────────────────────────────────
+// Stub component forwards all props to <a> and adds data-testid="stub-link"
+// so we can distinguish its renders from the native skip-link anchor.
+
+function StubLink({ children, ...props }: React.ComponentPropsWithoutRef<'a'>) {
+  return (
+    <a data-testid="stub-link" {...props}>
+      {children}
+    </a>
+  )
+}
+
+describe('linkAs prop', () => {
+  it('renders the brand link and all item links via the provided component', () => {
+    render(<Nav brand={BRAND} items={NAV_ITEMS} linkAs={StubLink} />)
+    // 1 brand + 3 nav items = 4 stub-link anchors
+    const stubLinks = screen.getAllByTestId('stub-link')
+    expect(stubLinks).toHaveLength(4)
+  })
+
+  it('brand link uses the provided component with the correct href', () => {
+    render(<Nav brand={BRAND} items={NAV_ITEMS} linkAs={StubLink} />)
+    const stubLinks = screen.getAllByTestId('stub-link')
+    const brandLink = stubLinks.find((el) => el.textContent === 'Test Brand')
+    expect(brandLink).toBeInTheDocument()
+    expect(brandLink).toHaveAttribute('href', '/')
+  })
+
+  it('nav item links use the provided component', () => {
+    render(<Nav brand={BRAND} items={NAV_ITEMS} linkAs={StubLink} />)
+    const stubLinks = screen.getAllByTestId('stub-link')
+    const labels = stubLinks.map((el) => el.textContent)
+    expect(labels).toContain('Alpha')
+    expect(labels).toContain('Beta')
+    expect(labels).toContain('Gamma')
+  })
+
+  it('skip link is always a plain anchor — unaffected by linkAs', () => {
+    render(<Nav brand={BRAND} items={NAV_ITEMS} linkAs={StubLink} />)
+    const skipLink = screen.getByRole('link', { name: 'Skip to content' })
+    // Skip link must NOT carry the stub marker — it is a native <a>, not LinkComponent
+    expect(skipLink).not.toHaveAttribute('data-testid', 'stub-link')
+    expect(skipLink).toHaveAttribute('href', '#main')
+  })
+})

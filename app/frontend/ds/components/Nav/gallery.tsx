@@ -58,7 +58,15 @@ export default function NavGallery() {
     <div>
       {/* Distinct landmark name: the doc page mounts a second Nav in its
           playground stage, and duplicate nav labels fail the axe matrix. */}
-      <Nav brand={BRAND} items={NAV_ITEMS} actions={actions} label="Demo shell" />
+      {/* enableShortcut=false: the real site shell owns the global ⌘K listener
+          on doc pages — the demo palette opens via the visible trigger only. */}
+      <Nav
+        brand={BRAND}
+        items={NAV_ITEMS}
+        actions={actions}
+        label="Demo shell"
+        enableShortcut={false}
+      />
       <div
         style={{
           padding: 'var(--space-6)',
@@ -68,7 +76,7 @@ export default function NavGallery() {
         }}
       >
         {lastAction === null
-          ? 'Open the palette (⌘K or click "Search") and run a command — the result appears here.'
+          ? 'Open the palette via the "Search" trigger — the site shell owns the ⌘K shortcut on doc pages. The result appears here.'
           : `Last action: ${lastAction}`}
       </div>
     </div>
