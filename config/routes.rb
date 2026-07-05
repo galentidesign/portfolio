@@ -7,6 +7,16 @@ Rails.application.routes.draw do
     }
   end
   root "pages#home"
+  get "story/:chapter", to: "story#show",
+      as: :story_chapter,
+      constraints: { chapter: /rails-era|react-era|agentic/ }
+
+  get "work",                       to: "work#index"
+  get "work/agentic-design-ops",    to: "work#agentic_design_ops"
+  get "work/shadcn-to-polaris",     to: "work#shadcn_to_polaris"
+  get "resume",                     to: "pages#resume"
+  get "colophon",                   to: "pages#colophon"
+
   get "system",                     to: "system#index"
   get "system/tokens",              to: "system#tokens"
   get "system/motion",              to: "system#motion"
@@ -19,10 +29,10 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # On-brand 404: every unmatched path renders the Inertia not-found page with
+  # a 404 status. Rails-internal paths stay excluded so engine routes and
+  # framework internals keep their own error handling.
+  match "*path", to: "pages#not_found", via: :all,
+        defaults: { format: :html },
+        constraints: ->(req) { !req.path.start_with?("/rails/") }
 end

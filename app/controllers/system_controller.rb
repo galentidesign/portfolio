@@ -29,6 +29,6 @@ class SystemController < InertiaController
   private
 
   def not_found
-    head :not_found
+    render inertia: "errors/not-found", status: :not_found
   end
 end
