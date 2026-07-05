@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "name": "galenti",
+    "label": "Galenti",
+    "era": "own-brand",
+    "colorScheme": "light",
+    "default": true,
+    "hidden": false,
+    "description": "Warm precision light — the own-brand default. Cream paper, warm ink, terracotta accent, exact hairlines.",
+    "fonts": [
+      {
+        "family": "Hanken Grotesk",
+        "file": "hanken-grotesk-latin-wght.woff2",
+        "weight": "100 900",
+        "style": "normal",
+        "display": "swap",
+        "preload": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "file": "jetbrains-mono-latin-wght.woff2",
+        "weight": "100 800",
+        "style": "normal",
+        "display": "swap",
+        "preload": true
+      }
+    ]
+  },
+  "raw": {
+    "color": {
+      "cream-50": "#fffefb",
+      "cream-75": "#fffdf8",
+      "cream-100": "#faf6ee",
+      "cream-200": "#f2ecdf",
+      "sand-200": "#e5ddcb",
+      "sand-400": "#93825f",
+      "umber-500": "#746a57",
+      "umber-700": "#5c5547",
+      "umber-900": "#221e17",
+      "sienna-50": "#fff6ef",
+      "sienna-100": "#f6e7dc",
+      "sienna-600": "#a64621",
+      "cobalt-600": "#2f55d4",
+      "moss-100": "#ecf2e2",
+      "moss-600": "#46752f",
+      "amber-100": "#f7efd9",
+      "amber-700": "#85620e",
+      "rust-100": "#f8e2dd",
+      "rust-600": "#b0372a"
+    },
+    "font": {
+      "sans": "'Hanken Grotesk', system-ui, -apple-system, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace"
+    }
+  },
+  "semantic": {
+    "color": {
+      "surface": "{raw.color.cream-100}",
+      "surface-raised": "{raw.color.cream-75}",
+      "surface-sunken": "{raw.color.cream-200}",
+      "surface-overlay": "{raw.color.cream-50}",
+      "ink": "{raw.color.umber-900}",
+      "ink-muted": "{raw.color.umber-700}",
+      "ink-faint": "{raw.color.umber-500}",
+      "accent": "{raw.color.sienna-600}",
+      "accent-ink": "{raw.color.sienna-50}",
+      "accent-muted": "{raw.color.sienna-100}",
+      "line": "{raw.color.sand-200}",
+      "line-strong": "{raw.color.sand-400}",
+      "focus": "{raw.color.cobalt-600}",
+      "positive": "{raw.color.moss-600}",
+      "positive-surface": "{raw.color.moss-100}",
+      "caution": "{raw.color.amber-700}",
+      "caution-surface": "{raw.color.amber-100}",
+      "critical": "{raw.color.rust-600}",
+      "critical-surface": "{raw.color.rust-100}"
+    },
+    "radius": {
+      "control": "4px",
+      "surface": "8px",
+      "pill": "999px"
+    },
+    "type": {
+      "display-family": "{raw.font.sans}",
+      "display-size": "clamp(2.75rem, 2.1rem + 3.2vw, 4.5rem)",
+      "display-weight": "640",
+      "display-line": "1.04",
+      "display-tracking": "-0.022em",
+      "heading-family": "{raw.font.sans}",
+      "heading-size": "clamp(1.75rem, 1.5rem + 1.25vw, 2.375rem)",
+      "heading-weight": "620",
+      "heading-line": "1.12",
+      "heading-tracking": "-0.014em",
+      "title-family": "{raw.font.sans}",
+      "title-size": "clamp(1.1875rem, 1.125rem + 0.3vw, 1.375rem)",
+      "title-weight": "600",
+      "title-line": "1.25",
+      "title-tracking": "-0.008em",
+      "body-family": "{raw.font.sans}",
+      "body-size": "1.0625rem",
+      "body-weight": "440",
+      "body-line": "1.6",
+      "body-tracking": "0em",
+      "small-family": "{raw.font.sans}",
+      "small-size": "0.875rem",
+      "small-weight": "460",
+      "small-line": "1.45",
+      "small-tracking": "0.006em",
+      "mono-family": "{raw.font.mono}",
+      "mono-size": "0.875rem",
+      "mono-weight": "420",
+      "mono-line": "1.55",
+      "mono-tracking": "0em"
+    },
+    "density": {
+      "row": "2.75rem",
+      "control": "2.5rem",
+      "gap": "var(--space-4)",
+      "pad": "clamp(1rem, 0.5rem + 2.5vw, 2rem)"
+    },
+    "motion": {
+      "duration-xs": "90ms",
+      "duration-sm": "150ms",
+      "duration-md": "240ms",
+      "duration-lg": "400ms",
+      "duration-xl": "650ms",
+      "ease-enter": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "ease-exit": "cubic-bezier(0.55, 0, 0.55, 0.2)",
+      "ease-move": "cubic-bezier(0.45, 0.05, 0.15, 1)"
+    },
+    "shadow": {
+      "raised": "0 1px 2px rgb(34 30 23 / 6%), 0 2px 8px rgb(34 30 23 / 5%)",
+      "overlay": "0 4px 12px rgb(34 30 23 / 8%), 0 16px 48px rgb(34 30 23 / 14%)"
+    }
+  }
+}

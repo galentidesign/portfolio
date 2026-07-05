@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "name": "alpha",
+    "label": "Alpha",
+    "era": "test",
+    "colorScheme": "light",
+    "default": true,
+    "hidden": false,
+    "description": "Alpha — bad ref",
+    "fonts": []
+  },
+  "raw": { "color": { "white": "#fff" } },
+  "semantic": {
+    "color": { "surface": "{raw.color.nonexistent}", "ink": "{raw.color.white}" },
+    "radius": { "control": "4px" },
+    "type": { "body-size": "1rem" },
+    "density": { "gap": "var(--space-1)" },
+    "motion": { "duration-xs": "90ms" },
+    "shadow": { "raised": "none" }
+  }
+}

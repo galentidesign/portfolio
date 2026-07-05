@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "name": "beta",
+    "label": "Beta",
+    "era": "test-2",
+    "colorScheme": "dark",
+    "default": false,
+    "hidden": false,
+    "description": "Beta — missing 'ink' in color namespace",
+    "fonts": []
+  },
+  "raw": { "color": { "dark": "#111" } },
+  "semantic": {
+    "color": { "surface": "{raw.color.dark}" },
+    "radius": { "control": "0" },
+    "type": { "body-size": "0.875rem" },
+    "density": { "gap": "var(--space-1)" },
+    "motion": { "duration-xs": "50ms" },
+    "shadow": { "raised": "none" }
+  }
+}

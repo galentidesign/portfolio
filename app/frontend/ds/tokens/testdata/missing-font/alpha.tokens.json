@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "name": "alpha",
+    "label": "Alpha",
+    "era": "test",
+    "colorScheme": "light",
+    "default": true,
+    "hidden": false,
+    "description": "Alpha — missing font file",
+    "fonts": [
+      {
+        "family": "Missing Font",
+        "file": "does-not-exist.woff2",
+        "weight": "400",
+        "style": "normal",
+        "display": "swap"
+      }
+    ]
+  },
+  "raw": { "color": { "white": "#fff" } },
+  "semantic": {
+    "color": { "surface": "{raw.color.white}" },
+    "radius": { "control": "4px" },
+    "type": { "body-size": "1rem" },
+    "density": { "gap": "var(--space-1)" },
+    "motion": { "duration-xs": "90ms" },
+    "shadow": { "raised": "none" }
+  }
+}

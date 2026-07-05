@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "name": "alpha",
+    "label": "Alpha",
+    "era": "test",
+    "colorScheme": "light",
+    "default": true,
+    "hidden": false,
+    "description": "Test alpha skin",
+    "fonts": [
+      {
+        "family": "Test Font",
+        "file": "test.woff2",
+        "weight": "400",
+        "style": "normal",
+        "display": "swap",
+        "preload": true
+      }
+    ]
+  },
+  "raw": {
+    "color": { "white": "#fff", "black": "#000" }
+  },
+  "semantic": {
+    "color": { "surface": "{raw.color.white}", "ink": "{raw.color.black}" },
+    "radius": { "control": "4px" },
+    "type": { "body-size": "1rem" },
+    "density": { "gap": "var(--space-1)" },
+    "motion": { "duration-xs": "90ms" },
+    "shadow": { "raised": "0 1px 2px {raw.color.black}" }
+  }
+}

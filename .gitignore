@@ -38,3 +38,9 @@ node_modules
 # Playwright artifacts
 /test-results/
 /playwright-report/
+
+# macOS
+.DS_Store
+
+# Generated token artifacts
+app/frontend/ds/tokens/generated/

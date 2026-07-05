@@ -3,7 +3,17 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['node_modules', 'public', 'vendor', 'tmp', 'log', 'coverage'] },
+  {
+    ignores: [
+      'node_modules',
+      'public',
+      'vendor',
+      'tmp',
+      'log',
+      'coverage',
+      'app/frontend/ds/tokens/generated',
+    ],
+  },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],

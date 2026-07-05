@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "name": "debug",
+    "label": "Debug",
+    "era": "torture-test",
+    "colorScheme": "dark",
+    "default": false,
+    "hidden": true,
+    "description": "Garish dark torture test. If a surface ignores the token engine, it shows here. Not a design — a diagnostic.",
+    "fonts": []
+  },
+  "raw": {
+    "color": {
+      "void-950": "#050508",
+      "void-900": "#0b0b12",
+      "void-800": "#17172b",
+      "void-700": "#1f1f38",
+      "acid-400": "#4dffab",
+      "sky-300": "#6cd9ff",
+      "lilac-300": "#b39dff",
+      "magenta-400": "#ff4dc2",
+      "magenta-800": "#3d1130",
+      "magenta-950": "#1c0014",
+      "indigo-700": "#3a3a66",
+      "indigo-400": "#6e6eb8",
+      "yellow-300": "#ffe81c",
+      "green-300": "#52ff7e",
+      "green-900": "#0d2913",
+      "gold-300": "#ffd23f",
+      "gold-900": "#2e2405",
+      "red-300": "#ff6b5e",
+      "red-900": "#330b06"
+    },
+    "font": {
+      "sans": "ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
+      "mono": "ui-monospace, 'SF Mono', Menlo, Consolas, monospace"
+    }
+  },
+  "semantic": {
+    "color": {
+      "surface": "{raw.color.void-900}",
+      "surface-raised": "{raw.color.void-800}",
+      "surface-sunken": "{raw.color.void-950}",
+      "surface-overlay": "{raw.color.void-700}",
+      "ink": "{raw.color.acid-400}",
+      "ink-muted": "{raw.color.sky-300}",
+      "ink-faint": "{raw.color.lilac-300}",
+      "accent": "{raw.color.magenta-400}",
+      "accent-ink": "{raw.color.magenta-950}",
+      "accent-muted": "{raw.color.magenta-800}",
+      "line": "{raw.color.indigo-700}",
+      "line-strong": "{raw.color.indigo-400}",
+      "focus": "{raw.color.yellow-300}",
+      "positive": "{raw.color.green-300}",
+      "positive-surface": "{raw.color.green-900}",
+      "caution": "{raw.color.gold-300}",
+      "caution-surface": "{raw.color.gold-900}",
+      "critical": "{raw.color.red-300}",
+      "critical-surface": "{raw.color.red-900}"
+    },
+    "radius": {
+      "control": "0",
+      "surface": "0",
+      "pill": "0"
+    },
+    "type": {
+      "display-family": "{raw.font.sans}",
+      "display-size": "clamp(3rem, 2rem + 5vw, 6rem)",
+      "display-weight": "900",
+      "display-line": "1",
+      "display-tracking": "0.02em",
+      "heading-family": "{raw.font.sans}",
+      "heading-size": "clamp(2rem, 1.6rem + 2vw, 3rem)",
+      "heading-weight": "800",
+      "heading-line": "1.05",
+      "heading-tracking": "0.04em",
+      "title-family": "{raw.font.sans}",
+      "title-size": "1.5rem",
+      "title-weight": "700",
+      "title-line": "1.2",
+      "title-tracking": "0.08em",
+      "body-family": "{raw.font.sans}",
+      "body-size": "1.125rem",
+      "body-weight": "400",
+      "body-line": "1.7",
+      "body-tracking": "0em",
+      "small-family": "{raw.font.sans}",
+      "small-size": "1rem",
+      "small-weight": "500",
+      "small-line": "1.5",
+      "small-tracking": "0.12em",
+      "mono-family": "{raw.font.mono}",
+      "mono-size": "1rem",
+      "mono-weight": "400",
+      "mono-line": "1.6",
+      "mono-tracking": "0em"
+    },
+    "density": {
+      "row": "3.5rem",
+      "control": "3rem",
+      "gap": "var(--space-5)",
+      "pad": "var(--space-4)"
+    },
+    "motion": {
+      "duration-xs": "50ms",
+      "duration-sm": "80ms",
+      "duration-md": "120ms",
+      "duration-lg": "200ms",
+      "duration-xl": "320ms",
+      "ease-enter": "linear",
+      "ease-exit": "linear",
+      "ease-move": "linear"
+    },
+    "shadow": {
+      "raised": "0 0 0 2px {raw.color.magenta-400}",
+      "overlay": "0 0 0 3px {raw.color.yellow-300}, 0 0 60px rgb(255 77 194 / 45%)"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "name": "beta",
+    "label": "Beta",
+    "era": "test-2",
+    "colorScheme": "dark",
+    "default": true,
+    "hidden": false,
+    "description": "Beta — also default",
+    "fonts": []
+  },
+  "raw": { "color": { "dark": "#111", "light": "#eee" } },
+  "semantic": {
+    "color": { "surface": "{raw.color.dark}", "ink": "{raw.color.light}" },
+    "radius": { "control": "0" },
+    "type": { "body-size": "0.875rem" },
+    "density": { "gap": "var(--space-1)" },
+    "motion": { "duration-xs": "50ms" },
+    "shadow": { "raised": "none" }
+  }
+}

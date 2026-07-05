@@ -2,6 +2,9 @@
 
 export PORT="${PORT:-3000}"
 
+# Rails reads generated/skins.json at boot, so build before the procs start
+npm run tokens:build --silent || exit 1
+
 if command -v overmind 1> /dev/null 2>&1
 then
   overmind start -f Procfile.dev "$@"
