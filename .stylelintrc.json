@@ -1,4 +1,14 @@
 {
   "extends": ["stylelint-config-standard"],
-  "ignoreFiles": ["node_modules/**", "public/**", "vendor/**", "coverage/**"]
+  "plugins": ["./config/lint/no-raw-tokens.mjs"],
+  "rules": {
+    "portfolio/no-raw-tokens": true
+  },
+  "ignoreFiles": [
+    "node_modules/**",
+    "public/**",
+    "vendor/**",
+    "coverage/**",
+    "app/frontend/ds/tokens/generated/**"
+  ]
 }
