@@ -468,3 +468,18 @@ describe('Palette group headers', () => {
     expect(options.length).toBe(2)
   })
 })
+
+// ── Landmark label ────────────────────────────────────────────────────────────
+
+describe('Nav landmark label', () => {
+  it('names the nav landmark Primary by default', () => {
+    render(<Nav brand={BRAND} items={NAV_ITEMS} />)
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument()
+  })
+
+  it('renames the landmark via the label prop (unique-landmark requirement)', () => {
+    render(<Nav brand={BRAND} items={NAV_ITEMS} label="Demo shell" />)
+    expect(screen.getByRole('navigation', { name: 'Demo shell' })).toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument()
+  })
+})

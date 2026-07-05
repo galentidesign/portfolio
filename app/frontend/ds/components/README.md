@@ -104,8 +104,34 @@ export default function ButtonGallery() {
 
 Demos must be self-contained (local state only), render every variant-axis
 value and the states worth seeing (invalid, busy, empty…), and be axe-clean
-under both skins — the scratch gallery at `/system/gallery` globs these files
-and is the milestone's verify surface.
+under both skins — the manifest-driven doc pages (`/system/components/:slug`)
+glob these files and embed them as the page's live-variants section.
+
+## playground.tsx (hero tier only)
+
+```tsx
+import type { PlaygroundHostProps } from '../playground'
+import { Button } from './Button'
+
+export const playgroundMeta = { slug: 'button' }
+
+export default function ButtonPlayground({ values }: PlaygroundHostProps) {
+  return <Button {...values}>Save changes</Button>
+}
+
+export function snippet(attrs: string) {
+  return `<Button${attrs}>Save changes</Button>`
+}
+```
+
+Hero components ship a playground host next to `gallery.tsx`; doc pages glob
+these too. The page generates the controls from the manifest
+(`data/manifest/README.md` — enum → segmented control, boolean → switch,
+string → text input) and hands the host only the values to apply. Hosts stay
+dumb: spread `values`, provide self-contained demo content (a trigger for
+overlay components, fixed rows for Table), and keep `snippet` in sync with
+what's rendered. Props a host must own itself (e.g. Dialog's `open`) are
+opted out with `playground: false` in the manifest.
 
 ## Test bar (per component)
 

@@ -29,6 +29,13 @@ export const meta = {
         'PaletteAction: { id: string; label: string; group?: string; keywords?: readonly string[]; perform: () => void }.',
     },
     {
+      name: 'label',
+      type: 'string',
+      default: "'Primary'",
+      description:
+        'Accessible name for the nav landmark — must be unique when a page hosts more than one Nav.',
+    },
+    {
       name: 'skipTargetId',
       type: 'string',
       default: "'main'",

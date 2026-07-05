@@ -4,32 +4,36 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { SkinProvider } from '@/shell/skin/SkinProvider'
 import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
 import { skins as allSkins, semanticTokens } from '@/ds/tokens/generated/skins'
+import type { SystemNavEntry } from '@/system/DocShell'
 import TokensPage from './tokens'
 
-// Head and Link require the Inertia runtime; covered by e2e.
+// Head requires the Inertia runtime; covered by e2e.
 vi.mock('@inertiajs/react', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@inertiajs/react')>()),
   Head: () => null,
-  Link: ({
-    href,
-    children,
-    className,
-  }: {
-    href: string
-    children: ReactNode
-    className?: string
-  }) => (
-    <a href={href} className={className}>
-      {children}
-    </a>
-  ),
 }))
+
+// DocShell wraps content in sidebar + main; mock it to render children in main
+// so all the specimen queries work without the full shell dependency graph.
+vi.mock('@/system/DocShell', () => ({
+  DocShell: ({ children }: { children: ReactNode }) => <main>{children}</main>,
+}))
+
+// SkinSwitcher is rendered by the real DocShell; it has its own suite.
+vi.mock('@/ds/components/SkinSwitcher/SkinSwitcher', () => ({
+  SkinSwitcher: () => <div data-testid="skin-switcher" />,
+}))
+
+const nav: SystemNavEntry[] = [
+  { slug: 'button', name: 'Button', tier: 'hero' },
+  { slug: 'badge', name: 'Badge / Tag', tier: 'gallery' },
+]
 
 function renderPage() {
   return render(
     <SkinProvider>
       <MotionPrefProvider>
-        <TokensPage />
+        <TokensPage nav={nav} />
       </MotionPrefProvider>
     </SkinProvider>,
   )
@@ -62,20 +66,10 @@ describe('TokensPage', () => {
     expect(rows).toHaveLength(6)
   })
 
-  it('renders a skin chip for every registry skin', () => {
+  it('shows the active skin label in the meta paragraph', () => {
     renderPage()
-    const nav = screen.getByRole('navigation', { name: 'Skin switcher' })
-    for (const s of allSkins) {
-      expect(within(nav).getByRole('link', { name: new RegExp(s.label, 'i') })).toBeInTheDocument()
-    }
-  })
-
-  it('marks the active skin chip with aria-current="true"', () => {
-    renderPage()
-    const nav = screen.getByRole('navigation', { name: 'Skin switcher' })
-    // galenti is active (set in beforeEach)
-    const galentiLink = within(nav).getByRole('link', { name: /galenti/i })
-    expect(galentiLink).toHaveAttribute('aria-current', 'true')
+    const galentiMeta = allSkins.find((s) => s.name === 'galenti')!
+    expect(screen.getByText(galentiMeta.label)).toBeInTheDocument()
   })
 
   it('has a play button', () => {

@@ -56,7 +56,9 @@ export default function NavGallery() {
 
   return (
     <div>
-      <Nav brand={BRAND} items={NAV_ITEMS} actions={actions} />
+      {/* Distinct landmark name: the doc page mounts a second Nav in its
+          playground stage, and duplicate nav labels fail the axe matrix. */}
+      <Nav brand={BRAND} items={NAV_ITEMS} actions={actions} label="Demo shell" />
       <div
         style={{
           padding: 'var(--space-6)',

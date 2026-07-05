@@ -36,7 +36,9 @@ Modules only.
 - `app/frontend/ds/` — tokens, components (each: `Component.tsx`,
   `styles.module.css`, `meta.ts`, test), motion helpers
 - `app/frontend/shell/` — nav, palette, mode + skin providers
+- `app/frontend/system/` — DS docs infrastructure (DocShell, playground,
+  props/a11y/usage renderers) — docs chrome, not DS components
 - `app/frontend/story/` · `app/frontend/studies/` · `app/frontend/pages/`
 - `data/manifest/*.yml` — DS component manifest; DS doc pages are pure
-  functions of it
+  functions of it (`rake manifest:verify` is the CI drift gate)
 - `docs/receipts/` — agent-build receipts (public, sanitized)

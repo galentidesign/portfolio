@@ -1,0 +1,167 @@
+/* ── System Index ─────────────────────────────────────────────────────────── */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── Heading & intro ─────────────────────────────────────────────────────── */
+
+.heading {
+  margin: 0;
+  font-family: var(--type-display-family);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
+  color: var(--color-ink);
+}
+
+.intro {
+  margin: 0;
+  max-width: 52rem;
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* ── Tiles nav ────────────────────────────────────────────────────────────── */
+
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.tile {
+  display: inline-flex;
+  align-items: center;
+  padding-block: var(--space-3);
+  padding-inline: var(--space-5);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-raised);
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  color: var(--color-ink);
+  text-decoration: none;
+  transition: transform var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.tile:hover {
+  transform: translateY(-1px);
+}
+
+.tile:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.section-heading {
+  margin: 0;
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  color: var(--color-ink);
+}
+
+/* ── Component grid ──────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Cards fill their grid cell */
+.grid > li {
+  display: contents;
+}
+
+/* ── Card internals ──────────────────────────────────────────────────────── */
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.card-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.card-name {
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  color: var(--color-ink);
+}
+
+.card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.card-desc {
+  margin: 0;
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-line); /* 1px hairline */
+}
+
+.footer-link {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  color: var(--color-accent);
+  text-decoration: underline;
+  border-radius: var(--radius-control);
+}
+
+.footer-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

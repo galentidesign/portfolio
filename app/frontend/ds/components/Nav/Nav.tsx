@@ -16,6 +16,11 @@ export interface NavProps {
   skipTargetId?: string
   /** Mount global ⌘K / Ctrl+K shortcut. Default true. */
   enableShortcut?: boolean
+  /**
+   * Accessible name for the nav landmark. Must be unique when a page hosts
+   * more than one Nav (or any other named navigation landmark).
+   */
+  label?: string
   ref?: Ref<HTMLElement>
 }
 
@@ -25,6 +30,7 @@ export function Nav({
   actions,
   skipTargetId = 'main',
   enableShortcut = true,
+  label = 'Primary',
   ref,
 }: NavProps) {
   const [paletteOpen, setPaletteOpen] = useState(false)
@@ -79,7 +85,7 @@ export function Nav({
         </a>
 
         {/* Primary nav */}
-        <nav aria-label="Primary">
+        <nav aria-label={label}>
           <ul className={styles['nav-list']}>
             {items.map((item) => (
               <li key={item.href} className={styles['nav-item']}>

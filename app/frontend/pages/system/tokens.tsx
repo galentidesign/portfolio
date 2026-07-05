@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Head, Link } from '@inertiajs/react'
+import { Head } from '@inertiajs/react'
 import {
   skins as allSkins,
   semanticTokens,
   baseTokens,
   breakpoints,
 } from '@/ds/tokens/generated/skins'
+import type { SystemNavEntry } from '@/system/DocShell'
+import { DocShell } from '@/system/DocShell'
 import { useSkin } from '@/shell/skin/SkinProvider'
 import { useMotionPref } from '@/ds/motion/useMotionPref'
 import styles from './tokens.module.css'
@@ -62,7 +64,11 @@ function durationLabel(token: string): string {
 
 // ── Component ──────────────────────────────────────────────────────────────
 
-export default function TokensPage() {
+interface Props {
+  nav: SystemNavEntry[]
+}
+
+export default function TokensPage({ nav }: Props) {
   const { skin } = useSkin()
   const { reduced } = useMotionPref()
   const [playing, setPlaying] = useState(false)
@@ -80,7 +86,7 @@ export default function TokensPage() {
   return (
     <>
       <Head title="Tokens — J Galenti" />
-      <main className={styles.page}>
+      <DocShell nav={nav}>
         <div className={styles.container}>
           {/* ── Header ── */}
           <header className={styles.header}>
@@ -94,22 +100,6 @@ export default function TokensPage() {
               {' — '}
               {activeSkinMeta.description}
             </p>
-            <nav aria-label="Skin switcher">
-              <ul className={styles['skin-switcher']}>
-                {allSkins.map((s) => (
-                  <li key={s.name}>
-                    <a
-                      href={`?skin=${s.name}`}
-                      className={styles.chip}
-                      aria-current={s.name === skin ? 'true' : undefined}
-                    >
-                      {s.label}
-                      {s.hidden && <span className={styles['chip-hidden-tag']}>hidden</span>}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
           </header>
 
           {/* ── Color ── */}
@@ -345,12 +335,9 @@ export default function TokensPage() {
               This page is generated from the token manifest — add a skin file, rebuild, and it
               re-renders itself.
             </p>
-            <Link href="/" className={styles['home-link']}>
-              ← Home
-            </Link>
           </footer>
         </div>
-      </main>
+      </DocShell>
     </>
   )
 }

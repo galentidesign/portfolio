@@ -13,8 +13,8 @@ export default function Home() {
             Design technologist. The token engine just landed — every color, radius, and easing on
             this page compiles from one JSON file per skin.
           </p>
-          <Link href="/system/tokens" className={styles.link}>
-            Inspect the token system →
+          <Link href="/system" className={styles.link}>
+            Explore the design system →
           </Link>
         </div>
       </main>

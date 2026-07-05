@@ -101,22 +101,25 @@ async function tabUntil(
   return false
 }
 
-test('keyboard: skin switcher links reachable via Tab with visible focus outline', async ({
+test('keyboard: skin switcher radios reachable via Tab with visible focus outline', async ({
   page,
 }) => {
   await page.goto('/system/tokens')
   await expect(page.getByRole('heading', { name: 'Tokens' })).toBeVisible()
 
-  const reached = await tabUntil(page, async () => {
-    const href = await page.evaluate(
-      () => (document.activeElement as HTMLAnchorElement | null)?.href ?? '',
-    )
-    return href.includes('skin=')
-  })
+  // The M1 tokens page had ?skin= links; the DocShell rehome replaced them
+  // with the SkinSwitcher radio group (its focus outline lives on the label
+  // wrapping the focused radio, via :has(input:focus-visible)).
+  const reached = await tabUntil(page, () =>
+    page.evaluate(() => {
+      const el = document.activeElement
+      return el instanceof HTMLInputElement && el.type === 'radio'
+    }),
+  )
   expect(reached).toBe(true)
 
   const outline = await page.evaluate(
-    () => window.getComputedStyle(document.activeElement!).outlineStyle,
+    () => window.getComputedStyle(document.activeElement!.closest('label')!).outlineStyle,
   )
   expect(outline).not.toBe('none')
 })

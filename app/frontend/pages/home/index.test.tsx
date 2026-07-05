@@ -28,10 +28,10 @@ describe('Home', () => {
     expect(screen.getByRole('heading', { name: 'J Galenti' })).toBeInTheDocument()
   })
 
-  it('renders a link to /system/tokens', () => {
+  it('renders a link to /system', () => {
     render(<Home />)
-    const link = screen.getByRole('link', { name: /Inspect the token system/i })
+    const link = screen.getByRole('link', { name: /Explore the design system/i })
     expect(link).toBeInTheDocument()
-    expect(link).toHaveAttribute('href', '/system/tokens')
+    expect(link).toHaveAttribute('href', '/system')
   })
 })

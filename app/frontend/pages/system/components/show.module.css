@@ -1,0 +1,99 @@
+/* ── Component doc page — /system/components/:slug ──────────────────────── */
+
+.doc {
+  max-width: 56rem;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+
+.header {
+  margin-bottom: var(--space-8);
+}
+
+.title {
+  margin: 0 0 var(--space-3);
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  color: var(--color-ink);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.description {
+  margin: 0 0 var(--space-4);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  color: var(--color-ink);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.link {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-control);
+}
+
+.link-muted {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+  color: var(--color-ink-muted);
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────────── */
+
+.section {
+  margin-bottom: var(--space-8);
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section-heading {
+  margin: 0 0 var(--space-4);
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  color: var(--color-ink);
+}
+
+/* ── Variants demo area ───────────────────────────────────────────────────── */
+
+.demo {
+  padding: var(--space-6);
+  border-radius: var(--radius-surface);
+  border: 1px solid var(--color-line); /* 1px hairline */
+  background-color: var(--color-surface-sunken);
+}

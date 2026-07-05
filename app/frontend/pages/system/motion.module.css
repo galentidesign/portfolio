@@ -1,0 +1,304 @@
+/* ── Motion Page ──────────────────────────────────────────────────────────── */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── Heading & intro ─────────────────────────────────────────────────────── */
+
+.heading {
+  margin: 0;
+  font-family: var(--type-display-family);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
+  color: var(--color-ink);
+}
+
+.intro {
+  margin: 0;
+  max-width: 52rem;
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.section-heading {
+  margin: 0;
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  color: var(--color-ink);
+}
+
+.note {
+  margin: 0;
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+}
+
+.code {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-accent);
+}
+
+/* ── Token table ─────────────────────────────────────────────────────────── */
+
+.table-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.table {
+  border-collapse: collapse;
+  min-width: 20rem;
+}
+
+.table-caption {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  text-align: left;
+  caption-side: top;
+  padding-bottom: var(--space-2);
+}
+
+.th {
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  border-bottom: 1px solid var(--color-line-strong); /* 1px hairline */
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  text-align: left;
+}
+
+.td {
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  border-bottom: 1px solid var(--color-line); /* 1px hairline */
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  color: var(--color-ink);
+  vertical-align: top;
+}
+
+.td-ease {
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  border-bottom: 1px solid var(--color-line); /* 1px hairline */
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  color: var(--color-ink);
+  max-width: 20rem;
+  word-break: break-all;
+  vertical-align: top;
+}
+
+.code-value {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink);
+}
+
+/* ── Live demo ────────────────────────────────────────────────────────────── */
+
+.demo-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.demo-button {
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line-strong); /* 1px hairline */
+  border-radius: var(--radius-control);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.demo-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.reduced-note {
+  margin: 0;
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  color: var(--color-caution);
+}
+
+.demo-stage {
+  position: relative;
+  height: 5rem;
+  background-color: var(--color-surface-sunken);
+  border: 1px solid var(--color-line); /* 1px hairline */
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+}
+
+.demo-box {
+  position: absolute;
+  top: 50%;
+  left: var(--space-4);
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-surface);
+  background-color: var(--color-accent);
+
+  /* Translate + fade, both driven by motion tokens */
+  transform: translateY(-50%) translateX(0);
+  opacity: 1;
+  transition:
+    transform var(--motion-duration-lg) var(--motion-ease-move),
+    opacity var(--motion-duration-lg) var(--motion-ease-move);
+}
+
+.demo-box[data-active='true'] {
+  /* Translate to the far right and partially fade */
+  transform: translateY(-50%) translateX(calc(100vw - 6rem));
+  opacity: 0.3;
+}
+
+/* ── Prose ────────────────────────────────────────────────────────────────── */
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 52rem;
+}
+
+.prose p {
+  margin: 0;
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink);
+}
+
+.prose-subheading {
+  margin: 0;
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  color: var(--color-ink);
+}
+
+.prose-list {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.prose-list li {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink);
+}
+
+/* ── Manual override toggle ──────────────────────────────────────────────── */
+
+.toggle-button {
+  align-self: flex-start;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line-strong); /* 1px hairline */
+  border-radius: var(--radius-control);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.toggle-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.footer {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-line); /* 1px hairline */
+}
+
+.footer-note {
+  margin: 0;
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  color: var(--color-ink-muted);
+}
+
+.footer-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  border-radius: var(--radius-control);
+}
+
+.footer-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
