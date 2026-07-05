@@ -115,6 +115,7 @@
     "density": {
       "row": "2.75rem",
       "control": "2.5rem",
+      "control-sm": "2rem",
       "gap": "var(--space-4)",
       "pad": "clamp(1rem, 0.5rem + 2.5vw, 2rem)"
     },

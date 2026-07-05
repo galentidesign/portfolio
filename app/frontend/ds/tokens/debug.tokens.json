@@ -98,6 +98,7 @@
     "density": {
       "row": "3.5rem",
       "control": "3rem",
+      "control-sm": "2.5rem",
       "gap": "var(--space-5)",
       "pad": "var(--space-4)"
     },

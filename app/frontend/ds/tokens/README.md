@@ -83,7 +83,8 @@ in `app/frontend/assets/fonts/`.
 - `--type-<role>-<attr>`: roles `display · heading · title · body · small ·
 mono`, attrs `family · size · weight · line · tracking`.
 - `--density-*`: `row` (list/table rows), `control` (control height),
-  `gap` (default stack gap), `pad` (container padding).
+  `control-sm` (small-size controls), `gap` (default stack gap), `pad`
+  (container padding).
 - `--motion-duration-{xs,sm,md,lg,xl}`, `--motion-ease-{enter,exit,move}`.
 - `--shadow-*`: `raised`, `overlay`.
 
