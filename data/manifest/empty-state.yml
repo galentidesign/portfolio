@@ -10,8 +10,15 @@ props:
   - name: title
     type: string
     description: >-
-      Rendered as a styled <p> with title-role type — not a heading. Consumers
-      own the heading structure in their page.
+      Title text, rendered with title-role type as the titleAs element
+      (default <p>, not a heading).
+  - name: titleAs
+    type: 'ElementType'
+    default: "'p'"
+    description: >-
+      Element rendered for the title. Pass a heading tag (e.g. h1) when the
+      empty state is the page content — a 404 page still needs a real page
+      heading.
   - name: description
     type: string
     description: Optional descriptive text; centered with limited max-width for readability.
@@ -48,7 +55,10 @@ a11y:
     - keys: '—'
       does: Not interactive; carries no keyboard behavior of its own.
   aria:
-    - title is a styled <p>, not a heading — consumers own page heading hierarchy.
+    - >-
+      title renders as the titleAs element (default <p>) — pass a heading tag
+      when the empty state is the page content, otherwise own the heading at
+      page level.
     - icon and icon-wrapper are aria-hidden (decorative).
   contrast: >-
     Uses ink-on-surface (title), ink-muted-on-surface (description), and
@@ -58,9 +68,12 @@ usage:
   do:
     - Use description to guide users on how to resolve the empty state.
     - Provide an action when there's a clear next step users can take.
-    - Place a heading at the page level and treat EmptyState title as supporting content.
+    - >-
+      Set titleAs to a heading tag when the empty state is the whole page
+      (like a 404); otherwise keep the default and own the heading at page
+      level.
   dont:
-    - Treat the title as a heading — always own page heading structure separately.
+    - Leave a full-page empty state without any page heading — set titleAs instead.
     - Put complex interactive content in the action slot without considering focus management.
     - Render title-only when guidance text would help users recover.
 

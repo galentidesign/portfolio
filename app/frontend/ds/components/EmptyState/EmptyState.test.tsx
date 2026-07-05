@@ -11,6 +11,17 @@ describe('EmptyState title', () => {
     render(<EmptyState title="No results found" />)
     expect(screen.getByText('No results found')).toBeInTheDocument()
   })
+
+  it('renders the title as a paragraph by default, not a heading', () => {
+    render(<EmptyState title="No results found" />)
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+    expect(screen.getByText('No results found').tagName).toBe('P')
+  })
+
+  it('renders the title as the titleAs element for full-page states', () => {
+    render(<EmptyState title="Nothing here" titleAs="h1" />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Nothing here' })).toBeInTheDocument()
+  })
 })
 
 // ---------------------------------------------------------------------------

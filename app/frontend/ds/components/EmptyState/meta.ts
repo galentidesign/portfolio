@@ -12,7 +12,15 @@ export const meta = {
       name: 'title',
       type: 'string',
       description:
-        'Rendered as a <p> with title-role type — NOT a heading. Consumers own heading structure.',
+        'Title text, rendered with title-role type as the titleAs element (default <p>, not a heading).',
+    },
+    {
+      name: 'titleAs',
+      type: 'ElementType',
+      default: "'p'",
+      description:
+        'Element rendered for the title. Pass a heading tag (e.g. h1) when the empty state ' +
+        'is the page content — a 404 page still needs a real page heading.',
     },
     {
       name: 'description',

@@ -1,14 +1,26 @@
-import { type ReactNode } from 'react'
+import { type ElementType, type ReactNode } from 'react'
 import styles from './styles.module.css'
 
 export interface EmptyStateProps {
   title: string
+  /**
+   * Element rendered for the title. Default 'p' — the consumer owns heading
+   * structure. Pass a heading tag (e.g. 'h1') when the empty state IS the
+   * page content, like a 404, so the page keeps a real heading.
+   */
+  titleAs?: ElementType
   description?: string
   icon?: ReactNode
   action?: ReactNode
 }
 
-export function EmptyState({ title, description, icon, action }: EmptyStateProps) {
+export function EmptyState({
+  title,
+  titleAs: TitleTag = 'p',
+  description,
+  icon,
+  action,
+}: EmptyStateProps) {
   return (
     <div className={styles['empty-state']}>
       {icon !== undefined && (
@@ -16,7 +28,7 @@ export function EmptyState({ title, description, icon, action }: EmptyStateProps
           {icon}
         </div>
       )}
-      <p className={styles.title}>{title}</p>
+      <TitleTag className={styles.title}>{title}</TitleTag>
       {description !== undefined && <p className={styles.description}>{description}</p>}
       {action !== undefined && <div className={styles['action-wrapper']}>{action}</div>}
     </div>
