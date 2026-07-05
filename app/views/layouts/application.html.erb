@@ -1,40 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-skin="<%= current_skin["name"] %>">
   <head>
+    <meta charset="utf-8">
     <title data-inertia><%= content_for(:title) || "Portfolio" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Portfolio">
     <meta name="mobile-web-app-capable" content="yes">
+    <%# Pre-paint preference application; nonce this when CSP lands (M10) %>
+    <script>
+      (() => {
+        try {
+          var known = <%= raw SkinRegistry.names.to_json %>;
+          var param = new URLSearchParams(location.search).get("skin");
+          if (!(param && known.indexOf(param) !== -1)) {
+            var stored = localStorage.getItem(<%= raw SkinRegistry.storage["skin"].to_json %>);
+            if (stored && known.indexOf(stored) !== -1) document.documentElement.dataset.skin = stored;
+          }
+          if (localStorage.getItem(<%= raw SkinRegistry.storage["motion"].to_json %>) === "reduced") {
+            document.documentElement.dataset.motion = "reduced";
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <% font_preload_paths.each do |href| %>
+      <link rel="preload" href="<%= href %>" as="font" type="font/woff2" crossorigin="anonymous">
+    <% end %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag "application" %>
     <%= vite_react_refresh_tag %>
     <%= vite_client_tag %>
+    <%= vite_typescript_tag "application" %>
     <%= vite_typescript_tag "inertia.tsx" %>
     <%= inertia_ssr_head %>
-    <%= vite_typescript_tag 'application' %>
-    <!--
-      If using a TypeScript entrypoint file:
-        vite_typescript_tag 'application'
-
-      If using a .jsx or .tsx entrypoint, add the extension:
-        vite_javascript_tag 'application.jsx'
-
-      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
-    -->
-
   </head>
 
   <body>
