@@ -2,6 +2,6 @@
 
 class PagesController < InertiaController
   def home
-    render inertia: "home/index", props: { greeting: "Hello, world" }
+    render inertia: "home/index"
   end
 end

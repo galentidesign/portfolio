@@ -10,7 +10,12 @@ RSpec.describe "Pages", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("data-page")
       expect(response.body).to include("home/index")
-      expect(response.body).to include("Hello, world")
+    end
+
+    it "does not expose the old greeting prop" do
+      get root_path
+
+      expect(response.body).not_to include("Hello, world")
     end
   end
 
