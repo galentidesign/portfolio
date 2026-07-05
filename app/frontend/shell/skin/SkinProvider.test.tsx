@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { skins as registrySkins } from '@/ds/tokens/generated/skins'
 import { SkinProvider, useSkin } from './SkinProvider'
 
 // ---------------------------------------------------------------------------
@@ -88,8 +89,11 @@ describe('SkinProvider', () => {
         <TestConsumer />
       </SkinProvider>,
     )
-    // galenti (visible) + debug (hidden) = 2
-    expect(screen.getByTestId('skin-count')).toHaveTextContent('2')
+    // The full registry, not a hardcoded count: adding a skin must never
+    // break this test (the additive-skin rule extends to tests). Hidden
+    // entries are the point — the provider exposes everything.
+    expect(registrySkins.some((s) => s.hidden)).toBe(true)
+    expect(screen.getByTestId('skin-count')).toHaveTextContent(String(registrySkins.length))
   })
 
   it('setSkin updates skin state, data-skin attribute, and localStorage', () => {

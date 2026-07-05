@@ -1,7 +1,12 @@
 import { Head } from '@inertiajs/react'
 import { Card } from '@/ds/components/Card/Card'
 import { Button } from '@/ds/components/Button/Button'
+import { skins } from '@/ds/tokens/generated/skins'
 import styles from './styles.module.css'
+
+// Derived, never hardcoded: adding a skin must update this claim by rebuild
+// alone (the additive-skin rule extends to prose that counts the registry).
+const visibleSkinCount = skins.filter((s) => !s.hidden).length
 
 export default function WorkIndex() {
   return (
@@ -44,7 +49,7 @@ export default function WorkIndex() {
           <section className={styles['system-block']} aria-label="Design system">
             <Card
               href="/system"
-              title="The design system behind this site — 16 components · 2 skins · zero axe violations"
+              title={`The design system behind this site — 16 components · ${visibleSkinCount} skins · zero axe violations`}
             >
               Tokens are the single source of truth — every skin is one JSON file; components never
               change.
