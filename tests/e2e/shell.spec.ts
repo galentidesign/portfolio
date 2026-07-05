@@ -257,8 +257,13 @@ test('palette: copy email writes the clipboard and confirms with the shell toast
 })
 
 // ── Axe matrix over the new shell routes, both skins ────────────────────────
+// /story/rails-era is NOT in this matrix: the chapter re-themes itself to the
+// rails-era skin on entry (M6), so a galenti/debug steady state doesn't exist
+// on that route — scanning it here races the entrance choreography and grades
+// transient blend frames. Its axe coverage (settled motion + reduced motion)
+// lives in retheme.spec.ts.
 
-const NEW_ROUTES = ['/', '/work', '/resume', '/colophon', '/story/rails-era']
+const NEW_ROUTES = ['/', '/work', '/resume', '/colophon']
 
 for (const route of NEW_ROUTES) {
   test(`axe: ${route} has zero violations (galenti skin)`, async ({ page }) => {

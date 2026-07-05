@@ -38,6 +38,13 @@ for (const slug of slugs) {
     const results = await new AxeBuilder({ page }).analyze()
     expect(results.violations).toEqual([])
   })
+
+  test(`${slug}: zero axe violations (rails-era skin)`, async ({ page }) => {
+    await gotoComponent(page, slug, '?skin=rails-era')
+    await expect(page.locator('html')).toHaveAttribute('data-skin', 'rails-era')
+    const results = await new AxeBuilder({ page }).analyze()
+    expect(results.violations).toEqual([])
+  })
 }
 
 // ── Focused walks ──────────────────────────────────────────────────────────

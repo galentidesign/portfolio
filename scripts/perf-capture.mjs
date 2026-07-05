@@ -1,13 +1,13 @@
 /**
- * §9.3 Perf-capture — M5 milestone.
+ * §9.3 Perf-capture — M6 milestone.
  *
  * Measures frame-rate stability at 4× CPU throttle for:
  *   1. Assembly opening pinned scroll on /
  *   2. Scroll-progress rail on /story/rails-era
  *   3. Palette open/close on /work
+ *   4. Era re-theme skin transition (/work → /story/rails-era via palette)
  *
- * Pending (app surface not yet built): era-theme skin transition (M6),
- * WebGL assembly swap (M8).
+ * Pending (app surface not yet built): WebGL assembly swap (M8).
  *
  * FAIL rule (§9.3): any burst of >3 CONSECUTIVE frames over 16.7 ms
  * during the scripted scroll.
@@ -235,6 +235,63 @@ async function capturePalette(page) {
   return analyseFrames(ts, 'Palette open/close /work (5 cycles)')
 }
 
+async function captureRetheme(page) {
+  await page.goto(BASE_URL + '/work', { waitUntil: 'networkidle' })
+
+  // Wait for the palette trigger (hydration signal — same pattern as capturePalette).
+  await page.getByRole('button', { name: 'Search & commands' }).waitFor({ timeout: 8_000 })
+
+  await page.evaluate(() => window.__perfStart())
+
+  // Open palette via ⌘K — retry up to 3× for hydration timing.
+  let paletteOpen = false
+  for (let i = 0; i < 3; i++) {
+    await page.keyboard.press('ControlOrMeta+k')
+    try {
+      await page
+        .getByRole('combobox', { name: 'Search commands' })
+        .waitFor({ state: 'visible', timeout: 1_500 })
+      paletteOpen = true
+      break
+    } catch {
+      // retry
+    }
+  }
+  if (!paletteOpen) {
+    await page.evaluate(() => window.__perfStop())
+    return {
+      label: 'Era re-theme /work → /story/rails-era',
+      verdict: 'SKIP',
+      reason: 'palette did not open',
+    }
+  }
+
+  // Type a filter that isolates the rails chapter action ('Chapter 1 — The Rails era').
+  await page.keyboard.type('chapter 1')
+  await page.waitForTimeout(120) // let the list filter settle
+  await page.keyboard.press('Enter')
+
+  // Client-side Inertia navigation — the frame collector survives across the visit.
+  // Wait for the era re-theme to complete (data-skin flips at ~140ms; full sweep ~700ms).
+  try {
+    await page.locator('html[data-skin="rails-era"]').waitFor({ timeout: 5_000 })
+  } catch {
+    await page.evaluate(() => window.__perfStop())
+    return {
+      label: 'Era re-theme /work → /story/rails-era',
+      verdict: 'SKIP',
+      reason: 'data-skin="rails-era" never appeared after palette navigation',
+    }
+  }
+
+  // Buffer: sweep + stagger settle (~700ms) plus generous trailing window.
+  await page.waitForTimeout(1_100)
+  await page.evaluate(() => window.__perfStop())
+
+  const timestamps = await page.evaluate(() => window.__perfFrames())
+  return analyseFrames(timestamps, 'Era re-theme /work → /story/rails-era')
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -266,6 +323,7 @@ async function main() {
     () => captureAssemblyOpening(page),
     () => captureScrollProgress(page),
     () => capturePalette(page),
+    () => captureRetheme(page),
   ]
 
   // Median-of-3 per target: the protocol is "repeatable" — a real sustained
@@ -324,11 +382,8 @@ async function main() {
     }
   }
 
-  // Pending items not yet captured (app surfaces land in M6 / M8).
-  const pending = [
-    'Era-theme skin transition during /story chapter entry (M6)',
-    'WebGL assembly swap render path (M8)',
-  ]
+  // Pending items not yet captured (app surfaces land in M8).
+  const pending = ['WebGL assembly swap render path (M8)']
   console.log('\n  Pending (surfaces not yet built):')
   for (const p of pending) console.log(`    • ${p}`)
 
