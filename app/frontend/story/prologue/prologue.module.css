@@ -1,0 +1,236 @@
+/* ── Prologue beat ────────────────────────────────────────────────────────────
+ * Normal-flow section between the assembly opening and the chapter gateway.
+ * A horizontal year band (2004→2013) with four stations reveals in sequence
+ * as the section scrolls into view. Semantic tokens only — no raw primitives.
+ *
+ * Reveal mechanism: the <section> gains [data-revealed] (set in JS).
+ * Pre-reveal stations are opacity:0 / translated down by --space-1. Once
+ * [data-revealed] is present, each station transitions to its natural
+ * position with a per-station delay for a left-to-right stagger. All
+ * durations and eases are --motion-* tokens; the global reduced-motion
+ * override zeroes them — no additional @media block required here.
+ *
+ * Station 4 (2012–2017) deliberately overruns the band's 2013 right edge.
+ * Its dot sits at the 2012 position (~89 % along the rail). A dashed
+ * --color-accent-muted thread (band::after) extends past the right edge to
+ * signal "this era continues into the next chapter", not an error.
+ * In the stacked (<720 px) layout the thread extends downward instead.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Section ────────────────────────────────────────────────────────────── */
+
+.prologue {
+  padding-block: var(--space-8) var(--space-7);
+  padding-inline: var(--density-pad);
+  border-bottom: 1px solid var(--color-line);
+}
+
+/* ── Heading — mono annotation ──────────────────────────────────────────── */
+
+.heading {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-faint);
+  margin: 0 0 var(--space-7);
+}
+
+/* ── Year band ──────────────────────────────────────────────────────────── */
+
+.band {
+  position: relative;
+
+  /* overflow: visible lets the station-4 overrun thread escape the right edge */
+  overflow: visible;
+}
+
+/* Base rail — the 2004→2013 spine */
+.rail {
+  position: absolute;
+  top: calc(var(--space-2) / 2);
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--color-line);
+}
+
+/* Overrun thread — dashed extension past 2013; reads as "this thread
+   carries into the next era", not as an error. Subtle: accent-muted. */
+.band::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--space-2) / 2);
+  left: 100%;
+  width: var(--space-7);
+  height: 0;
+  border-top: 1px dashed var(--color-accent-muted);
+}
+
+/* ── Stations list ──────────────────────────────────────────────────────── */
+
+.stations {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  /* height: dot + label + breathing room; label for station 4 wraps ~3 lines */
+  min-height: calc(var(--space-2) + var(--space-3) + 6rem);
+}
+
+/* ── Single station — wide layout (≥720 px) ─────────────────────────────── */
+
+.station {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* Default centering: shift left by half the station width so the dot
+     sits exactly on its year position along the rail. Overridden for
+     station 1 (left edge) below. */
+  transform: translateX(-50%);
+
+  /* Pre-reveal state: hidden + nudged down */
+  opacity: 0;
+  translate: 0 var(--space-1);
+  transition:
+    opacity var(--motion-duration-sm) var(--motion-ease-enter),
+    translate var(--motion-duration-sm) var(--motion-ease-enter);
+}
+
+/* Horizontal positions along the 2004–2013 rail.
+   Formula: (year - 2004) / (2013 - 2004) × 100 %
+   Station 1: 0 %  Station 2: 33.33 %  Station 3: 66.67 %  Station 4: 88.89 % */
+
+.station[data-station='1'] {
+  left: 0;
+
+  /* Left-aligned at the band edge; no centering offset */
+  transform: none;
+}
+
+.station[data-station='2'] {
+  left: 33.33%;
+  transition-delay: var(--motion-duration-xs);
+}
+
+.station[data-station='3'] {
+  left: 66.67%;
+  transition-delay: var(--motion-duration-sm);
+}
+
+/* Station 4: dot at 2012 position (~89 %). Its year label shows 2012–2017,
+   running past the 2013 band end — intentional. The band::after overrun
+   thread reinforces the visual continuation. */
+.station[data-station='4'] {
+  left: 88.89%;
+  transition-delay: var(--motion-duration-md);
+}
+
+/* ── Revealed state ─────────────────────────────────────────────────────── */
+
+.prologue[data-revealed] .station {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* ── Accent dot ─────────────────────────────────────────────────────────── */
+
+.dot {
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ── Label block ────────────────────────────────────────────────────────── */
+
+.label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-1);
+  margin: var(--space-3) 0 0;
+  max-width: 11rem;
+}
+
+.year {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink);
+}
+
+.desc {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* ── Stacked layout (<720 px) ───────────────────────────────────────────── */
+
+@media (width <= 719px) {
+  /* Rail becomes a vertical line on the left side of the list */
+  .rail {
+    inset: 0 auto 0 calc(var(--space-2) / 2);
+    width: 1px;
+    height: auto;
+    background-color: var(--color-line);
+  }
+
+  /* Overrun thread extends downward past the band bottom */
+  .band::after {
+    top: 100%;
+    left: calc(var(--space-2) / 2);
+    width: 0;
+    height: var(--space-7);
+    border-top: none;
+    border-left: 1px dashed var(--color-accent-muted);
+  }
+
+  .stations {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding-left: var(--space-6);
+    min-height: 0;
+  }
+
+  .station {
+    position: static;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-3);
+    transform: none;
+  }
+
+  /* Reset absolute-layout overrides — stagger delays stay */
+  .station[data-station='1'],
+  .station[data-station='2'],
+  .station[data-station='3'],
+  .station[data-station='4'] {
+    left: auto;
+  }
+
+  .dot {
+    margin-top: var(--space-1);
+    flex-shrink: 0;
+  }
+
+  .label {
+    align-items: flex-start;
+    text-align: left;
+    margin-top: 0;
+    max-width: none;
+  }
+}
