@@ -1,0 +1,21 @@
+/*
+ * App-shell floor: paints the token ground on the document root and sets the
+ * base type. Semantic tokens only — everything else is component-scoped.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--type-body-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}

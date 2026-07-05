@@ -1,5 +1,9 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import { createInertiaApp } from '@inertiajs/react'
 import type { ResolvedComponent } from '@inertiajs/react'
+import { SkinProvider } from '@/shell/skin/SkinProvider'
+import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
 
 // Explicit resolver instead of `pages: '../pages'` so test files never enter
 // the production bundle.
@@ -14,7 +18,19 @@ void createInertiaApp({
     return page.default
   },
 
-  strictMode: true,
+  // Custom setup owns StrictMode wrapping; the strictMode option is not used.
+  setup({ el, App, props }) {
+    if (!el) return
+    createRoot(el).render(
+      <StrictMode>
+        <SkinProvider>
+          <MotionPrefProvider>
+            <App {...props} />
+          </MotionPrefProvider>
+        </SkinProvider>
+      </StrictMode>,
+    )
+  },
 
   defaults: {
     form: {
