@@ -1,0 +1,343 @@
+/* Assembly opening — static stepped diagram is the base layout; the
+   [data-motion='on'] block below only changes GEOMETRY (layered stage for
+   the pinned sequence). All visibility/transform under motion belongs to
+   the GSAP layer — CSS never fights the timeline. */
+
+.opening {
+  position: relative;
+  padding-inline: var(--space-5);
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+/* ── Skip control — visible from frame one, sticky while the opening is in
+      view, first in the section's tab order ─────────────────────────────── */
+
+.skip {
+  position: sticky;
+
+  /* Clears the sticky site bar — the control must be fully visible from
+     frame one, never tucked under the shell. */
+  top: var(--space-8);
+  float: right;
+  z-index: var(--z-raised);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-raised);
+  color: var(--color-ink);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  cursor: pointer;
+  transition:
+    color var(--motion-duration-xs) var(--motion-ease-move),
+    border-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.skip:hover {
+  color: var(--color-accent);
+  border-color: var(--color-line-strong);
+}
+
+.skip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Hero — present from frame one in both modes ──────────────────────────── */
+
+.hero {
+  min-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--type-display-family);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
+  color: var(--color-ink);
+}
+
+.subline {
+  margin: 0;
+  max-width: 38rem;
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-ink-muted);
+}
+
+/* ── Static stepped diagram (the reduced-motion experience) ───────────────── */
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+  padding-block-end: var(--space-9);
+}
+
+.step {
+  min-height: 40vh;
+  display: grid;
+  align-items: center;
+}
+
+.figure {
+  margin: 0;
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+@media (width >= 860px) {
+  .figure {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-8);
+  }
+}
+
+.exhibit {
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+  background-color: var(--color-surface-raised);
+}
+
+.caption {
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  color: var(--color-ink);
+  max-width: 26rem;
+}
+
+.step-num {
+  display: block;
+  margin-block-end: var(--space-2);
+  font-family: var(--type-mono-family);
+  font-size: var(--type-small-size);
+
+  /* Full ink: visible 14px text must clear WCAG AA on the page surface —
+     accent is 3.79:1 there and even ink-muted only reaches 4.24:1. The
+     mono family + small size keep the numerals subordinate. */
+  color: var(--color-ink);
+}
+
+/* ── Beat exhibits ────────────────────────────────────────────────────────── */
+
+.tokens-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+}
+
+.chips {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: grid;
+  place-items: end center;
+  width: var(--space-9);
+  height: var(--space-9);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-line-strong);
+  padding-block-end: var(--space-1);
+}
+
+.chip-label {
+  font-family: var(--type-mono-family);
+  font-size: 0.625rem;
+  color: var(--color-ink-muted);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-control);
+  padding-inline: var(--space-1);
+}
+
+.specimens {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.specimen-display {
+  font-family: var(--type-display-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-display-weight);
+  color: var(--color-ink);
+}
+
+.specimen-mono {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  color: var(--color-ink-muted);
+}
+
+.ruler {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.tick {
+  width: 2px;
+  background-color: var(--color-ink-faint);
+}
+
+.tick:nth-child(1) {
+  height: var(--space-2);
+}
+
+.tick:nth-child(2) {
+  height: var(--space-3);
+}
+
+.tick:nth-child(3) {
+  height: var(--space-4);
+}
+
+.tick:nth-child(4) {
+  height: var(--space-5);
+}
+
+.tick:nth-child(5) {
+  height: var(--space-6);
+}
+
+.tick:nth-child(6) {
+  height: var(--space-7);
+}
+
+.ease {
+  width: var(--space-10);
+  height: var(--space-10);
+}
+
+.ease path {
+  stroke: var(--color-accent);
+}
+
+.molecule {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: min(100%, 20rem);
+}
+
+.organisms {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+}
+
+.bar-facsimile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+}
+
+.bar-brand {
+  font-family: var(--type-title-family);
+  font-weight: var(--type-title-weight);
+  font-size: var(--type-small-size);
+  color: var(--color-ink);
+}
+
+.bar-links {
+  display: flex;
+  gap: var(--space-4);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  color: var(--color-ink-muted);
+}
+
+.shell-frame {
+  position: relative;
+  display: grid;
+  gap: var(--space-6);
+  width: 100%;
+  min-height: var(--space-10);
+}
+
+.hatch-facsimile {
+  justify-self: end;
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-raised);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  color: var(--color-ink);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+}
+
+/* ── Motion geometry — applied by the motion layer only ───────────────────
+   When the GSAP layer mounts it sets data-motion='on': the steps become
+   stacked layers inside a viewport-height stage for the pinned sequence.
+   Which layer is visible, and every transform, is owned by the timeline. */
+
+.opening[data-motion='on'] .steps {
+  position: relative;
+  height: 100vh;
+  padding: 0;
+  gap: 0;
+}
+
+.opening[data-motion='on'] .step {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  display: grid;
+  place-content: center;
+}
+
+/* On the live stage the diagram chrome drops away — elements assemble on the
+   page surface itself, not inside figure cards. Static keeps the frames. */
+.opening[data-motion='on'] .exhibit {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Shadowed layers are paint-expensive while transforming over the real bar
+   (§9.3 burst source); the live stage drops them — static keeps the depth. */
+.opening[data-motion='on'] .hatch-facsimile,
+.opening[data-motion='on'] .bar-facsimile {
+  box-shadow: none;
+}
+
+.opening[data-motion='on'] .hero {
+  min-height: 0;
+  position: absolute;
+  inset-block-start: var(--space-8);
+  inset-inline: var(--space-5);
+  z-index: var(--z-base);
+}
