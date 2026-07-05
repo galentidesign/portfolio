@@ -1,5 +1,10 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import styles from './styles.module.css'
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=33-38
+// Component set "Dialog" — size→Size (sm/md); dismissible→Dismissible;
+// description/footer→"Show …" booleans; title/description→TEXT properties.
+// Footer holds real Button instances. Backdrop is page-level in code, not in
+// the set. Tokens collection modes: galenti, rails-era.
 
 export interface DialogProps {
   /** Fully controlled — owner must flip this to mount/unmount the dialog. */

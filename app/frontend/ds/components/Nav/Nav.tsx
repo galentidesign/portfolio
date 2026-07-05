@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect, type ElementType, type Ref } from 'react'
 import styles from './styles.module.css'
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=34-2
+// Component "Nav" (+ "Nav / Palette" node 35-2) — brand→Brand TEXT; current
+// link = ink + 2px accent underline; palette trigger chip with mono kbd hint.
+// Palette dialog is its own component on the Nav page. Tokens collection
+// modes: galenti, rails-era.
 import { Palette, type PaletteAction } from './palette'
 
 export interface NavItem {

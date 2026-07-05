@@ -1,5 +1,9 @@
 import { useId, type ComponentPropsWithoutRef, type Ref } from 'react'
 import styles from './styles.module.css'
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=30-60
+// Component set "Form Field" — multiline→Kind (input/textarea); CSS states→
+// State (focus-visible ring, aria-invalid, disabled); required→Required;
+// label/hint/value→TEXT properties. Tokens collection modes: galenti, rails-era.
 
 // Merge all native input + textarea props (minus id and children which this
 // component owns). Using the intersection lets callers pass type, rows,
