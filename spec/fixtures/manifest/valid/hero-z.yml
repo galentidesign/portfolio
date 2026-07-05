@@ -1,0 +1,40 @@
+slug: hero-z
+name: Zeta Hero
+tier: hero
+status: draft
+description: A second hero fixture to verify alphabetical ordering within tier.
+
+variants:
+  size: [sm, lg]
+
+props:
+  - name: size
+    type: "'sm' | 'lg'"
+    default: "'sm'"
+    description: Component size.
+
+tokens:
+  - --color-ink
+  - --space-2
+
+a11y:
+  keyboard:
+    - keys: Tab
+      does: Focuses the element in document order.
+  aria:
+    - Exposes role and accessible name to assistive technology.
+  contrast: Uses ink-on-surface for body text.
+
+usage:
+  do:
+    - Use sm for compact layouts.
+  dont:
+    - Do not use lg in tight spaces.
+
+example: |
+  import { HeroZ } from '@/ds/components/HeroZ/HeroZ'
+  <HeroZ size="sm" />
+
+links:
+  repo: app/frontend/ds/components/HeroZ
+  figma: null

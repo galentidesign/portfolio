@@ -1,0 +1,37 @@
+slug: widget
+name: Widget
+tier: legendary
+status: stable
+description: Has an invalid tier value.
+
+variants:
+  variant: [default]
+
+props:
+  - name: variant
+    type: "'default'"
+    description: The variant.
+
+tokens:
+  - --color-accent
+
+a11y:
+  keyboard:
+    - keys: Enter
+      does: Activates.
+  aria:
+    - Provides accessible name.
+  contrast: Uses accent pair.
+
+usage:
+  do:
+    - Use for main actions.
+  dont:
+    - Do not nest.
+
+example: |
+  <Widget />
+
+links:
+  repo: app/frontend/ds/components/Widget
+  figma: null

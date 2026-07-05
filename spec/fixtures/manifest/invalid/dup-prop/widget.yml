@@ -1,0 +1,40 @@
+slug: widget
+name: Widget
+tier: hero
+status: stable
+description: Has two props with the same name.
+
+variants:
+  variant: [default]
+
+props:
+  - name: variant
+    type: "'default'"
+    description: The variant (first definition).
+  - name: variant
+    type: "'alt'"
+    description: Duplicate prop name — validation must catch this.
+
+tokens:
+  - --color-accent
+
+a11y:
+  keyboard:
+    - keys: Enter
+      does: Activates.
+  aria:
+    - Provides accessible name.
+  contrast: Uses accent pair.
+
+usage:
+  do:
+    - Use for main actions.
+  dont:
+    - Do not nest.
+
+example: |
+  <Widget />
+
+links:
+  repo: app/frontend/ds/components/Widget
+  figma: null

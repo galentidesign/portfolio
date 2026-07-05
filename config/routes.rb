@@ -7,8 +7,13 @@ Rails.application.routes.draw do
     }
   end
   root "pages#home"
-  get "system/tokens", to: "system#tokens"
-  get "system/gallery", to: "system#gallery"
+  get "system",                     to: "system#index"
+  get "system/tokens",              to: "system#tokens"
+  get "system/motion",              to: "system#motion"
+  get "system/skins",               to: "system#skins"
+  get "system/components/:slug",    to: "system#component",
+      as: :system_component,
+      constraints: { slug: /[a-z0-9-]+/ }
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

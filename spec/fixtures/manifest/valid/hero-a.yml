@@ -1,0 +1,40 @@
+slug: hero-a
+name: Alpha Hero
+tier: hero
+status: stable
+description: A minimal hero fixture for ordering tests.
+
+variants:
+  variant: [default, alt]
+
+props:
+  - name: variant
+    type: "'default' | 'alt'"
+    default: "'default'"
+    description: The visual variant.
+
+tokens:
+  - --color-accent
+  - --radius-control
+
+a11y:
+  keyboard:
+    - keys: Enter
+      does: Activates the component.
+  aria:
+    - Provides aria-label when no visible text is present.
+  contrast: Uses accent-ink-on-accent for the primary variant.
+
+usage:
+  do:
+    - Use default for the primary action.
+  dont:
+    - Do not use alt as a primary call-to-action.
+
+example: |
+  import { HeroA } from '@/ds/components/HeroA/HeroA'
+  <HeroA variant="default" />
+
+links:
+  repo: app/frontend/ds/components/HeroA
+  figma: null

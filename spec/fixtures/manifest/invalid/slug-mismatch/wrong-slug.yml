@@ -1,0 +1,37 @@
+slug: right-slug
+name: Widget
+tier: hero
+status: stable
+description: Slug does not match the filename base (wrong-slug vs right-slug).
+
+variants:
+  variant: [default]
+
+props:
+  - name: variant
+    type: "'default'"
+    description: The variant.
+
+tokens:
+  - --color-accent
+
+a11y:
+  keyboard:
+    - keys: Enter
+      does: Activates.
+  aria:
+    - Provides accessible name.
+  contrast: Uses accent pair.
+
+usage:
+  do:
+    - Use for main actions.
+  dont:
+    - Do not nest.
+
+example: |
+  <Widget />
+
+links:
+  repo: app/frontend/ds/components/Widget
+  figma: null

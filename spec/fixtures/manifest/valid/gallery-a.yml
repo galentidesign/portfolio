@@ -1,0 +1,38 @@
+slug: gallery-a
+name: Alpha Gallery
+tier: gallery
+status: stable
+description: A gallery-tier fixture for ordering tests (hero < gallery, alpha < zeta).
+
+variants: {}
+
+props:
+  - name: label
+    type: string
+    description: Visible label text.
+
+tokens:
+  - --color-surface-sunken
+  - --type-body-size
+
+a11y:
+  keyboard:
+    - keys: '—'
+      does: Not interactive; carries no keyboard behavior of its own.
+  aria:
+    - Purely presentational; no ARIA attributes needed.
+  contrast: Uses ink-on-surface pair for readable text.
+
+usage:
+  do:
+    - Use to display read-only metadata.
+  dont:
+    - Do not add interactive children.
+
+example: |
+  import { GalleryA } from '@/ds/components/GalleryA/GalleryA'
+  <GalleryA label="status" />
+
+links:
+  repo: app/frontend/ds/components/GalleryA
+  figma: null

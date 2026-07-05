@@ -1,0 +1,38 @@
+slug: gallery-z
+name: Zeta Gallery
+tier: gallery
+status: draft
+description: A second gallery fixture to verify alphabetical ordering within gallery tier.
+
+variants: {}
+
+props:
+  - name: children
+    type: ReactNode
+    description: Gallery item content.
+
+tokens:
+  - --shadow-raised
+  - --motion-duration-xs
+
+a11y:
+  keyboard:
+    - keys: '—'
+      does: Not interactive; carries no keyboard behavior of its own.
+  aria:
+    - Presentational container with no ARIA semantics.
+  contrast: Uses surface-raised with documented ink pairs.
+
+usage:
+  do:
+    - Use as a container for grouped items.
+  dont:
+    - Do not nest zeta components inside each other.
+
+example: |
+  import { GalleryZ } from '@/ds/components/GalleryZ/GalleryZ'
+  <GalleryZ>content</GalleryZ>
+
+links:
+  repo: app/frontend/ds/components/GalleryZ
+  figma: null
