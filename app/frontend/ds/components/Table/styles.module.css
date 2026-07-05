@@ -1,0 +1,153 @@
+/* ── Container ───────────────────────────────────────────────────────────────
+   role="region" + tabindex="0" + aria-label lets keyboard users scroll the
+   overflow container without a pointer device (WCAG 2.1 SC 2.1.1).          */
+
+.container {
+  display: block;
+  overflow-x: auto;
+}
+
+/* ── Table ─────────────────────────────────────────────────────────────────── */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ── Caption ───────────────────────────────────────────────────────────────── */
+
+.caption {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  text-align: start;
+  padding-block-end: var(--space-2);
+}
+
+/* Standard visually-hidden clip pattern — keeps caption in the accessibility
+   tree while removing it from the visual layout.                              */
+.caption-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+
+  /* -1px margin is structural — required by the clip-path pattern */
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+
+  /* 0 border is structural — prevents the 1px box from painting */
+  border: 0;
+}
+
+/* ── Header cells ──────────────────────────────────────────────────────────── */
+
+.th {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  padding-inline: var(--space-3);
+  text-align: start;
+  white-space: nowrap;
+
+  /* 1px hairline separating thead from tbody */
+  border-bottom: 1px solid var(--color-line-strong);
+}
+
+.th[data-align='end'] {
+  text-align: end;
+}
+
+/* ── Sort button ───────────────────────────────────────────────────────────── */
+
+.sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: 100%;
+  background: none;
+
+  /* 0 border is structural — resets UA button border */
+  border: 0;
+  padding: 0;
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  min-height: var(--density-control-sm);
+  text-align: start;
+}
+
+.sort-button[data-align='end'] {
+  justify-content: flex-end;
+  text-align: end;
+}
+
+.sort-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Sort direction arrow ──────────────────────────────────────────────────── */
+
+.sort-arrow {
+  display: inline-block;
+
+  /* Defaults to 0deg (up = ascending / unsorted hint); rotates to 180deg for desc */
+  transform: rotate(0deg);
+  transition: transform var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.sort-arrow[data-dir='desc'] {
+  transform: rotate(180deg);
+}
+
+/* ── Body rows ─────────────────────────────────────────────────────────────── */
+
+.tr {
+  height: var(--density-row);
+
+  /* 1px hairline row separator */
+  border-bottom: 1px solid var(--color-line);
+}
+
+/* ── Body cells ────────────────────────────────────────────────────────────── */
+
+.td {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink);
+  padding-inline: var(--space-3);
+  text-align: start;
+}
+
+.td[data-align='end'] {
+  text-align: end;
+}
+
+/* ── Empty state ───────────────────────────────────────────────────────────── */
+
+.empty-cell {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  color: var(--color-ink-muted);
+  text-align: center;
+  padding-block: var(--space-7);
+  padding-inline: var(--space-3);
+}

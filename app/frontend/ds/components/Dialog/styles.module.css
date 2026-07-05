@@ -1,0 +1,194 @@
+/* ── Dialog ────────────────────────────────────────────────────────────────── */
+
+.dialog {
+  /* Reset browser defaults */
+  border: none;
+  padding: 0;
+  background: transparent;
+
+  /* Sizing — structural values with comments */
+
+  /* Default: md — 34rem max; sm overridden below */
+  max-width: 34rem; /* md structural cap */
+
+  /* Responsive: shrink on small viewports, inset by --space-6 (3rem gutter) */
+  width: calc(100vw - var(--space-6));
+
+  /* Overlay stacking */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+
+  /* Transitions: entry (md duration) and exit (sm duration) with allow-discrete
+     so display and overlay participate in the transition cascade */
+  transition:
+    opacity var(--motion-duration-md) var(--motion-ease-enter),
+    transform var(--motion-duration-md) var(--motion-ease-enter),
+    display var(--motion-duration-md) var(--motion-ease-enter) allow-discrete,
+    overlay var(--motion-duration-md) var(--motion-ease-enter) allow-discrete;
+  opacity: 0;
+  transform: translateY(0.5rem);
+}
+
+/* Open state — dialog[open] is the browser-native open attribute */
+.dialog[open] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* @starting-style: entry animation anchor — paint the closed state so the
+   browser knows to transition FROM here when the dialog opens */
+@starting-style {
+  .dialog[open] {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+/* Exit transition uses a shorter sm duration for snappier dismiss feel */
+.dialog:not([open]) {
+  transition:
+    opacity var(--motion-duration-sm) var(--motion-ease-exit),
+    transform var(--motion-duration-sm) var(--motion-ease-exit),
+    display var(--motion-duration-sm) var(--motion-ease-exit) allow-discrete,
+    overlay var(--motion-duration-sm) var(--motion-ease-exit) allow-discrete;
+}
+
+/* ── Size: sm ─────────────────────────────────────────────────────────────── */
+
+.dialog[data-size='sm'] {
+  max-width: 26rem; /* sm structural cap */
+}
+
+/* ── Backdrop ─────────────────────────────────────────────────────────────── */
+
+.dialog::backdrop {
+  /* Literal value: custom-prop inheritance into ::backdrop is still
+     inconsistent across browsers — hardcoded rgba is the safe choice */
+  background: rgb(0 0 0 / 45%);
+  transition:
+    opacity var(--motion-duration-md) var(--motion-ease-enter),
+    display var(--motion-duration-md) var(--motion-ease-enter) allow-discrete,
+    overlay var(--motion-duration-md) var(--motion-ease-enter) allow-discrete;
+  opacity: 0;
+}
+
+.dialog[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+.dialog:not([open])::backdrop {
+  transition:
+    opacity var(--motion-duration-sm) var(--motion-ease-exit),
+    display var(--motion-duration-sm) var(--motion-ease-exit) allow-discrete,
+    overlay var(--motion-duration-sm) var(--motion-ease-exit) allow-discrete;
+}
+
+/* ── Panel ────────────────────────────────────────────────────────────────── */
+
+.panel {
+  background-color: var(--color-surface-overlay);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-overlay);
+  padding: var(--density-pad);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.title {
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+/* ── Close button ─────────────────────────────────────────────────────────── */
+
+.close-button {
+  /* Local icon button — not importing Button (parallel build contract) */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Minimum tap target: --density-control-sm */
+  min-width: var(--density-control-sm);
+  min-height: var(--density-control-sm);
+  padding: var(--space-1);
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.close-button:hover {
+  background-color: var(--color-surface-sunken);
+  color: var(--color-ink);
+}
+
+.close-button:focus-visible {
+  /* Focus recipe from README — every focusable must carry this */
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.close-icon {
+  /* Structural micro-size for the × glyph */
+  font-size: 1.25rem;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── Description ──────────────────────────────────────────────────────────── */
+
+.description {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+  margin: var(--space-2) 0 0;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────────── */
+
+.body {
+  margin-top: var(--space-4);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}

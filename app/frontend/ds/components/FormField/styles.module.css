@@ -1,0 +1,108 @@
+/* ── Field wrapper ─────────────────────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* ── Label ─────────────────────────────────────────────────────────── */
+
+.label {
+  align-items: center;
+  color: var(--color-ink);
+  display: flex;
+  font-family: var(--type-small-family);
+
+  /* --type-small-weight (460) sits above body (440) — label weight bump via token */
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  gap: var(--space-1);
+  letter-spacing: var(--type-small-tracking);
+  line-height: var(--type-small-line);
+}
+
+/* Decorative required asterisk — aria-hidden, visually signals required */
+.required-marker {
+  color: var(--color-critical);
+}
+
+/* ── Control (shared: input + textarea) ────────────────────────────── */
+
+.control {
+  background-color: var(--color-surface-raised);
+
+  /* 1px is an explicit hairline (README §Styling rules) */
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-control);
+  color: var(--color-ink);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  height: var(--density-control);
+  letter-spacing: var(--type-body-tracking);
+  line-height: var(--type-body-line);
+
+  /* 2px matches the contract focus-ring size; transparent base enables colour transition */
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  padding-inline: var(--space-3);
+  transition:
+    border-color var(--motion-duration-xs) var(--motion-ease-move),
+    outline-color var(--motion-duration-xs) var(--motion-ease-move);
+  width: 100%;
+}
+
+.control::placeholder {
+  color: var(--color-ink-faint);
+}
+
+.control:focus-visible {
+  border-color: var(--color-focus);
+  outline-color: var(--color-focus);
+}
+
+.control:disabled {
+  background-color: var(--color-surface-sunken);
+  color: var(--color-ink-faint);
+  cursor: not-allowed;
+}
+
+/* ── Textarea variant ──────────────────────────────────────────────── */
+
+.field[data-multiline] .control {
+  height: auto;
+  min-height: calc(3 * var(--density-control));
+  padding-block: var(--space-2);
+  resize: vertical;
+}
+
+/* ── Invalid state ─────────────────────────────────────────────────── */
+
+.field[data-invalid] .control {
+  border-color: var(--color-critical);
+}
+
+/* ── Hint text ─────────────────────────────────────────────────────── */
+
+.hint {
+  color: var(--color-ink-muted);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  letter-spacing: var(--type-small-tracking);
+  line-height: var(--type-small-line);
+  margin: 0;
+}
+
+/* ── Error text ────────────────────────────────────────────────────── */
+
+.error {
+  color: var(--color-critical);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  letter-spacing: var(--type-small-tracking);
+  line-height: var(--type-small-line);
+  margin: 0;
+}
