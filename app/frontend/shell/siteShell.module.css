@@ -1,0 +1,50 @@
+/* ── Escape hatch — fixed pill, story routes only ─────────────────────────── */
+
+/* The landmark wrapper owns the fixed placement so the link inside stays
+   within a labeled nav region (axe: no content outside landmarks). */
+.hatch-nav {
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: var(--z-nav);
+}
+
+.hatch {
+  display: inline-block;
+
+  /* Pill surface */
+  background-color: var(--color-surface-raised);
+
+  /* 1px hairline — allowed per styling rules */
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-raised);
+
+  /* Type */
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink);
+  text-decoration: none;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  white-space: nowrap;
+
+  /* Transitions: motion tokens only (collapse under reduced motion globally) */
+  transition:
+    color var(--motion-duration-xs) var(--motion-ease-move),
+    border-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.hatch:hover {
+  color: var(--color-accent);
+  border-color: var(--color-line-strong);
+}
+
+.hatch:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  color: var(--color-accent);
+}

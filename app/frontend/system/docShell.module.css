@@ -13,29 +13,6 @@
   }
 }
 
-/* ── Skip link — visually hidden until focused ────────────────────────────── */
-
-.skip-link {
-  position: fixed;
-  top: var(--space-2);
-  left: var(--space-2);
-  z-index: var(--z-skip);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-control);
-  background-color: var(--color-accent);
-  color: var(--color-accent-ink);
-  font-family: var(--type-small-family);
-  font-size: var(--type-small-size);
-  text-decoration: none;
-  transform: translateY(calc(-100% - var(--space-4)));
-}
-
-.skip-link:focus-visible {
-  transform: none;
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
 /* ── Sidebar ──────────────────────────────────────────────────────────────── */
 
 .sidebar {

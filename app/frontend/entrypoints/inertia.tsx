@@ -1,9 +1,10 @@
-import { StrictMode } from 'react'
+import { StrictMode, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createInertiaApp } from '@inertiajs/react'
 import type { ResolvedComponent } from '@inertiajs/react'
 import { SkinProvider } from '@/shell/skin/SkinProvider'
 import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
+import { SiteShell } from '@/shell/SiteShell'
 
 // Explicit resolver instead of `pages: '../pages'` so test files never enter
 // the production bundle.
@@ -15,6 +16,9 @@ const pages = import.meta.glob<{ default: ResolvedComponent }>([
 void createInertiaApp({
   resolve: async (name) => {
     const page = await pages[`../pages/${name}.tsx`]!()
+    // Pages that opt out with layout = null stay null; undefined means "use default".
+    if (page.default.layout === undefined)
+      page.default.layout = (p: ReactNode) => <SiteShell>{p}</SiteShell>
     return page.default
   },
 

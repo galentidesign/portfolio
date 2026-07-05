@@ -44,10 +44,6 @@ export function DocShell({ nav, children }: DocShellProps) {
 
   return (
     <div className={styles.shell}>
-      <a className={styles['skip-link']} href="#main">
-        Skip to content
-      </a>
-
       <aside className={styles.sidebar}>
         <header className={styles['sidebar-header']}>
           <Link href="/system" className={styles.wordmark}>

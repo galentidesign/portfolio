@@ -66,14 +66,14 @@ describe('DocShell', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders a skip link to #main and the skin switcher', () => {
+  it('renders the skin switcher (skip link is now provided by the site-shell Nav)', () => {
     render(
       <DocShell nav={nav}>
         <p>body</p>
       </DocShell>,
     )
 
-    expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveAttribute('href', '#main')
+    expect(screen.queryByRole('link', { name: 'Skip to content' })).not.toBeInTheDocument()
     expect(screen.getByTestId('skin-switcher')).toBeInTheDocument()
   })
 })
