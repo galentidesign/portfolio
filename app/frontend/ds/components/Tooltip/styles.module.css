@@ -1,0 +1,82 @@
+/* ── Tooltip ──────────────────────────────────────────────────────────────── */
+
+.wrapper {
+  /* Positioning context for the absolutely-placed tip. inline-flex hugs the
+     single trigger child, so the wrapper's hover area is exactly the
+     trigger's area — which is why interaction listeners on the wrapper alone
+     are sufficient. */
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: var(--z-overlay);
+
+  /* Centered on the trigger's inline axis */
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* Inverted chip: ink as ground, surface as text — intentionally the site's
+     core ink-on-surface pair reversed. Both skins hold that pair at ≥ 7:1 by
+     construction, and contrast is symmetric, so the inverse passes too. */
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+
+  /* Small type role */
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-raised);
+
+  /* Hug short labels; wrap long ones at a readable measure (structural) */
+  width: max-content;
+  max-width: 36ch;
+
+  /* A tooltip must never capture the pointer — it would occlude and block
+     the content beneath it and could hold itself open. */
+  pointer-events: none;
+
+  /* Entry: fades/slides in from @starting-style below. Collapses under
+     reduced motion by construction — the duration token zeroes out. */
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity var(--motion-duration-sm) var(--motion-ease-enter),
+    translate var(--motion-duration-sm) var(--motion-ease-enter);
+}
+
+/* ── Sides ────────────────────────────────────────────────────────────────── */
+
+.tooltip[data-position='top'] {
+  /* 6px structural gap between the trigger edge and the tip */
+  bottom: calc(100% + 6px);
+}
+
+.tooltip[data-position='bottom'] {
+  /* Mirrored 6px structural gap */
+  top: calc(100% + 6px);
+}
+
+/* ── Entry transition anchor ──────────────────────────────────────────────── */
+
+@starting-style {
+  .tooltip[data-position='top'] {
+    opacity: 0;
+
+    /* 2px structural nudge — rises into place */
+    translate: 0 2px;
+  }
+
+  .tooltip[data-position='bottom'] {
+    opacity: 0;
+
+    /* 2px structural nudge — drops into place */
+    translate: 0 -2px;
+  }
+}

@@ -1,0 +1,72 @@
+/* ── Tablist ──────────────────────────────────────────────────────────────── */
+
+.tablist {
+  display: flex;
+  gap: var(--space-2);
+
+  /* 1px hairline under the whole tablist — allowed structural value */
+  border-bottom: 1px solid var(--color-line);
+}
+
+/* ── Tab ──────────────────────────────────────────────────────────────────── */
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--density-control-sm);
+  padding-block: 0;
+  padding-inline: var(--space-4);
+
+  /* Typography */
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+
+  /* 2px structural underline slot — transparent until selected so the label
+     never shifts when the selection indicator appears */
+  border-bottom: 2px solid transparent;
+  transition:
+    border-color var(--motion-duration-xs) var(--motion-ease-move),
+    color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+/* Hover promotes unselected tabs to full ink; on the selected tab this is a
+   no-op — the selected rule below already sets the same color */
+.tab:hover {
+  color: var(--color-ink);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-accent);
+}
+
+.tab:focus-visible {
+  /* Focus recipe — outline only; the underline stays a selection indicator */
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Panel ────────────────────────────────────────────────────────────────── */
+
+.panel {
+  padding-block: var(--space-5);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink);
+}
+
+.panel:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

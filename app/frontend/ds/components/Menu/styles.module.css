@@ -1,0 +1,147 @@
+/* ── Menu (trigger + action menu) ─────────────────────────────────────────── */
+
+.root {
+  display: inline-block;
+}
+
+/* ── Trigger ──────────────────────────────────────────────────────────────── */
+
+/* Secondary-button recipe written locally — not importing Button (parallel
+   build contract; components must not depend on each other). */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--density-control);
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-control);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  background-color: transparent;
+
+  /* 1px hairline — hardcoded per styling rules (hairlines are allowed) */
+  border: 1px solid var(--color-line-strong);
+  color: var(--color-ink);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.trigger:hover,
+.trigger[aria-expanded='true'] {
+  background-color: var(--color-surface-sunken);
+}
+
+.trigger:focus-visible {
+  /* Focus recipe from the components contract */
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.caret {
+  /* Structural micro-size: the ▾ glyph rides slightly smaller than the label */
+  font-size: 0.75em;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── Menu panel ───────────────────────────────────────────────────────────── */
+
+/* No `display` on the base rule: author styles beat UA styles, and the UA
+   stylesheet hides closed popovers with `[popover]:not(:popover-open)
+   { display: none }` — setting display here would make the closed popover
+   visible. The default block layout stacks the full-width items fine. */
+.menu {
+  /* Positioned via inline top + left/right from a layout effect reading the
+     trigger rect; fixed so ancestor overflow can't clip the fallback path
+     (popover mode renders in the top layer regardless). */
+  position: fixed;
+
+  /* Neutralize UA [popover] defaults (inset: 0; margin: auto; border;
+     padding; system colors) */
+  inset: auto;
+  margin: 0;
+
+  /* Structural floor: action menus narrower than this read as fragments */
+  min-width: 12rem;
+  width: max-content;
+  padding: var(--space-1);
+  background-color: var(--color-surface-overlay);
+
+  /* 1px hairline — hardcoded per styling rules */
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-overlay);
+  color: var(--color-ink);
+
+  /* Only meaningful in the fallback (non-popover) path — the top layer
+     ignores z-index */
+  z-index: var(--z-overlay);
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--motion-duration-sm) var(--motion-ease-enter),
+    transform var(--motion-duration-sm) var(--motion-ease-enter);
+}
+
+/* Entry animation: @starting-style fires both when the popover is shown
+   (display: none → rendered) and when the fallback path mounts the element.
+   Durations collapse to 0ms under reduced motion via motion-overrides.css,
+   and the panel is content-complete at 0ms. */
+@starting-style {
+  .menu {
+    opacity: 0;
+
+    /* Structural entry offset — a nudge, not a themable distance */
+    transform: translateY(-0.25rem);
+  }
+}
+
+/* ── Items ────────────────────────────────────────────────────────────────── */
+
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--density-control-sm);
+  padding-block: 0;
+  padding-inline: var(--space-3);
+  border: none;
+  border-radius: var(--radius-control);
+  background-color: transparent;
+  color: var(--color-ink);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.item:focus-visible {
+  /* Focus recipe from the components contract */
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* :focus (not just :focus-visible) — roving focus is the selection cursor in
+   a menu, so the focused item is always highlighted, including for disabled
+   items (position feedback while roving). Lower-specificity :focus listed
+   before :hover:not(...) for no-descending-specificity; both set the same
+   declaration, so order is inert. */
+.item:focus,
+.item:hover:not([aria-disabled='true']) {
+  background-color: var(--color-accent-muted);
+}
+
+.item[aria-disabled='true'] {
+  color: var(--color-ink-faint);
+  cursor: default;
+}

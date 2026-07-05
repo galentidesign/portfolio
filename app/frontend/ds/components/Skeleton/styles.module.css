@@ -1,0 +1,73 @@
+/* ── Skeleton ─────────────────────────────────────────────────────────────── */
+
+/* Root is purely decorative (always aria-hidden) — see Skeleton.tsx. */
+
+.skeleton[data-shape='text'] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+/* ── Shimmer surfaces (text bars + block/circle roots) ────────────────────── */
+
+.bar,
+.skeleton[data-shape='block'],
+.skeleton[data-shape='circle'] {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-surface-sunken);
+}
+
+/* Shimmer sweep. Collapses to a static bar under reduced motion via the
+   --motion-duration-* token overrides (duration drops to 0ms), so no extra
+   media query is needed here. */
+.bar::after,
+.skeleton[data-shape='block']::after,
+.skeleton[data-shape='circle']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  /* Structural gradient: sheen built from the semantic raised-surface color */
+  background: linear-gradient(90deg, transparent, var(--color-surface-raised), transparent);
+
+  /* 0.7 structural micro-value — keeps the sheen translucent over the bar */
+  opacity: 0.7;
+  animation: skeleton-shimmer var(--motion-duration-xl) linear infinite;
+}
+
+/* ── Text bars ────────────────────────────────────────────────────────────── */
+
+.bar {
+  /* 1em structural value — each bar stands in for one line of ambient text */
+  height: 1em;
+  border-radius: var(--radius-control);
+}
+
+/* ── Block ────────────────────────────────────────────────────────────────── */
+
+.skeleton[data-shape='block'] {
+  border-radius: var(--radius-surface);
+}
+
+/* ── Circle ───────────────────────────────────────────────────────────────── */
+
+.skeleton[data-shape='circle'] {
+  border-radius: var(--radius-pill);
+
+  /* Keep the circle round when composed inside a flex row */
+  flex-shrink: 0;
+}
+
+/* ── Shimmer keyframes ────────────────────────────────────────────────────── */
+
+@keyframes skeleton-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}

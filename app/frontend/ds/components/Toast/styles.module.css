@@ -1,0 +1,161 @@
+/* ── Toast ────────────────────────────────────────────────────────────────── */
+
+.toast {
+  /* Inline mode is the default. Toast mode gets fixed positioning via data-attr */
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+
+  /* Shared: radius, padding, background, text color by tone (set below) */
+  border-radius: var(--radius-surface);
+  padding: var(--space-4);
+
+  /* Neutral tone by default (set explicitly for clarity) */
+  background-color: var(--color-surface-raised);
+  color: var(--color-ink);
+  border: 1px solid var(--color-line-strong);
+}
+
+/* ── Inline mode: static in-flow ──────────────────────────────────────────── */
+
+.toast[data-inline] {
+  /* Already inline by default in layout flow */
+}
+
+/* ── Toast mode: fixed positioning ────────────────────────────────────────── */
+
+.toast:not([data-inline]) {
+  position: fixed;
+  inset-block-end: var(--space-5);
+  inset-inline-end: var(--space-5);
+  z-index: var(--z-toast);
+  box-shadow: var(--shadow-overlay);
+
+  /* 24rem max-width is a structural constraint (prevents stretching) */
+  max-width: 24rem;
+
+  /* Entry animation: opacity + translateY with reduced-motion support */
+  transition:
+    opacity var(--motion-duration-sm) var(--motion-ease-enter),
+    transform var(--motion-duration-sm) var(--motion-ease-enter);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  .toast:not([data-inline]) {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+/* ── Tone: neutral ────────────────────────────────────────────────────────── */
+
+.toast[data-tone='neutral'] {
+  background-color: var(--color-surface-raised);
+  color: var(--color-ink);
+  border: 1px solid var(--color-line-strong);
+}
+
+/* ── Tone: positive ───────────────────────────────────────────────────────── */
+
+.toast[data-tone='positive'] {
+  background-color: var(--color-positive-surface);
+  color: var(--color-positive);
+  border: none;
+}
+
+/* ── Tone: caution ────────────────────────────────────────────────────────── */
+
+.toast[data-tone='caution'] {
+  background-color: var(--color-caution-surface);
+  color: var(--color-caution);
+  border: none;
+}
+
+/* ── Tone: critical ───────────────────────────────────────────────────────── */
+
+.toast[data-tone='critical'] {
+  background-color: var(--color-critical-surface);
+  color: var(--color-critical);
+  border: none;
+}
+
+/* ── Content wrapper ──────────────────────────────────────────────────────── */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+/* ── Title ────────────────────────────────────────────────────────────────── */
+
+.title {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  margin: 0;
+}
+
+/* ── Body text ────────────────────────────────────────────────────────────── */
+
+.body {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  margin: 0;
+}
+
+/* When there's no title, body uses body typography instead of small */
+.content:has(> :not(.title)) .body {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+}
+
+/* ── Dismiss button ───────────────────────────────────────────────────────── */
+
+.dismiss-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  /* Minimum target size per A11y rules */
+  min-width: var(--density-control-sm);
+  min-height: var(--density-control-sm);
+
+  /* Styling */
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+
+  /* Focus recipe */
+  border-radius: var(--radius-control);
+}
+
+.dismiss-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Dismiss icon ─────────────────────────────────────────────────────────── */
+
+.dismiss-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 600;
+}

@@ -1,0 +1,91 @@
+/* ── Code Block ───────────────────────────────────────────────────────────── */
+
+.code-block {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface-sunken);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.label {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* ── Copy Button ──────────────────────────────────────────────────────────── */
+
+.copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--density-control-sm);
+  padding: 0 var(--space-3);
+  background-color: transparent;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-control);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.copy-button:hover {
+  background-color: var(--color-surface-sunken);
+}
+
+.copy-button:active {
+  transform: translateY(1px);
+}
+
+.copy-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Pre / Code ───────────────────────────────────────────────────────────── */
+
+.pre {
+  margin: 0;
+  padding: var(--space-4);
+  overflow-x: auto;
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink);
+  outline: none;
+}
+
+/* ── Visually Hidden Live Region ──────────────────────────────────────────── */
+
+.sr-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}

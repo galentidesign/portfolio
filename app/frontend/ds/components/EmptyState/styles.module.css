@@ -1,0 +1,58 @@
+/* ── Empty State ──────────────────────────────────────────────────────────── */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding-block: var(--space-8);
+  padding-inline: var(--space-5);
+
+  /* 1px hairline — hardcoded as per styling rules (1px hairlines are allowed) */
+  border: 1px dashed var(--color-line-strong);
+  border-radius: var(--radius-surface);
+}
+
+/* ── Icon wrapper ─────────────────────────────────────────────────────────── */
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-faint);
+  margin-bottom: var(--space-2);
+}
+
+/* ── Title (styled as paragraph, not a heading) ───────────────────────────── */
+
+.title {
+  /* Consumers own heading structure; this is a styled paragraph */
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+/* ── Description ──────────────────────────────────────────────────────────── */
+
+.description {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+  margin: 0;
+  max-width: 44ch;
+  margin-inline: auto;
+}
+
+/* ── Action wrapper ───────────────────────────────────────────────────────── */
+
+.action-wrapper {
+  margin-top: var(--space-2);
+}

@@ -1,0 +1,65 @@
+/* ── Badge ────────────────────────────────────────────────────────────────── */
+
+.badge {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+
+  /* Default (md) sizing */
+  padding-inline: var(--space-3);
+  padding-block: var(--space-1);
+  border-radius: var(--radius-pill);
+
+  /* Typography */
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+
+  /* Shared */
+  border: none;
+  white-space: nowrap;
+}
+
+/* ── Size: sm ─────────────────────────────────────────────────────────────── */
+
+.badge[data-size='sm'] {
+  padding-inline: var(--space-2);
+  padding-block: 0;
+}
+
+/* ── Tone: neutral ────────────────────────────────────────────────────────── */
+
+.badge[data-tone='neutral'] {
+  background-color: var(--color-surface-sunken);
+  color: var(--color-ink-muted);
+}
+
+/* ── Tone: accent ─────────────────────────────────────────────────────────── */
+
+.badge[data-tone='accent'] {
+  background-color: var(--color-accent-muted);
+  color: var(--color-accent);
+}
+
+/* ── Tone: positive ───────────────────────────────────────────────────────── */
+
+.badge[data-tone='positive'] {
+  background-color: var(--color-positive-surface);
+  color: var(--color-positive);
+}
+
+/* ── Tone: caution ────────────────────────────────────────────────────────── */
+
+.badge[data-tone='caution'] {
+  background-color: var(--color-caution-surface);
+  color: var(--color-caution);
+}
+
+/* ── Tone: critical ───────────────────────────────────────────────────────── */
+
+.badge[data-tone='critical'] {
+  background-color: var(--color-critical-surface);
+  color: var(--color-critical);
+}

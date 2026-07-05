@@ -1,0 +1,134 @@
+/* ── Prose ─────────────────────────────────────────────────────────────── */
+
+.prose {
+  /* Structural: 65ch readability measure */
+  max-inline-size: 65ch;
+
+  /* Typography base */
+  color: var(--color-ink);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+}
+
+/* ── Headings (h1) ────────────────────────────────────────────────────── */
+
+.prose h1 {
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  margin-block: var(--space-6) var(--space-4);
+}
+
+/* ── Headings (h2) ────────────────────────────────────────────────────── */
+
+.prose h2 {
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  margin-block: var(--space-6) var(--space-3);
+}
+
+/* ── Headings (h3) ────────────────────────────────────────────────────── */
+
+.prose h3 {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-title-weight);
+  margin-block: var(--space-5) var(--space-2);
+}
+
+/* ── Paragraphs ───────────────────────────────────────────────────────── */
+
+.prose p {
+  margin-block: 0 var(--space-4);
+}
+
+/* ── Lists (ul, ol) ───────────────────────────────────────────────────── */
+
+.prose ul,
+.prose ol {
+  padding-inline-start: var(--space-5);
+  margin-block: 0 var(--space-4);
+}
+
+/* ── List items (li) ──────────────────────────────────────────────────── */
+
+.prose li {
+  margin-block: 0 var(--space-2);
+}
+
+.prose li::marker {
+  color: var(--color-ink-faint);
+}
+
+/* ── Links ────────────────────────────────────────────────────────────── */
+
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  border-radius: var(--radius-control);
+}
+
+.prose a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Strong ───────────────────────────────────────────────────────────── */
+
+.prose strong {
+  font-weight: var(--type-title-weight);
+}
+
+/* ── Code (inline) ────────────────────────────────────────────────────── */
+
+.prose code {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  background-color: var(--color-surface-sunken);
+  padding-inline: var(--space-1);
+  border-radius: var(--radius-control);
+}
+
+/* ── Preformatted (pre) ───────────────────────────────────────────────── */
+
+.prose pre {
+  background-color: var(--color-surface-sunken);
+  padding: var(--space-4);
+  border-radius: var(--radius-surface);
+  overflow-x: auto;
+}
+
+.prose pre code {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  background-color: transparent;
+  padding-inline: 0;
+  border-radius: 0;
+}
+
+/* ── Blockquotes ──────────────────────────────────────────────────────── */
+
+.prose blockquote {
+  margin-inline: 0;
+  padding-inline-start: var(--space-4);
+
+  /* Structural: 2px hairline */
+  border-inline-start: 2px solid var(--color-line-strong);
+  color: var(--color-ink-muted);
+}
+
+/* ── Horizontal rule ──────────────────────────────────────────────────── */
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--color-line);
+  margin-block: var(--space-6);
+}
