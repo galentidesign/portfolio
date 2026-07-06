@@ -5,8 +5,11 @@ class ApplicationController < ActionController::Base
   # Until the M10 DNS cutover only jgalenti.com may be indexed — staging and
   # any other host get a noindex header so the pre-launch URL never enters a
   # crawler's index (launch-gate item, guarded from the moment a sitemap
-  # exists).
-  CANONICAL_HOST = "jgalenti.com"
+  # exists). CI's Lighthouse job overrides CANONICAL_HOST to its own host:
+  # the §9.1 SEO budget measures the launch-domain posture, and a noindex
+  # header fails the is-crawlable audit on every route (read 63 across the
+  # board on the first CI run). Staging never sets the override.
+  CANONICAL_HOST = ENV.fetch("CANONICAL_HOST", "jgalenti.com")
 
   after_action :noindex_off_canonical_host
 

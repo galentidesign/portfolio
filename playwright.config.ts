@@ -21,5 +21,13 @@ export default defineConfig({
     url: 'http://127.0.0.1:3001/up',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    env: {
+      ...process.env,
+      // Test-only /ops fixtures for the e2e auth suite — not real
+      // credentials (the real pair lives only in the hosting dashboard).
+      // Local runs boot the server manually with the same pair.
+      OPS_USERNAME: 'ops-e2e',
+      OPS_PASSWORD: 'ops-e2e-not-a-secret',
+    },
   },
 })

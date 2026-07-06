@@ -102,6 +102,10 @@ jobs:
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/portfolio_test
       RAILS_ENV: test
+      # The §9.1 budget measures the launch-domain posture: without this the
+      # off-canonical noindex guard fires and Lighthouse's is-crawlable SEO
+      # audit fails every route. Staging never sets this override.
+      CANONICAL_HOST: localhost
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -124,12 +128,21 @@ jobs:
         run: |
           bin/rails server -e test -p 3001 > /tmp/rails-server.log 2>&1 &
           for i in $(seq 1 60); do
-            curl -fsS http://127.0.0.1:3001/up > /dev/null 2>&1 && exit 0
+            curl -fsS http://localhost:3001/up > /dev/null 2>&1 && exit 0
             sleep 1
           done
           echo "server never came up" && exit 1
+      - name: Warm routes
+        # Each route's first request pays boot/compile costs; unwarmed, that
+        # cost lands inside its Lighthouse run (mobile "/" read 63 cold).
+        run: |
+          for route in / /work /work/agentic-design-ops /work/shadcn-to-polaris /system /system/components/button /resume; do
+            curl -fsS -o /dev/null "http://localhost:3001${route}" || true
+          done
       - name: Lighthouse budgets
-        run: npm run perf:lighthouse -- --base http://127.0.0.1:3001 --min 95 --min-mobile-perf 90
+        # localhost directly — the 127.0.0.1→localhost redirect would add a
+        # hop inside every measured load and change the effective host.
+        run: npm run perf:lighthouse -- --base http://localhost:3001 --min 95 --min-mobile-perf 90
       - name: Upload score matrix
         if: always()
         uses: actions/upload-artifact@v4
