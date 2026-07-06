@@ -31,6 +31,10 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Headless Chrome driver for `rake og:generate` (OG card screenshots).
+  # Dev/test only — OG images are generated artifacts, never rendered at runtime.
+  gem "ferrum", "~> 0.17", require: false
 end
 
 group :development do

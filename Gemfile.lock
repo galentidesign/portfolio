@@ -75,6 +75,8 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    addressable (2.9.0)
+      public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
     base64 (0.3.0)
     bigdecimal (4.1.2)
@@ -99,6 +101,12 @@ GEM
     dry-cli (1.4.1)
     erb (6.0.4)
     erubi (1.13.1)
+    ferrum (0.17.2)
+      addressable (~> 2.5)
+      base64 (~> 0.2)
+      concurrent-ruby (~> 1.1)
+      webrick (~> 1.7)
+      websocket-driver (~> 0.7)
     globalid (1.4.0)
       activesupport (>= 6.1)
     i18n (1.15.2)
@@ -172,6 +180,7 @@ GEM
       prettyprint
     prettyprint (0.2.0)
     prism (1.9.0)
+    public_suffix (7.0.5)
     puma (8.0.2)
       nio4r (~> 2.0)
     racc (1.8.1)
@@ -304,6 +313,7 @@ GEM
       actionview (>= 8.0.0)
       bindex (>= 0.4.0)
       railties (>= 8.0.0)
+    webrick (1.9.2)
     websocket-driver (0.8.2)
       base64
       websocket-extensions (>= 0.1.0)
@@ -327,6 +337,7 @@ DEPENDENCIES
   brakeman
   bundler-audit
   debug
+  ferrum (~> 0.17)
   inertia_rails (~> 3.21)
   pg (~> 1.1)
   puma (>= 5.0)

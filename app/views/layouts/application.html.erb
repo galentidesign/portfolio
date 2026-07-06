@@ -30,6 +30,8 @@
     <%= csp_meta_tag %>
 
     <%= yield :head %>
+    <%# Social/unfurl tags must be server-rendered — crawlers don't run JS. %>
+    <%= og_meta_tags(@inertia_page_component) %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
