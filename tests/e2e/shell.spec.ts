@@ -303,9 +303,9 @@ test('axe: shell toast open state has zero violations', async ({ page }) => {
 
 // ── Stub pages ──────────────────────────────────────────────────────────────
 
+// The two study routes graduated to full pages in M8 (covered by
+// studies.spec.ts); only résumé and colophon remain stubs until M9.
 const STUBS = [
-  ['/work/agentic-design-ops', 'Agentic design-ops'],
-  ['/work/shadcn-to-polaris', 'shadcn → Polaris'],
   ['/resume', 'Résumé'],
   ['/colophon', 'Colophon'],
 ] as const
