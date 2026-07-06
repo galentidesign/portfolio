@@ -46,7 +46,11 @@ const PRESETS = [
   { name: 'desktop', config: desktopConfig },
 ]
 
-const chrome = await chromeLauncher.launch({ chromeFlags: ['--headless=new'] })
+// --disable-quic: deterministic transport — headless Chrome's QUIC
+// negotiation races against some hosts and aborts the load with NO_FCP.
+const chrome = await chromeLauncher.launch({
+  chromeFlags: ['--headless=new', '--disable-quic'],
+})
 const results = []
 let failed = false
 

@@ -1,20 +1,29 @@
+# NOTE: the Render service is DASHBOARD-MANAGED — this file has never been
+# applied as a Blueprint and Render does not read it. It exists to document
+# the real settings so the repo stops carrying deploy fiction (which cost an
+# hour at M8 close-out). If these settings change in the dashboard, change
+# them here too.
+#
+# Current reality (M8): web service on the FREE instance type + a managed
+# Postgres 18 created at M8. Free tier has no pre-deploy step, so
+# migrate/seed run in the start command (seeds are idempotent fixed-id
+# upserts by design). Planned at M10 launch: upgrade to `starter` (kills
+# idle spin-down; unlocks preDeployCommand: bin/rails db:migrate db:seed).
+
 databases:
   - name: portfolio-db
-    plan: basic-256mb
-    postgresMajorVersion: '16'
+    plan: free
+    postgresMajorVersion: '18'
 
 services:
   - type: web
     name: portfolio
     runtime: ruby
-    plan: starter
+    plan: free
     # No asset pipeline (propshaft skipped) — build assets via Vite directly;
     # `assets:precompile` would fail on its missing `assets:clean` dependency.
     buildCommand: bundle install && npm ci && bin/vite build
-    # Seeds are idempotent (fixed-id upserts) — safe on every deploy; the
-    # Study B demo serves its fictional fixtures from these tables.
-    preDeployCommand: bin/rails db:migrate db:seed
-    startCommand: bundle exec puma -C config/puma.rb
+    startCommand: bin/rails db:prepare db:seed && bundle exec puma -C config/puma.rb
     healthCheckPath: /up
     envVars:
       - key: DATABASE_URL
