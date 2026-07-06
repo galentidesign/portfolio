@@ -1,0 +1,79 @@
+/* OrchestrationDiagram — static architecture flow, no motion */
+
+.figure {
+  margin: 0;
+}
+
+.layout {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.level {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.level-agents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  width: 100%;
+}
+
+.node {
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-control);
+  color: var(--color-ink);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  white-space: nowrap;
+}
+
+.node[data-role='orchestrator'] {
+  background-color: var(--color-accent-muted);
+  border-color: var(--color-accent);
+  font-weight: var(--type-title-weight);
+}
+
+.node[data-role='gate'] {
+  background-color: var(--color-caution-surface);
+  border-color: var(--color-caution);
+}
+
+.node[data-role='artifact'] {
+  background-color: var(--color-positive-surface);
+  border-color: var(--color-positive);
+}
+
+.connector {
+  height: var(--space-5);
+  width: 100%;
+}
+
+.connector line,
+.connector-sm line {
+  stroke: var(--color-line-strong);
+  stroke-width: 1.5;
+}
+
+.connector-sm {
+  height: var(--space-3);
+  width: 100%;
+}
+
+.caption {
+  color: var(--color-ink-muted);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+  margin-block-start: var(--space-4);
+  text-align: center;
+}

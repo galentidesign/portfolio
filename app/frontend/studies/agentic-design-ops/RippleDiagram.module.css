@@ -1,0 +1,67 @@
+/* RippleDiagram — one-change-radiates-everywhere visual, static */
+
+.figure {
+  margin: 0;
+}
+
+.layout {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.level {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.level-targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  width: 100%;
+}
+
+.node {
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-control);
+  color: var(--color-ink);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  white-space: nowrap;
+}
+
+.node[data-role='source'] {
+  background-color: var(--color-accent-muted);
+  border-color: var(--color-accent);
+  font-weight: var(--type-title-weight);
+}
+
+.node[data-role='target'] {
+  background-color: var(--color-surface-sunken);
+}
+
+.connector {
+  height: var(--space-5);
+  width: 100%;
+}
+
+.connector line {
+  stroke: var(--color-line-strong);
+  stroke-width: 1.5;
+}
+
+.caption {
+  color: var(--color-ink-muted);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+  margin-block-start: var(--space-4);
+  text-align: center;
+}
