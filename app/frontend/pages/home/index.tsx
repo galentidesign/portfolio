@@ -7,7 +7,12 @@ import styles from './styles.module.css'
 export default function Home() {
   return (
     <>
-      <Head title="J Galenti" />
+      <Head title="J Galenti">
+        <meta
+          name="description"
+          content="J Galenti — design technologist. A portfolio built as evidence: a token-driven design system, re-theming story chapters, and agent-built receipts."
+        />
+      </Head>
       <main id="main" className={styles.page}>
         {/* ── Assembly opening (owns the hero h1) ─────────────────────────── */}
         <AssemblyOpening />

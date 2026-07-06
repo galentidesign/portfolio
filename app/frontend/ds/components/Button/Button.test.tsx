@@ -122,14 +122,15 @@ describe('Button href (anchor mode)', () => {
     expect(anchor).toHaveAttribute('href', 'https://example.com')
   })
 
-  it('disabled anchor has aria-disabled="true" and tabIndex=-1', () => {
+  it('disabled anchor keeps the link role with aria-disabled="true" and tabIndex=-1', () => {
     render(
       <Button href="https://example.com" disabled>
         Go
       </Button>,
     )
-    // Disabled anchors have no implicit role; query by text
-    const anchor = screen.getByText('Go').closest('a')!
+    // href is dropped when disabled; the explicit role keeps it a (disabled) link.
+    const anchor = screen.getByRole('link', { name: 'Go' })
+    expect(anchor).not.toHaveAttribute('href')
     expect(anchor).toHaveAttribute('aria-disabled', 'true')
     expect(anchor).toHaveAttribute('tabindex', '-1')
   })

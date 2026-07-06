@@ -11,7 +11,12 @@ const visibleSkinCount = skins.filter((s) => !s.hidden).length
 export default function WorkIndex() {
   return (
     <>
-      <Head title="Work — J Galenti" />
+      <Head title="Work — J Galenti">
+        <meta
+          name="description"
+          content="The skim hub: thesis, two case studies, the design system, and the résumé — every claim linked to proof."
+        />
+      </Head>
       <main id="main" className={styles.page}>
         <div className={styles.container}>
           {/* Block 1: Thesis */}

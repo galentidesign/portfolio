@@ -38,5 +38,11 @@ module Portfolio
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Compress text responses (HTML/JS/CSS/JSON). Must sit ABOVE the static
+    # file server or built assets short-circuit around it uncompressed.
+    # Staging's proxy also compresses at the edge; this keeps local
+    # measurement representative and covers any client the edge misses.
+    config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
   end
 end

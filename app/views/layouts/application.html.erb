@@ -39,6 +39,11 @@
     <%= vite_client_tag %>
     <%= vite_typescript_tag "application" %>
     <%= vite_typescript_tag "inertia.tsx" %>
+    <%# The page chunk is a dynamic import; preloading it collapses the
+        entry → page-chunk waterfall by one network hop. %>
+    <% inertia_page_preload_paths(@inertia_page_component).each do |href| %>
+      <link rel="modulepreload" href="<%= href %>" crossorigin="anonymous">
+    <% end %>
     <%= inertia_ssr_head %>
   </head>
 

@@ -53,6 +53,9 @@ export function Button({
       <a
         ref={ref as Ref<HTMLAnchorElement>}
         href={isDisabled ? undefined : href}
+        // Dropping href also drops the implicit link role; restore it so a
+        // disabled link still announces as one (the ARIA disabled-link idiom).
+        role={isDisabled ? 'link' : undefined}
         className={rootClass}
         data-variant={variant}
         data-size={size}

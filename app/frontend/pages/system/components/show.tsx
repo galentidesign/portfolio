@@ -24,7 +24,12 @@ export default function Show({ nav, entry }: ShowProps) {
 
   return (
     <>
-      <Head title={`${entry.name} — Design System`} />
+      <Head title={`${entry.name} — Design System`}>
+        <meta
+          name="description"
+          content={`${entry.name} — props, accessibility contract, usage guidance, and consumed tokens in the portfolio design system.`}
+        />
+      </Head>
       <DocShell nav={nav}>
         <div data-component-doc={entry.slug} className={styles.doc}>
           {/* 1. Header ─────────────────────────────────────────────────── */}

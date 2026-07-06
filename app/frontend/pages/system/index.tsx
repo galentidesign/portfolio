@@ -29,7 +29,12 @@ export default function SystemIndex({ nav, components }: Props) {
 
   return (
     <>
-      <Head title="Design System — J Galenti" />
+      <Head title="Design System — J Galenti">
+        <meta
+          name="description"
+          content="The design system: 16 components documented from a single manifest — tokens, motion, skins, and live playgrounds."
+        />
+      </Head>
       <DocShell nav={nav}>
         <div className={styles.content}>
           <h1 className={styles.heading}>Design system</h1>
