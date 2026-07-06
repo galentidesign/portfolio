@@ -142,7 +142,10 @@ jobs:
       - name: Lighthouse budgets
         # localhost directly — the 127.0.0.1→localhost redirect would add a
         # hop inside every measured load and change the effective host.
-        run: npm run perf:lighthouse -- --base http://localhost:3001 --min 95 --min-mobile-perf 90
+        # --warmup: the first measurement in a Chrome process absorbs its
+        # cold-start on shared runners (mobile "/" read 70 on a run where
+        # every other cell was 95–100).
+        run: npm run perf:lighthouse -- --base http://localhost:3001 --min 95 --min-mobile-perf 90 --warmup
       - name: Upload score matrix
         if: always()
         uses: actions/upload-artifact@v4
