@@ -81,6 +81,32 @@ RSpec.describe "OG cards", type: :request do
     end
   end
 
+  # ── og:image cache-busting ──────────────────────────────────────────────────
+  # Unfurl proxies cache derived variants by source URL; the content-hash
+  # version param guarantees regenerated art gets fresh variants (and fixed
+  # the blurry LinkedIn home-card thumbnail observed at M10 launch).
+
+  describe "og:image version param" do
+    it "appends a stable content-hash ?v= when the PNG exists" do
+      png = Rails.public_path.join("og", "work.png")
+      skip "generated og PNGs not present" unless File.exist?(png)
+
+      expected = Digest::SHA256.file(png).hexdigest.first(8)
+      get "/work"
+      expect(response.body).to include("/og/work.png?v=#{expected}")
+    end
+
+    it "twitter:image carries the same versioned URL" do
+      png = Rails.public_path.join("og", "work.png")
+      skip "generated og PNGs not present" unless File.exist?(png)
+
+      get "/work"
+      versioned = response.body[%r{/og/work\.png\?v=\h{8}}]
+      expect(versioned).not_to be_nil
+      expect(response.body.scan(versioned).size).to be >= 2
+    end
+  end
+
   describe "GET a 404 path" do
     it "does not emit an og:image tag" do
       get "/this-page-does-not-exist-og-test"

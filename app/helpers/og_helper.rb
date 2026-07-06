@@ -120,7 +120,7 @@ module OgHelper
     title    = meta[:title]
     desc     = meta[:description]
     alt      = meta[:image_alt]
-    image    = "#{request.base_url}/og/#{key}.png"
+    image    = "#{request.base_url}/og/#{key}.png#{og_image_version(key)}"
     page_url = request.base_url + request.path
 
     safe_join([
@@ -137,5 +137,22 @@ module OgHelper
       tag.meta(name: "twitter:description", content: desc),
       tag.meta(name: "twitter:image",       content: image)
     ], "\n")
+  end
+
+  private
+
+  # Content-hash version param for og:image URLs. Unfurl proxies (LinkedIn's
+  # media CDN especially) cache their DERIVED image variants by source URL —
+  # a regenerated PNG, or a badly-derived variant (observed: blurry home-card
+  # thumbnail at launch), stays stale until the URL changes. Hashing the file
+  # makes every regeneration a new URL automatically. Per-request memo only:
+  # ten ~20 kB hashes are microseconds, and the process never serves a stale
+  # hash after `rake og:generate` without a restart.
+  def og_image_version(key)
+    @og_image_versions ||= {}
+    @og_image_versions[key] ||= begin
+      path = Rails.public_path.join("og", "#{key}.png")
+      File.exist?(path) ? "?v=#{Digest::SHA256.file(path).hexdigest.first(8)}" : ""
+    end
   end
 end
