@@ -45,6 +45,16 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
+  # The e2e suite (and any test-env server browse) fires real beacons that
+  # COMMIT visits/events outside spec transactions — leftover rows break
+  # absolute-count expectations. Telemetry tables are append-only capture,
+  # never seed data, so an empty baseline per rspec boot is always correct.
+  # (Demo seeds are deliberately untouched.)
+  config.before(:suite) do
+    Event.delete_all
+    Visit.delete_all
+  end
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 

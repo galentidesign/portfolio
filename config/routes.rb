@@ -18,6 +18,17 @@ Rails.application.routes.draw do
   get "resume",                     to: "pages#resume"
   get "colophon",                   to: "pages#colophon"
 
+  # First-party telemetry (§7): beacon sink + private dashboard. /t accepts
+  # sendBeacon POSTs (no CSRF token possible — see TelemetryController).
+  post "t",   to: "telemetry#create"
+  get  "ops", to: "ops#index"
+
+  # OG card render targets (§8): generation-only surfaces screenshotted by
+  # `rake og:generate`; noindexed and excluded from the sitemap by design.
+  get "og/:key", to: "og#show", as: :og_card, constraints: { key: /[a-z0-9-]+/ }
+
+  get "sitemap.xml", to: "sitemap#show", defaults: { format: :xml }
+
   get "system",                     to: "system#index"
   get "system/tokens",              to: "system#tokens"
   get "system/motion",              to: "system#motion"

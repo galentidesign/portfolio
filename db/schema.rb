@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_05_000005) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_06_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,9 +67,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_05_000005) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "kind", null: false
+    t.jsonb "payload", default: {}, null: false
+    t.bigint "visit_id", null: false
+    t.index ["kind", "created_at"], name: "index_events_on_kind_and_created_at"
+    t.index ["visit_id"], name: "index_events_on_visit_id"
+  end
+
+  create_table "visits", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "day_key", null: false
+    t.string "entry_path", null: false
+    t.string "first_referrer"
+    t.string "ua_class", default: "unknown", null: false
+    t.string "utm_campaign"
+    t.string "utm_medium"
+    t.string "utm_source"
+    t.index ["created_at"], name: "index_visits_on_created_at"
+    t.index ["day_key"], name: "index_visits_on_day_key", unique: true
+  end
+
   add_foreign_key "demo_children", "demo_households"
   add_foreign_key "demo_chore_assignments", "demo_children"
   add_foreign_key "demo_chore_assignments", "demo_chores"
   add_foreign_key "demo_chore_steps", "demo_chores"
   add_foreign_key "demo_chores", "demo_households"
+  add_foreign_key "events", "visits"
 end
