@@ -1,0 +1,33 @@
+/* Polaris demo root wrapper — no site tokens used inside here;
+   Polaris tokens are scoped to the container via the injected stylesheet. */
+
+.root {
+  /* Establish a stacking context so Polaris modals/toasts are clipped inside. */
+  position: relative;
+  isolation: isolate;
+}
+
+/* Submit confirmation banner sits above the active view, outside any Polaris
+   Page padding; explicit margins because Polaris's global reset is active. */
+.confirmation {
+  margin: 0 0 var(--space-4);
+}
+
+/* Reduced-motion override: collapses every Polaris motion-duration token to 0.
+   Polaris uses these tokens for all its transitions and animations, so setting
+   them to 0ms makes every transition instant. The contract permits setting
+   --p-* custom properties inside the demo container. */
+.motion-reduced {
+  --p-motion-duration-0: 0ms;
+  --p-motion-duration-50: 0ms;
+  --p-motion-duration-100: 0ms;
+  --p-motion-duration-150: 0ms;
+  --p-motion-duration-200: 0ms;
+  --p-motion-duration-250: 0ms;
+  --p-motion-duration-300: 0ms;
+  --p-motion-duration-350: 0ms;
+  --p-motion-duration-400: 0ms;
+  --p-motion-duration-450: 0ms;
+  --p-motion-duration-500: 0ms;
+  --p-motion-duration-5000: 0ms;
+}

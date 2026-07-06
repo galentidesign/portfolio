@@ -1,0 +1,200 @@
+/* All elements on this page set explicit margins and type tokens.
+   Polaris's global h1–h6, p { margin: 0 } reset is active while
+   the demo is mounted — never rely on UA defaults. */
+
+.page {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  min-height: 100dvh;
+  padding-top: var(--space-9);
+  padding-bottom: var(--space-10);
+}
+
+.container {
+  max-width: 56rem;
+  margin-inline: auto;
+  padding-inline: var(--density-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.heading {
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+
+  /* Explicit margin — Polaris resets all heading margins to 0 */
+  margin-top: 0;
+  margin-bottom: 0;
+  color: var(--color-ink);
+}
+
+.intro {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+
+  /* Explicit margin — Polaris resets p margin to 0 */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* State switcher fieldset */
+.switcher-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.switcher-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.switcher-legend {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  padding: 0;
+  margin-bottom: var(--space-2);
+}
+
+.switcher-segments {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.switcher-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.switcher-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.switcher-segment {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-line);
+  background-color: var(--color-surface-raised);
+  color: var(--color-ink-muted);
+  transition:
+    background-color var(--motion-duration-xs) var(--motion-ease-enter),
+    color var(--motion-duration-xs) var(--motion-ease-enter),
+    border-color var(--motion-duration-xs) var(--motion-ease-enter);
+}
+
+.switcher-input:checked + .switcher-segment {
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+  border-color: var(--color-ink);
+}
+
+.switcher-input:focus-visible + .switcher-segment {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.switcher-label:hover .switcher-segment {
+  border-color: var(--color-line-strong);
+  color: var(--color-ink);
+}
+
+.switcher-input:checked + .switcher-segment:hover {
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+}
+
+.latency-note {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-faint);
+
+  /* Explicit margin */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Demo mount area */
+.demo-mount {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+  min-height: 32rem;
+}
+
+/* Placeholder shown before the Polaris chunk loads */
+.demo-pending {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32rem;
+  background-color: var(--color-surface-sunken);
+  border-radius: var(--radius-surface);
+}
+
+.demo-pending-text {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-faint);
+
+  /* Explicit margin */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.back-link {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-accent);
+  text-decoration: underline;
+  border-radius: var(--radius-control);
+
+  /* Explicit margin */
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline-block;
+}
+
+.back-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
