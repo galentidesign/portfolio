@@ -12,4 +12,8 @@ class WorkController < InertiaController
   def shadcn_to_polaris
     render inertia: "work/shadcn-to-polaris"
   end
+
+  def shadcn_to_polaris_demo
+    render inertia: "work/shadcn-to-polaris-demo"
+  end
 end

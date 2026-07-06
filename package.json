@@ -12,9 +12,11 @@
     "@types/node": "^26.1.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "chrome-launcher": "^1.2.1",
     "eslint": "^10.6.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "jsdom": "^29.1.1",
+    "lighthouse": "^13.4.0",
     "postcss-custom-media": "^12.0.1",
     "prettier": "^3.9.4",
     "stylelint": "^17.14.0",
@@ -35,6 +37,7 @@
     "tokens:build": "node app/frontend/ds/tokens/build.mjs",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
     "meta:export": "tsx scripts/export-meta.mjs",
+    "perf:lighthouse": "node scripts/perf/lighthouse-check.mjs",
     "test:unit": "vitest run",
     "test:e2e": "playwright test"
   },
@@ -42,9 +45,20 @@
     "@gsap/react": "2.1.2",
     "@inertiajs/react": "^3.6.0",
     "@inertiajs/vite": "^3.6.0",
+    "@shopify/polaris": "13.9.5",
+    "@shopify/polaris-icons": "9.3.1",
     "@vitejs/plugin-react": "^5.2.0",
     "gsap": "3.15.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
+  },
+  "overrides": {
+    "@shopify/polaris": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "@shopify/polaris-icons": {
+      "react": "$react"
+    }
   }
 }

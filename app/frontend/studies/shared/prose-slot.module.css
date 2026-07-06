@@ -1,0 +1,33 @@
+.slot {
+  display: grid;
+  gap: var(--space-2);
+  margin-block: var(--space-5);
+  padding: var(--space-4);
+  border: 1px dashed var(--color-line-strong);
+  border-radius: var(--radius-surface);
+  background: var(--color-surface-raised);
+}
+
+.label {
+  margin: 0;
+  font-family: var(--type-mono-family);
+  font-size: var(--type-small-size);
+  letter-spacing: var(--type-small-tracking);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.hint {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+  color: var(--color-ink-muted);
+}
+
+.hint > :first-child {
+  margin-block-start: 0;
+}
+
+.hint > :last-child {
+  margin-block-end: 0;
+}
