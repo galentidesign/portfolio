@@ -44,5 +44,16 @@ module Portfolio
     # Staging's proxy also compresses at the edge; this keeps local
     # measurement representative and covers any client the edge misses.
     config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
+
+    # COOKIELESS BY CONTRACT (telemetry README §7, /colophon privacy claim):
+    # this app must never Set-Cookie. With forgery protection enabled,
+    # inertia_rails writes an XSRF-TOKEN cookie on every response and the
+    # token write drags a session cookie with it — so CSRF stays off in every
+    # environment. That is sound ONLY because no endpoint authenticates with
+    # cookies: /t validates + rate-limits without sessions, the demo API is
+    # read-only, /ops uses HTTP basic auth. Any future cookie-authenticated
+    # POST must re-enable forgery protection and renegotiate the contract.
+    # Pinned by spec/requests/cookieless_spec.rb.
+    config.action_controller.allow_forgery_protection = false
   end
 end

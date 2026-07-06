@@ -25,8 +25,9 @@ Rails.application.configure do
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable
 
-  # Disable request forgery protection in test environment.
-  config.action_controller.allow_forgery_protection = false
+  # Forgery protection is disabled app-wide in config/application.rb (the
+  # cookieless contract) — no per-environment override here, so tests run
+  # exactly the configuration production serves.
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
