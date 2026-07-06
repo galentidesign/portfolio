@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16
+        image: postgres:18
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -82,3 +82,57 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Playwright smoke
         run: npm run test:e2e
+
+  # §9.1 stage 5: Lighthouse budgets against a CI-local server. This stack is
+  # gzip-only HTTP/1.1, so the mobile performance floor sits at 90 here — the
+  # official ≥95-everywhere bar is the staging capture (brotli + HTTP/2)
+  # recorded in data/craft.json. Everything else asserts ≥95.
+  perf:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready" --health-interval=10s
+          --health-timeout=5s --health-retries=5
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/portfolio_test
+      RAILS_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - name: Token build
+        run: npm run tokens:build
+      - name: Prepare database
+        run: bin/rails db:prepare
+      - name: Build frontend
+        run: bin/vite build
+      - name: Boot server
+        # Redirected + backgrounded so the step can exit while puma keeps
+        # serving for the next step (an open stdout would hang the runner).
+        run: |
+          bin/rails server -e test -p 3001 > /tmp/rails-server.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:3001/up > /dev/null 2>&1 && exit 0
+            sleep 1
+          done
+          echo "server never came up" && exit 1
+      - name: Lighthouse budgets
+        run: npm run perf:lighthouse -- --base http://127.0.0.1:3001 --min 95 --min-mobile-perf 90
+      - name: Upload score matrix
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: tmp/lighthouse/

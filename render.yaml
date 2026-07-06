@@ -32,6 +32,13 @@ services:
           property: connectionString
       - key: RAILS_MASTER_KEY
         sync: false
+      # /ops basic-auth credential (M9): values are set BY HAND in the
+      # dashboard and exist nowhere in this repo. Until both are set, /ops
+      # answers 401 to everyone (deny-by-default).
+      - key: OPS_USERNAME
+        sync: false
+      - key: OPS_PASSWORD
+        sync: false
       - key: RAILS_ENV
         value: production
       - key: WEB_CONCURRENCY

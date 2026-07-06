@@ -292,6 +292,45 @@ async function captureRetheme(page) {
   return analyseFrames(timestamps, 'Era re-theme /work → /story/rails-era')
 }
 
+async function captureDemoStates(page) {
+  const label = 'Demo state switches …/shadcn-to-polaris/demo'
+  await page.goto(BASE_URL + '/work/shadcn-to-polaris/demo', { waitUntil: 'networkidle' })
+
+  // The Polaris demo arrives as a lazy chunk; the switcher renders with the
+  // page but a switch only exercises the real render path once the demo is
+  // mounted (the pending placeholder is gone).
+  try {
+    await page.locator('[data-testid="demo-state-switcher"]').waitFor({ timeout: 12_000 })
+    await page
+      .locator('[data-testid="demo-state-switcher"] input[value="success"]')
+      .waitFor({ state: 'attached', timeout: 8_000 })
+    await page.waitForFunction(() => !document.querySelector('[class*="demo-pending"]'), null, {
+      timeout: 15_000,
+    })
+  } catch {
+    return { label, verdict: 'SKIP', reason: 'demo never finished mounting' }
+  }
+
+  // Cycle all four states twice. Radios are visually hidden — click the
+  // wrapping label (the real user surface), never the input.
+  const states = ['empty', 'error', 'loading', 'success']
+  await page.evaluate(() => window.__perfStart())
+  for (let round = 0; round < 2; round++) {
+    for (const state of states) {
+      await page
+        .locator(`[data-testid="demo-state-switcher"] label:has(input[value="${state}"])`)
+        .click()
+      // Each switch refetches (~25 ms test-env latency) and re-renders the
+      // Polaris tree; hold long enough to capture the settle.
+      await page.waitForTimeout(700)
+    }
+  }
+  await page.evaluate(() => window.__perfStop())
+
+  const timestamps = await page.evaluate(() => window.__perfFrames())
+  return analyseFrames(timestamps, label)
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -324,6 +363,7 @@ async function main() {
     () => captureScrollProgress(page),
     () => capturePalette(page),
     () => captureRetheme(page),
+    () => captureDemoStates(page),
   ]
 
   // Median-of-3 per target: the protocol is "repeatable" — a real sustained
@@ -382,9 +422,9 @@ async function main() {
     }
   }
 
-  // Pending items not yet captured (app surfaces land in M8).
-  const pending = ['WebGL assembly swap render path (M8)']
-  console.log('\n  Pending (surfaces not yet built):')
+  // Deferred surfaces (spec §13): nothing in v1 remains uncaptured.
+  const pending = ['WebGL assembly swap render path (v1.5 — deferred)']
+  console.log('\n  Pending (deferred surfaces):')
   for (const p of pending) console.log(`    • ${p}`)
 
   const overallVerdict = results.some((r) => r.verdict === 'FAIL') ? 'FAIL' : 'PASS'
