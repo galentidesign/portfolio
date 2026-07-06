@@ -1,0 +1,146 @@
+/* Study B: shadcn → Polaris. Semantic tokens only. */
+
+.page {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  min-height: 100dvh;
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-10);
+}
+
+.container {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--density-pad);
+}
+
+/* ── Navigation ── */
+
+.back-link {
+  display: inline-block;
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  margin-bottom: var(--space-5);
+  border-radius: var(--radius-control);
+}
+
+.back-link:hover {
+  color: var(--color-accent);
+}
+
+.back-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Page heading ── */
+
+.heading {
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.subhead {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+  margin: 0 0 var(--space-8) 0;
+}
+
+/* ── Sections ── */
+
+.section {
+  margin-top: var(--space-9);
+}
+
+.section-heading {
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
+  margin: 0 0 var(--space-5) 0;
+}
+
+.prose-gap {
+  margin-top: var(--space-5);
+}
+
+/* ── Table wrapper ── */
+
+.table-wrapper {
+  margin-top: var(--space-5);
+}
+
+/* ── Cell renderers ── */
+
+/* Monospace inline code for token names */
+.token-code {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  background-color: var(--color-surface-sunken);
+  border-radius: var(--radius-control);
+  padding: 0.1em 0.35em;
+  word-break: break-all;
+}
+
+/* "—" placeholder when no Polaris equivalent exists */
+.no-value {
+  color: var(--color-ink-faint);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+}
+
+/* Color swatch: a small square next to the text value */
+.swatch-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.swatch {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-line-strong);
+}
+
+/* Long text in table cells should wrap at word boundaries */
+.wrap-cell {
+  overflow-wrap: break-word;
+  min-width: 8rem;
+}
+
+/* ── Demo entry ── */
+
+.demo-section {
+  margin-top: var(--space-9);
+}
+
+.demo-note {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-faint);
+  margin: var(--space-3) 0 0 0;
+}
