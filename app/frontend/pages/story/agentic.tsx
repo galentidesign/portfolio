@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Head, Link } from '@inertiajs/react'
 import { ScrollProgress } from '@/shell/story/ScrollProgress'
+import { Receipts } from '@/story/receipts/Receipts'
 import { track } from '@/telemetry/track'
 import { CONTACT_EMAIL, LINKEDIN_URL } from '@/shell/contact'
 import styles from './story.module.css'
@@ -51,9 +52,7 @@ export default function Agentic() {
           <h2 id="agentic-receipts" className={styles['section-heading']}>
             Agent receipts
           </h2>
-          <p className={styles.annotation}>
-            agent-built receipts — assembled at M10 from docs/receipts/
-          </p>
+          <Receipts />
         </section>
 
         <section aria-labelledby="agentic-playbook" className={styles.section}>
