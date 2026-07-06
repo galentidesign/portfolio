@@ -1,10 +1,12 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { Link, router, usePage } from '@inertiajs/react'
 import { Nav } from '@/ds/components/Nav/Nav'
 import { Toast } from '@/ds/components/Toast/Toast'
 import { useSkin } from '@/shell/skin/SkinProvider'
+import { SiteFooter } from '@/shell/SiteFooter'
 import { buildSiteActions } from '@/shell/actions'
 import { modeForPath, getStoredMode, useModeMemory } from '@/shell/mode/useMode'
+import { initTelemetry, markSkimVia, track } from '@/telemetry/track'
 import styles from './siteShell.module.css'
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -20,12 +22,19 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   useModeMemory(currentPath)
 
+  // Boot telemetry once on mount. initTelemetry is idempotent so StrictMode
+  // double-invoke is safe (second call returns immediately).
+  useEffect(() => {
+    initTelemetry()
+  }, [])
+
   const actions = buildSiteActions({
     currentPath,
     skins,
     setSkin,
     visit: (href) => router.visit(href),
     notify: (message) => setNotice(message),
+    track,
   })
 
   const navItems = [
@@ -45,6 +54,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
         label="Site"
         linkAs={Link}
         actions={actions}
+        onPaletteOpenChange={(open) => {
+          if (open) track('palette_open')
+        }}
       />
 
       {/* Escape hatch: fixed pill, story routes only. Placed right after Nav so
@@ -52,7 +64,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
           labeled nav wrapper keeps the link inside a landmark (axe: region). */}
       {isStoryRoute && (
         <nav aria-label="Escape hatch" className={styles['hatch-nav']}>
-          <Link href="/work" className={styles.hatch} data-testid="escape-hatch">
+          <Link
+            href="/work"
+            className={styles.hatch}
+            data-testid="escape-hatch"
+            onClick={() => {
+              markSkimVia('hatch')
+              track('mode_switch', { to: 'skim', via: 'hatch' })
+            }}
+          >
             {hatchLabel}
           </Link>
         </nav>
@@ -70,6 +90,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
       )}
 
       {children}
+
+      <SiteFooter />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ReactNode } from 'react'
 
@@ -27,8 +27,17 @@ vi.mock('@/studies/polaris-demo/PolarisDemo', () => ({
   default: () => <div data-testid="polaris-demo-loaded">Demo loaded</div>,
 }))
 
+// Mock telemetry so sendBeacon (absent in jsdom) is never invoked.
+vi.mock('@/telemetry/track', () => ({
+  track: vi.fn(),
+  initTelemetry: vi.fn(),
+  markSkimVia: vi.fn(),
+  _resetForTest: vi.fn(),
+}))
+
 // Import after mocks.
 const { default: ShadcnToPolarisDemo } = await import('./shadcn-to-polaris-demo')
+const { track } = await import('@/telemetry/track')
 
 describe('ShadcnToPolarisDemo page', () => {
   it('renders the page heading', () => {
@@ -67,5 +76,19 @@ describe('ShadcnToPolarisDemo page', () => {
     const link = screen.getByRole('link', { name: /Back to the study/i })
     expect(link).toBeInTheDocument()
     expect(link).toHaveAttribute('href', '/work/shadcn-to-polaris')
+  })
+
+  it('fires demo_state track event when switching to "loading" state', () => {
+    render(<ShadcnToPolarisDemo />)
+    const loadingRadio = screen.getByRole('radio', { name: 'loading' })
+    fireEvent.click(loadingRadio)
+    expect(vi.mocked(track)).toHaveBeenCalledWith('demo_state', { state: 'loading' })
+  })
+
+  it('fires demo_state track event when switching to "error" state', () => {
+    render(<ShadcnToPolarisDemo />)
+    const errorRadio = screen.getByRole('radio', { name: 'error' })
+    fireEvent.click(errorRadio)
+    expect(vi.mocked(track)).toHaveBeenCalledWith('demo_state', { state: 'error' })
   })
 })

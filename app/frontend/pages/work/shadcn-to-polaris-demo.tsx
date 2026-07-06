@@ -1,6 +1,7 @@
 import { useState, useEffect, type ComponentType } from 'react'
 import { Head, Link } from '@inertiajs/react'
 import type { DemoState } from '@/studies/polaris-demo/types'
+import { track } from '@/telemetry/track'
 import styles from './shadcn-to-polaris-demo.module.css'
 
 // Type for the lazily loaded PolarisDemo default export.
@@ -70,7 +71,10 @@ export default function ShadcnToPolarisDemo() {
                       name="demo-state"
                       value={value}
                       checked={demoState === value}
-                      onChange={() => setDemoState(value)}
+                      onChange={() => {
+                        setDemoState(value)
+                        track('demo_state', { state: value })
+                      }}
                       className={styles['switcher-input']}
                     />
                     <span className={styles['switcher-segment']}>{label}</span>

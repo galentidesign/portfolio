@@ -529,3 +529,62 @@ describe('linkAs prop', () => {
     expect(skipLink).toHaveAttribute('href', '#main')
   })
 })
+
+// ── onPaletteOpenChange callback ──────────────────────────────────────────────
+
+describe('onPaletteOpenChange callback', () => {
+  it('calls onPaletteOpenChange(true) when palette opens via trigger click', async () => {
+    const user = userEvent.setup()
+    const onPaletteOpenChange = vi.fn()
+    render(
+      <Nav
+        brand={BRAND}
+        items={NAV_ITEMS}
+        actions={makeActions()}
+        onPaletteOpenChange={onPaletteOpenChange}
+      />,
+    )
+    await user.click(screen.getByRole('button', { name: 'Search & commands' }))
+    expect(onPaletteOpenChange).toHaveBeenCalledWith(true)
+  })
+
+  it('calls onPaletteOpenChange(false) when palette closes via Escape', async () => {
+    const user = userEvent.setup()
+    const onPaletteOpenChange = vi.fn()
+    render(
+      <Nav
+        brand={BRAND}
+        items={NAV_ITEMS}
+        actions={makeActions()}
+        onPaletteOpenChange={onPaletteOpenChange}
+      />,
+    )
+    await user.click(screen.getByRole('button', { name: 'Search & commands' }))
+    expect(onPaletteOpenChange).toHaveBeenLastCalledWith(true)
+    await user.keyboard('{Escape}')
+    expect(onPaletteOpenChange).toHaveBeenLastCalledWith(false)
+  })
+
+  it('calls onPaletteOpenChange(true) when palette opens via ⌘K', async () => {
+    const user = userEvent.setup()
+    const onPaletteOpenChange = vi.fn()
+    render(
+      <Nav
+        brand={BRAND}
+        items={NAV_ITEMS}
+        actions={makeActions()}
+        onPaletteOpenChange={onPaletteOpenChange}
+      />,
+    )
+    await user.keyboard('[MetaLeft>]k[/MetaLeft]')
+    expect(onPaletteOpenChange).toHaveBeenCalledWith(true)
+  })
+
+  it('does not throw when onPaletteOpenChange is not provided', async () => {
+    const user = userEvent.setup()
+    render(<Nav brand={BRAND} items={NAV_ITEMS} actions={makeActions()} />)
+    await expect(
+      user.click(screen.getByRole('button', { name: 'Search & commands' })),
+    ).resolves.not.toThrow()
+  })
+})

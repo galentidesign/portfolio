@@ -27,6 +27,15 @@ vi.mock('@inertiajs/react', async (importOriginal) => ({
   ),
 }))
 
+// Mock telemetry so sendBeacon (absent in jsdom) is never invoked and
+// IntersectionObserver guard keeps story_complete from firing in unit tests.
+vi.mock('@/telemetry/track', () => ({
+  track: vi.fn(),
+  initTelemetry: vi.fn(),
+  markSkimVia: vi.fn(),
+  _resetForTest: vi.fn(),
+}))
+
 // ---------------------------------------------------------------------------
 // Chapter 1 — The Rails era
 // ---------------------------------------------------------------------------
@@ -148,5 +157,27 @@ describe('Agentic page', () => {
     expect(heading).toHaveAttribute('id', 'agentic-receipts')
     const section = heading.closest('section')
     expect(section).toHaveAttribute('aria-labelledby', 'agentic-receipts')
+  })
+
+  it('renders the story outro with data-testid="story-outro"', () => {
+    render(<Agentic />)
+    expect(screen.getByTestId('story-outro')).toBeInTheDocument()
+  })
+
+  it('story outro contains a mailto link for the contact email', () => {
+    render(<Agentic />)
+    const outro = screen.getByTestId('story-outro')
+    const mailtoLink = outro.querySelector('a[href^="mailto:"]')
+    expect(mailtoLink).not.toBeNull()
+    expect(mailtoLink).toHaveAttribute('href', expect.stringContaining('galentidesign@gmail.com'))
+  })
+
+  it('story outro contains a LinkedIn link opening in a new tab', () => {
+    render(<Agentic />)
+    const outro = screen.getByTestId('story-outro')
+    const linkedInLink = outro.querySelector('a[href*="linkedin.com"]')
+    expect(linkedInLink).not.toBeNull()
+    expect(linkedInLink).toHaveAttribute('target', '_blank')
+    expect(linkedInLink).toHaveAttribute('rel', expect.stringContaining('noopener'))
   })
 })

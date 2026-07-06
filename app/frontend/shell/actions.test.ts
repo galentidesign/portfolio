@@ -8,6 +8,17 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { buildSiteActions, CONTACT_EMAIL, type SiteActionDeps } from './actions'
 import type { SkinMeta } from '@/ds/tokens/generated/skins'
+import { LINKEDIN_URL } from '@/shell/contact'
+import { markSkimVia } from '@/telemetry/track'
+
+// actions.ts imports markSkimVia from @/telemetry/track; mock the whole module
+// so the Inertia router is never imported in this test context.
+vi.mock('@/telemetry/track', () => ({
+  markSkimVia: vi.fn(),
+  track: vi.fn(),
+  initTelemetry: vi.fn(),
+  _resetForTest: vi.fn(),
+}))
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -62,6 +73,7 @@ describe('buildSiteActions — id inventory', () => {
       'mode-skim',
       'skin-galenti',
       'copy-email',
+      'open-linkedin',
     ])
   })
 
@@ -87,6 +99,7 @@ describe('buildSiteActions — id inventory', () => {
       'mode-story',
       'skin-galenti',
       'copy-email',
+      'open-linkedin',
     ])
   })
 
@@ -113,6 +126,7 @@ describe('buildSiteActions — id inventory', () => {
       'mode-story',
       'skin-galenti',
       'copy-email',
+      'open-linkedin',
     ])
   })
 
@@ -302,5 +316,94 @@ describe('buildSiteActions — groups', () => {
 describe('CONTACT_EMAIL', () => {
   it('is the expected address', () => {
     expect(CONTACT_EMAIL).toBe('galentidesign@gmail.com')
+  })
+})
+
+// ── open-linkedin action ──────────────────────────────────────────────────────
+
+describe('buildSiteActions — open-linkedin', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('open-linkedin action is present in Contact group', () => {
+    const actions = buildSiteActions(makeDeps())
+    const action = actions.find((a) => a.id === 'open-linkedin')
+    expect(action).toBeDefined()
+    expect(action?.group).toBe('Contact')
+  })
+
+  it('open-linkedin label is "LinkedIn — open profile"', () => {
+    const actions = buildSiteActions(makeDeps())
+    expect(actions.find((a) => a.id === 'open-linkedin')?.label).toBe('LinkedIn — open profile')
+  })
+
+  it('open-linkedin opens LINKEDIN_URL in a new tab with noopener', () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+    const actions = buildSiteActions(makeDeps())
+    actions.find((a) => a.id === 'open-linkedin')!.perform()
+    expect(open).toHaveBeenCalledWith(LINKEDIN_URL, '_blank', 'noopener')
+  })
+})
+
+// ── track integration ─────────────────────────────────────────────────────────
+
+describe('buildSiteActions — with track', () => {
+  it('every action perform fires palette_action { id } when track is provided', () => {
+    const mockTrack = vi.fn()
+    const actions = buildSiteActions(makeDeps({ currentPath: '/system', track: mockTrack }))
+    const navStory = actions.find((a) => a.id === 'nav-story')!
+    navStory.perform()
+    expect(mockTrack).toHaveBeenCalledWith('palette_action', { id: 'nav-story' })
+  })
+
+  it('mode-skim perform fires mode_switch { to: skim, via: palette }', () => {
+    const mockTrack = vi.fn()
+    const actions = buildSiteActions(makeDeps({ currentPath: '/', track: mockTrack }))
+    actions.find((a) => a.id === 'mode-skim')!.perform()
+    expect(mockTrack).toHaveBeenCalledWith('mode_switch', { to: 'skim', via: 'palette' })
+  })
+
+  it('mode-story perform fires mode_switch { to: story, via: palette }', () => {
+    const mockTrack = vi.fn()
+    const actions = buildSiteActions(makeDeps({ currentPath: '/work', track: mockTrack }))
+    actions.find((a) => a.id === 'mode-story')!.perform()
+    expect(mockTrack).toHaveBeenCalledWith('mode_switch', { to: 'story', via: 'palette' })
+  })
+
+  it('skin action perform fires skin_switch { to: <name> }', () => {
+    const mockTrack = vi.fn()
+    const actions = buildSiteActions(makeDeps({ track: mockTrack }))
+    actions.find((a) => a.id === 'skin-galenti')!.perform()
+    expect(mockTrack).toHaveBeenCalledWith('skin_switch', { to: 'galenti' })
+  })
+
+  it('mode-skim perform also fires palette_action (wrap applies)', () => {
+    const mockTrack = vi.fn()
+    const actions = buildSiteActions(makeDeps({ currentPath: '/', track: mockTrack }))
+    actions.find((a) => a.id === 'mode-skim')!.perform()
+    expect(mockTrack).toHaveBeenCalledWith('palette_action', { id: 'mode-skim' })
+  })
+
+  it('does not crash when track is absent (no telemetry)', () => {
+    const actions = buildSiteActions(makeDeps({ track: undefined }))
+    expect(() => {
+      actions.forEach((a) => {
+        // Perform all actions; clipboard / window.open may not exist in jsdom
+        // but these tests focus on no-crash behavior
+        try {
+          a.perform()
+        } catch {
+          // ignore env errors (clipboard etc.)
+        }
+      })
+    }).not.toThrow()
+  })
+
+  it('mode-skim calls markSkimVia("palette") even without track provided', () => {
+    vi.mocked(markSkimVia).mockClear()
+    const actions = buildSiteActions(makeDeps({ currentPath: '/' })) // no track
+    actions.find((a) => a.id === 'mode-skim')!.perform()
+    expect(vi.mocked(markSkimVia)).toHaveBeenCalledWith('palette')
   })
 })

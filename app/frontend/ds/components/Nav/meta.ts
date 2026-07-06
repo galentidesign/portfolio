@@ -55,5 +55,12 @@ export const meta = {
         'Element type rendered for the brand and item links — pass a router Link ' +
         'for client-side navigation. The skip link stays a plain <a> (same-document jump).',
     },
+    {
+      name: 'onPaletteOpenChange',
+      type: '((open: boolean) => void) | undefined',
+      description:
+        'Called when the palette opens (true) or closes (false). Called from event ' +
+        'handlers rather than an effect for StrictMode double-invoke safety.',
+    },
   ],
 } as const satisfies ComponentMeta

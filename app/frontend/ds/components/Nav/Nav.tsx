@@ -33,6 +33,12 @@ export interface NavProps {
    */
   linkAs?: ElementType
   ref?: Ref<HTMLElement>
+  /**
+   * Called when the palette open state changes — true on open, false on close.
+   * Called from event handlers (not an effect) for StrictMode double-invoke
+   * safety. Use to observe palette open/close without owning palette state.
+   */
+  onPaletteOpenChange?: (open: boolean) => void
 }
 
 export function Nav({
@@ -44,6 +50,7 @@ export function Nav({
   label = 'Primary',
   linkAs: LinkComponent = 'a',
   ref,
+  onPaletteOpenChange,
 }: NavProps) {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
@@ -51,11 +58,14 @@ export function Nav({
   const hasPalette = actions !== undefined && actions.length > 0
 
   function openPalette() {
-    if (hasPalette) setPaletteOpen(true)
+    if (!hasPalette) return
+    setPaletteOpen(true)
+    onPaletteOpenChange?.(true)
   }
 
   function closePalette() {
     setPaletteOpen(false)
+    onPaletteOpenChange?.(false)
     // Return focus to trigger. Native dialog.close() should handle this, but
     // we call it explicitly here for the mount/unmount pattern (no native close).
     requestAnimationFrame(() => triggerRef.current?.focus())

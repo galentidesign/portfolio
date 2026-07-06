@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react'
 import { Card } from '@/ds/components/Card/Card'
 import { Button } from '@/ds/components/Button/Button'
 import { skins } from '@/ds/tokens/generated/skins'
+import { CONTACT_EMAIL, LINKEDIN_URL } from '@/shell/contact'
 import styles from './styles.module.css'
 
 // Derived, never hardcoded: adding a skin must update this claim by rebuild
@@ -66,8 +67,16 @@ export default function WorkIndex() {
             <Button variant="primary" href="/resume">
               Résumé
             </Button>
-            <a href="mailto:galentidesign@gmail.com" className={styles['mailto-link']}>
-              galentidesign@gmail.com
+            <a href={`mailto:${CONTACT_EMAIL}`} className={styles['mailto-link']}>
+              {CONTACT_EMAIL}
+            </a>
+            <a
+              href={LINKEDIN_URL}
+              className={styles['mailto-link']}
+              rel="noreferrer"
+              target="_blank"
+            >
+              LinkedIn
             </a>
             <a
               href="https://github.com/galentidesign/portfolio"

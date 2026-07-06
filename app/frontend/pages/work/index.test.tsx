@@ -116,6 +116,13 @@ describe('WorkIndex', () => {
     expect(link).toHaveAttribute('href', 'mailto:galentidesign@gmail.com')
   })
 
+  it('renders the LinkedIn link', () => {
+    render(<WorkIndex />)
+    const link = screen.getByRole('link', { name: 'LinkedIn' })
+    expect(link).toBeInTheDocument()
+    expect(link).toHaveAttribute('href', 'https://www.linkedin.com/in/jgalenti')
+  })
+
   it('renders the GitHub repo link', () => {
     render(<WorkIndex />)
     const link = screen.getByRole('link', { name: /Source — this site/i })

@@ -1,9 +1,34 @@
+import { useEffect, useRef } from 'react'
 import { Head, Link } from '@inertiajs/react'
 import { ScrollProgress } from '@/shell/story/ScrollProgress'
+import { track } from '@/telemetry/track'
+import { CONTACT_EMAIL, LINKEDIN_URL } from '@/shell/contact'
 import styles from './story.module.css'
 import noteStyles from './era-note.module.css'
 
 export default function Agentic() {
+  const outroRef = useRef<HTMLElement>(null)
+
+  // Fire story_complete once per pageload when the chapter footer first enters
+  // the viewport. IntersectionObserver is guarded for jsdom (test) environments.
+  useEffect(() => {
+    const el = outroRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+
+    let fired = false
+    const observer = new IntersectionObserver((entries) => {
+      if (fired) return
+      if (entries.some((e) => e.isIntersecting)) {
+        fired = true
+        track('story_complete', { chapter: 'agentic' })
+      }
+    })
+    observer.observe(el)
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
   return (
     <>
       <Head title="The agentic era — J Galenti" />
@@ -40,10 +65,23 @@ export default function Agentic() {
           </p>
         </section>
 
-        <footer className={styles['chapter-footer']}>
-          <Link href="/work" className={styles['handoff-link']}>
-            See the work →
-          </Link>
+        <footer ref={outroRef} className={styles['chapter-footer']} data-testid="story-outro">
+          <div className={styles['outro-links']}>
+            <a href={`mailto:${CONTACT_EMAIL}`} className={styles['handoff-link']}>
+              {CONTACT_EMAIL}
+            </a>
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles['handoff-link']}
+            >
+              LinkedIn →
+            </a>
+            <Link href="/work" className={styles['handoff-link']}>
+              See the work →
+            </Link>
+          </div>
         </footer>
       </main>
     </>

@@ -8,6 +8,15 @@ import { MODE_STORAGE_KEY } from './mode/useMode'
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
+// Isolate SiteShell from the telemetry module — initTelemetry/track/markSkimVia
+// are tested in track.test.ts; mocking here prevents router.on calls from
+// propagating into the Inertia router mock below.
+vi.mock('@/telemetry/track', () => ({
+  initTelemetry: vi.fn(),
+  markSkimVia: vi.fn(),
+  track: vi.fn(),
+}))
+
 // Mutable URL used by the usePage mock — update before each render.
 let mockUrl = '/'
 
@@ -18,14 +27,16 @@ vi.mock('@inertiajs/react', async (importOriginal) => ({
     href,
     children,
     className,
+    onClick,
     'data-testid': testId,
   }: {
     href: string
     children: ReactNode
     className?: string
+    onClick?: () => void
     'data-testid'?: string
   }) => (
-    <a href={href} className={className} data-testid={testId}>
+    <a href={href} className={className} data-testid={testId} onClick={onClick}>
       {children}
     </a>
   ),

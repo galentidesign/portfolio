@@ -47,6 +47,12 @@ props:
       for client-side navigation. The skip link stays a plain anchor
       (same-document jump). ElementType is not a controllable type so the
       playground auto-skips it.
+  - name: onPaletteOpenChange
+    type: '((open: boolean) => void) | undefined'
+    description: >-
+      Called when the palette opens (true) or closes (false). Called from event
+      handlers rather than an effect for StrictMode double-invoke safety. Use to
+      observe palette open/close without owning palette state.
 
 tokens:
   - --color-accent
