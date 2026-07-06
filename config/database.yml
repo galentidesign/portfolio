@@ -77,8 +77,10 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+# Production connects via the platform-provided DATABASE_URL (Render wires
+# it from the managed database). The generated username/password block was
+# a latent trap: its explicit `username:` merged over the URL's credentials
+# and broke the first DB-touching request (nothing before M8 touched the DB).
 production:
   <<: *default
-  database: portfolio_production
-  username: portfolio
-  password: <%= ENV["PORTFOLIO_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
