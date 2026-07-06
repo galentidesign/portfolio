@@ -4,11 +4,12 @@
 # hour at M8 close-out). If these settings change in the dashboard, change
 # them here too.
 #
-# Current reality (M8): web service on the FREE instance type + a managed
-# Postgres 18 created at M8. Free tier has no pre-deploy step, so
-# migrate/seed run in the start command (seeds are idempotent fixed-id
-# upserts by design). Planned at M10 launch: upgrade to `starter` (kills
-# idle spin-down; unlocks preDeployCommand: bin/rails db:migrate db:seed).
+# Current reality (M10 launch): web service on STARTER (no idle spin-down)
+# + the managed Postgres 18 created at M8. Starter unlocked the pre-deploy
+# step, so migrate/seed moved out of the start command (seeds stay
+# idempotent fixed-id upserts by design). Custom domain: jgalenti.com
+# (DNS at GoDaddy → Render-issued TLS; the onrender.com host stays
+# reachable and serves X-Robots-Tag: noindex by the off-canonical guard).
 
 databases:
   - name: portfolio-db
@@ -19,11 +20,12 @@ services:
   - type: web
     name: portfolio
     runtime: ruby
-    plan: free
+    plan: starter
     # No asset pipeline (propshaft skipped) — build assets via Vite directly;
     # `assets:precompile` would fail on its missing `assets:clean` dependency.
     buildCommand: bundle install && npm ci && bin/vite build
-    startCommand: bin/rails db:prepare db:seed && bundle exec puma -C config/puma.rb
+    preDeployCommand: bin/rails db:migrate db:seed
+    startCommand: bundle exec puma -C config/puma.rb
     healthCheckPath: /up
     envVars:
       - key: DATABASE_URL
