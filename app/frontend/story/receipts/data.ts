@@ -242,4 +242,28 @@ export const receipts: MilestoneReceipt[] = [
     excerpt:
       'The template’s `export const layout = null` was a NAMED export, but the Inertia resolver reads `page.default.layout`, so the opt-out never attached and the shell silently wrapped the card — and the unit test asserted the named export, green-lighting the wrong thing.',
   },
+  {
+    id: 'm10',
+    date: '2026-07-06',
+    sourcePath: 'docs/receipts/2026-07-06-m10.md',
+    title: 'Hardening + launch',
+    goal: 'Close the launch gate — receipts chapter assembled, cookieless restored on the wire, jgalenti.com live, production Lighthouse 99–100.',
+    // 5 pushed during the session + the 3-commit close batch; verified
+    // against git rev-list before the close push.
+    commits: 8,
+    agents: [
+      { tier: 'frontier', count: 1, role: 'orchestrator' },
+      { tier: 'mid', count: 1, role: 'receipts extraction' },
+      { tier: 'mid', count: 1, role: 'README' },
+    ],
+    suite: { unit: 875, rspec: 212, e2e: 173 },
+    moments: [
+      'Launch-day wire check found Set-Cookie on a cookieless-by-contract site — an env-dependent default meant 202 green specs asserted only the test environment.',
+      "The extraction agent refused to invent commit counts for three thin receipts; git ranges settled them — per-milestone sums hit the repo's 75 exactly.",
+      'LinkedIn derived a blurry root-card variant from a byte-identical PNG; og:image URLs now carry a content hash so every regeneration busts unfurl caches.',
+      'Official production Lighthouse: mobile 99–100, desktop 100×4, all seven routes — the strongest capture of the project, on the real domain.',
+    ],
+    excerpt:
+      "The rails template's test.rb disables forgery protection, so `protect_against_forgery?` is false exactly where the specs run — the suite asserted a cookieless world that only existed in the test environment.",
+  },
 ]

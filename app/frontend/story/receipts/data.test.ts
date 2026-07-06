@@ -9,12 +9,12 @@ import { describe, expect, it } from 'vitest'
 import { receipts } from './data'
 
 describe('receipts data', () => {
-  it('has exactly 10 entries', () => {
-    expect(receipts).toHaveLength(10)
+  it('has one entry per milestone, m0 through m10', () => {
+    expect(receipts).toHaveLength(11)
   })
 
-  it('ids are m0..m9, unique, in order', () => {
-    const expected = ['m0', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9']
+  it('ids are m0..m10, unique, in order', () => {
+    const expected = Array.from({ length: 11 }, (_, i) => `m${i}`)
     expect(receipts.map((r) => r.id)).toEqual(expected)
   })
 
