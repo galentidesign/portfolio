@@ -301,19 +301,18 @@ test('axe: shell toast open state has zero violations', async ({ page }) => {
   expect(results.violations).toEqual([])
 })
 
-// ── Stub pages ──────────────────────────────────────────────────────────────
+// ── Résumé and colophon pages (M9) ──────────────────────────────────────────
 
-// The two study routes graduated to full pages in M8 (covered by
-// studies.spec.ts); only résumé and colophon remain stubs until M9.
-const STUBS = [
-  ['/resume', 'Résumé'],
-  ['/colophon', 'Colophon'],
-] as const
+test('resume page renders the name heading and a highlights proof link', async ({ page }) => {
+  await page.goto('/resume')
+  await expect(page.getByRole('heading', { name: 'J Galenti', level: 1 })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'See the system →' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Back to the work →' })).toBeVisible()
+})
 
-test('stub pages render their heading and the way back to the work', async ({ page }) => {
-  for (const [route, heading] of STUBS) {
-    await page.goto(route)
-    await expect(page.getByRole('heading', { name: heading, level: 1 })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Back to the work →' })).toBeVisible()
-  }
+test('colophon page renders the heading and the privacy claim', async ({ page }) => {
+  await page.goto('/colophon')
+  await expect(page.getByRole('heading', { name: 'Colophon', level: 1 })).toBeVisible()
+  await expect(page.getByText(/first-party, cookieless/)).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Back to the work →' })).toBeVisible()
 })

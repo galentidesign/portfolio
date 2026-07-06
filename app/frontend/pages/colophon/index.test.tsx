@@ -22,23 +22,53 @@ vi.mock('@inertiajs/react', async (importOriginal) => ({
   ),
 }))
 
+const SAMPLE_CRAFT = {
+  lighthouse: {
+    base: 'https://portfolio-xtsv.onrender.com',
+    capturedAt: '2026-07-06T02:45:59.020Z',
+    min: 95,
+    summary: {
+      mobile: { performance: 98, accessibility: 100, bestPractices: 100, seo: 100 },
+      desktop: { performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
+      routes: 7,
+    },
+  },
+  tests: { rspec: 42, vitest: 78, e2e: 55 },
+  axe: { violations: 0, scope: 'route × skin × motion matrix', enforcement: 'CI' },
+  ci: 'https://github.com/galentidesign/portfolio/actions',
+  generatedAt: '2026-07-06T03:00:00.000Z',
+}
+
 describe('Colophon', () => {
   it('renders the colophon heading', () => {
-    render(<Colophon />)
-    expect(screen.getByRole('heading', { name: 'Colophon' })).toBeInTheDocument()
+    render(<Colophon craft={null} />)
+    expect(screen.getByRole('heading', { name: 'Colophon', level: 1 })).toBeInTheDocument()
   })
 
-  it('renders the milestone line', () => {
-    render(<Colophon />)
-    expect(
-      screen.getByText(
-        'The colophon lands with milestone M9 — stack, craft-bar numbers, and the privacy note.',
-      ),
-    ).toBeInTheDocument()
+  it('renders the pending message when craft is null', () => {
+    render(<Colophon craft={null} />)
+    expect(screen.getByText(/Craft numbers are captured by rake craft:capture/)).toBeInTheDocument()
+  })
+
+  it('renders the privacy claim', () => {
+    render(<Colophon craft={null} />)
+    expect(screen.getByText(/first-party, cookieless/)).toBeInTheDocument()
+  })
+
+  it('renders test counts when craft data is provided', () => {
+    render(<Colophon craft={SAMPLE_CRAFT} />)
+    expect(screen.getByText('42')).toBeInTheDocument()
+    expect(screen.getByText('78')).toBeInTheDocument()
+    expect(screen.getByText('55')).toBeInTheDocument()
+  })
+
+  it('renders the axe zero-violations claim when craft data is provided', () => {
+    render(<Colophon craft={SAMPLE_CRAFT} />)
+    expect(screen.getByText(/Zero axe violations/)).toBeInTheDocument()
   })
 
   it('renders a back link to /work', () => {
-    render(<Colophon />)
+    render(<Colophon craft={null} />)
     const link = screen.getByRole('link', { name: /Back to the work/i })
     expect(link).toBeInTheDocument()
     expect(link).toHaveAttribute('href', '/work')

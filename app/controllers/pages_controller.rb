@@ -6,11 +6,16 @@ class PagesController < InertiaController
   end
 
   def resume
-    render inertia: "resume/index"
+    pdf_path = Rails.root.join("public/resume/j-galenti-resume.pdf")
+    render inertia: "resume/index", props: {
+      pdf: { available: File.exist?(pdf_path), href: "/resume/j-galenti-resume.pdf" }
+    }
   end
 
   def colophon
-    render inertia: "colophon/index"
+    craft_path = Rails.root.join("data/craft.json")
+    craft = craft_path.exist? ? JSON.parse(craft_path.read) : nil
+    render inertia: "colophon/index", props: { craft: }
   end
 
   def not_found

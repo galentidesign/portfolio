@@ -1,0 +1,330 @@
+{
+  "lighthouse": {
+    "base": "https://portfolio-xtsv.onrender.com",
+    "capturedAt": "2026-07-06T02:45:59.020Z",
+    "min": 95,
+    "results": [
+      {
+        "route": "/",
+        "preset": "mobile",
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/work",
+        "preset": "mobile",
+        "scores": {
+          "performance": 99,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/work/agentic-design-ops",
+        "preset": "mobile",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/work/shadcn-to-polaris",
+        "preset": "mobile",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/system",
+        "preset": "mobile",
+        "scores": {
+          "performance": 99,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/system/components/button",
+        "preset": "mobile",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/resume",
+        "preset": "mobile",
+        "scores": {
+          "performance": 99,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/",
+        "preset": "desktop",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/work",
+        "preset": "desktop",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/work/agentic-design-ops",
+        "preset": "desktop",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/work/shadcn-to-polaris",
+        "preset": "desktop",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/system",
+        "preset": "desktop",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/system/components/button",
+        "preset": "desktop",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      },
+      {
+        "route": "/resume",
+        "preset": "desktop",
+        "scores": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "pass": true
+      }
+    ],
+    "summary": {
+      "mobile": {
+        "performance": 98,
+        "accessibility": 100,
+        "bestPractices": 100,
+        "seo": 100
+      },
+      "desktop": {
+        "performance": 100,
+        "accessibility": 100,
+        "bestPractices": 100,
+        "seo": 100
+      },
+      "routes": 7
+    }
+  },
+  "tests": {
+    "rspec": 199,
+    "vitest": 756,
+    "e2e": 173
+  },
+  "axe": {
+    "violations": 0,
+    "scope": "route × skin × motion matrix",
+    "enforcement": "CI"
+  },
+  "fps": {
+    "capturedAt": "2026-07-06T13:25:48.775Z",
+    "cpuThrottle": 4,
+    "budgetMs": 16.7,
+    "burstLimit": 3,
+    "results": [
+      {
+        "label": "Assembly opening / (motion mode)",
+        "totalFrames": 509,
+        "worstFrameMs": 18.7,
+        "overBudgetCount": 221,
+        "longestBurstLength": 0,
+        "burstsOver3": 0,
+        "verdict": "PASS",
+        "allRuns": [
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 18.7
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 18.7
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 18.7
+          }
+        ]
+      },
+      {
+        "label": "Scroll-progress rail /story/rails-era",
+        "totalFrames": 388,
+        "worstFrameMs": 18.6,
+        "overBudgetCount": 156,
+        "longestBurstLength": 0,
+        "burstsOver3": 0,
+        "verdict": "PASS",
+        "allRuns": [
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 18.6
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 18.6
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 1,
+            "worstFrameMs": 90.8
+          }
+        ]
+      },
+      {
+        "label": "Palette open/close /work (5 cycles)",
+        "totalFrames": 54,
+        "worstFrameMs": 17.6,
+        "overBudgetCount": 25,
+        "longestBurstLength": 0,
+        "burstsOver3": 0,
+        "verdict": "PASS",
+        "allRuns": [
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 17.7
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 17.6
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 17.7
+          }
+        ]
+      },
+      {
+        "label": "Era re-theme /work → /story/rails-era",
+        "totalFrames": 88,
+        "worstFrameMs": 17.7,
+        "overBudgetCount": 44,
+        "longestBurstLength": 0,
+        "burstsOver3": 0,
+        "verdict": "PASS",
+        "allRuns": [
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 17.7
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 17.7
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 17.6
+          }
+        ]
+      },
+      {
+        "label": "Demo state switches …/shadcn-to-polaris/demo",
+        "totalFrames": 356,
+        "worstFrameMs": 17.8,
+        "overBudgetCount": 144,
+        "longestBurstLength": 0,
+        "burstsOver3": 0,
+        "verdict": "PASS",
+        "allRuns": [
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 1,
+            "worstFrameMs": 33.3
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 17.8
+          },
+          {
+            "burstsOver3": 0,
+            "longestBurstLength": 0,
+            "worstFrameMs": 17.8
+          }
+        ]
+      }
+    ],
+    "pending": ["WebGL assembly swap render path (v1.5 — deferred)"],
+    "overallVerdict": "PASS"
+  },
+  "ci": "https://github.com/galentidesign/portfolio/actions",
+  "generatedAt": "2026-07-06T13:26:12.000Z"
+}
