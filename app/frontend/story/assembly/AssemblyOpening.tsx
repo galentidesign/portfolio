@@ -105,6 +105,10 @@ export function AssemblyOpening({ onComplete }: AssemblyOpeningProps) {
       data-testid="assembly-opening"
       className={styles.opening}
     >
+      {/* Warm gradient field — decorative atmosphere behind the hero in both
+          modes; the motion layer mounts its shader canvas inside this host. */}
+      <div aria-hidden="true" className={styles.field} data-assembly-field />
+
       {/* Skip — the only operable control inside the opening; first in tab
           order, visible from frame one. */}
       <button type="button" data-testid="skip-intro" className={styles.skip} onClick={skip}>

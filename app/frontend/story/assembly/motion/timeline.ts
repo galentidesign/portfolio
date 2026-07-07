@@ -50,6 +50,9 @@ const LEAD = 4
  *   exit   ~ --motion-ease-exit  cubic-bezier(.55,0,.55,.2) — accelerate away
  *   move   ~ --motion-ease-move  cubic-bezier(.45,.05,.15,1) — repositioning
  *   settle / land — soft back-out with low overshoot for "sets into place"
+ *   spring / drama — the token curves themselves, registered as CustomEases
+ *   by registerTokenEases() at mount (fall back to the default ease if a skin
+ *   omits them — jsdom, for one, resolves no custom properties).
  */
 export const EASE = {
   enter: 'power3.out',
@@ -58,6 +61,8 @@ export const EASE = {
   settle: 'back.out(1.2)',
   land: 'back.out(1.1)',
   pop: 'back.out(1.6)',
+  spring: 'token-spring',
+  drama: 'token-drama',
 } as const
 
 const pos = (fraction: number): number => fraction * SCALE

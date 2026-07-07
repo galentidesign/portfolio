@@ -5,9 +5,107 @@
 
 .opening {
   position: relative;
+
+  /* Own stacking context so the field's z-index -1 stays inside the section
+     (above the page background) instead of escaping behind it. */
+  isolation: isolate;
   padding-inline: var(--space-5);
   max-width: 72rem;
   margin-inline: auto;
+}
+
+/* ── Warm gradient field — the base atmosphere in every mode ───────────────
+   Full-bleed behind the hero. Three layers of radial washes built from
+   semantic colors; the two pseudo-layers drift very slowly (duration derived
+   from the motion tokens, so reduced motion zeroes it to a static wash).
+   The motion layer mounts the shader canvas inside this host; the canvas
+   fades in over this base only after its first frame renders. */
+
+.field {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: calc(50% - 50vw);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.field::before,
+.field::after {
+  content: '';
+  position: absolute;
+  inset: -12%;
+}
+
+.field::before {
+  background:
+    radial-gradient(
+      80rem 52rem at 76% -6rem,
+      color-mix(in oklab, var(--color-accent-muted) 62%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      56rem 40rem at 14% 10rem,
+      color-mix(in oklab, var(--color-accent) 11%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      48rem 36rem at 55% 34rem,
+      color-mix(in oklab, var(--color-focus) 5%, transparent),
+      transparent 65%
+    );
+  animation: field-drift-a calc(var(--motion-duration-2xl) * 40) var(--motion-ease-move) infinite
+    alternate;
+}
+
+.field::after {
+  background:
+    radial-gradient(
+      44rem 32rem at 68% 20rem,
+      color-mix(in oklab, var(--color-accent-muted) 46%, transparent),
+      transparent 56%
+    ),
+    radial-gradient(
+      38rem 28rem at 28% 30rem,
+      color-mix(in oklab, var(--color-accent) 7%, transparent),
+      transparent 60%
+    );
+  animation: field-drift-b calc(var(--motion-duration-2xl) * 52) var(--motion-ease-move) infinite
+    alternate;
+}
+
+@keyframes field-drift-a {
+  from {
+    transform: translate3d(-1.5%, -1%, 0) rotate(-0.5deg);
+  }
+
+  to {
+    transform: translate3d(1.5%, 2%, 0) rotate(1.5deg);
+  }
+}
+
+@keyframes field-drift-b {
+  from {
+    transform: translate3d(1.5%, 1%, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(-1.5%, -2%, 0) scale(1.07);
+  }
+}
+
+/* Shader canvas (motion layer appends it): hidden until its first frame has
+   rendered, then a short token-timed fade — the CSS wash above is identical
+   in palette, so the crossfade reads as the field waking up. */
+.field canvas {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--motion-duration-lg) var(--motion-ease-enter);
+}
+
+.field canvas[data-ready] {
+  opacity: 1;
 }
 
 /* ── Skip control — visible from frame one, sticky while the opening is in
@@ -59,20 +157,22 @@
 
 .heading {
   margin: 0;
-  font-family: var(--type-display-family);
-  font-size: var(--type-display-size);
-  font-weight: var(--type-display-weight);
-  line-height: var(--type-display-line);
-  letter-spacing: var(--type-display-tracking);
+  font-family: var(--type-hero-family);
+  font-size: var(--type-hero-size);
+  font-weight: var(--type-hero-weight);
+  line-height: var(--type-hero-line);
+  letter-spacing: var(--type-hero-tracking);
   color: var(--color-ink);
 }
 
 .subline {
   margin: 0;
-  max-width: 38rem;
+  max-width: 44rem;
   font-family: var(--type-body-family);
-  font-size: var(--type-body-size);
-  line-height: var(--type-body-line);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
   color: var(--color-ink-muted);
 }
 
@@ -163,6 +263,7 @@
   height: var(--space-9);
   border-radius: var(--radius-control);
   border: 1px solid var(--color-line-strong);
+  box-shadow: var(--shadow-raised);
   padding-block-end: var(--space-1);
 }
 
@@ -286,6 +387,29 @@
   min-height: var(--space-10);
 }
 
+/* ── Scatter chips — created by the motion layer for the shell beat ────────
+   Small token squares the Physics2D pass rains toward the gateway. Motion
+   mode only (the layer creates and removes them); never in the static DOM.
+   Attribute-keyed (not module classes) so the motion chunk never has to
+   import this module's class map — that import would drag the whole home
+   page chunk into the motion payload. */
+
+.opening [data-assembly-scatter] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.opening [data-scatter-chip] {
+  position: absolute;
+  width: var(--space-4);
+  height: var(--space-4);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-line-strong);
+  box-shadow: var(--shadow-raised);
+}
+
 .hatch-facsimile {
   justify-self: end;
   background-color: var(--color-surface-raised);
@@ -317,6 +441,11 @@
   min-height: 0;
   display: grid;
   place-content: center;
+
+  /* The hero type is display-scale now — exhibits assemble in the stage's
+     lower band so they never crowd the name. The rem floor keeps short
+     viewports honest, where the hero block is proportionally taller. */
+  padding-block-start: max(32vh, 18rem);
 }
 
 /* On the live stage the diagram chrome drops away — elements assemble on the
@@ -340,4 +469,33 @@
   inset-block-start: var(--space-8);
   inset-inline: var(--space-5);
   z-index: var(--z-base);
+}
+
+@media (width < 640px) {
+  /* The sticky skip pill owns the top-right strip on narrow screens — drop
+     the hero below it, and give the stage a matching content band. */
+  .opening[data-motion='on'] .hero {
+    inset-block-start: calc(var(--space-9) + var(--space-4));
+  }
+
+  .opening[data-motion='on'] .step {
+    padding-block: max(38vh, 17rem) var(--space-7);
+  }
+
+  /* The stage band is shallow here: tighten the figure rhythm and compact
+     the exhibit density so the tallest beat (organisms) clears both the
+     subline above and the escape hatch below. The exhibits are inert
+     pictures — the captions carry parity, so cropping the third specimen
+     row is editorial, not content loss. */
+  .opening[data-motion='on'] .figure {
+    gap: var(--space-3);
+  }
+
+  .opening[data-motion='on'] .exhibit {
+    --density-row: var(--density-control-sm);
+  }
+
+  .opening[data-motion='on'] [data-exhibit='organisms'] tbody tr:nth-child(3) {
+    display: none;
+  }
 }
