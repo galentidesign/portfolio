@@ -233,6 +233,53 @@ export function buildTokens({ tokensDir, outDir, fontsDir } = {}) {
         }
       }
     }
+
+    // zones: scoped re-assignments of a subset of this skin's semantic keys
+    const zones = data.zones ?? {}
+    for (const [zoneName, zone] of Object.entries(zones)) {
+      if (!isKebabCase(zoneName)) {
+        errors.push(`${file}: zone '${zoneName}' is not kebab-case`)
+      }
+      if (!zone || typeof zone !== 'object') {
+        errors.push(`${file}: zone '${zoneName}' must be an object`)
+        continue
+      }
+      if (!['light', 'dark'].includes(zone.colorScheme)) {
+        errors.push(
+          `${file}: zones.${zoneName}.colorScheme '${zone.colorScheme}' must be 'light' or 'dark'`,
+        )
+      }
+      const zoneTokens = zone.tokens ?? {}
+      for (const [ns, tokens] of Object.entries(zoneTokens)) {
+        if (!SEMANTIC_NAMESPACES.includes(ns)) {
+          errors.push(
+            `${file}: zones.${zoneName} has namespace '${ns}' (allowed: ${SEMANTIC_NAMESPACES.join(', ')})`,
+          )
+          continue
+        }
+        if (!tokens || typeof tokens !== 'object') continue
+        for (const [key, value] of Object.entries(tokens)) {
+          if (!isKebabCase(key)) {
+            errors.push(`${file}: zones.${zoneName}.${ns} key '${key}' is not kebab-case`)
+          }
+          if (semantic[ns]?.[key] === undefined) {
+            errors.push(
+              `${file}: zones.${zoneName}.${ns}.${key} does not exist in semantic.${ns} (zones may only re-assign existing semantic keys)`,
+            )
+          }
+          for (const ref of getRawRefs(value)) {
+            const dotIdx = ref.indexOf('.')
+            const group = ref.slice(0, dotIdx)
+            const rawKey = ref.slice(dotIdx + 1)
+            if (!raw[group] || raw[group][rawKey] === undefined) {
+              errors.push(
+                `${file}: zones.${zoneName}.${ns}.${key} references unknown raw key (ref: {raw.${group}.${rawKey}})`,
+              )
+            }
+          }
+        }
+      }
+    }
   }
 
   // ── Parity: identical semantic key sets across all skins ───────────────────
@@ -251,6 +298,49 @@ export function buildTokens({ tokensDir, outDir, fontsDir } = {}) {
         for (const key of skinKeys) {
           if (!refKeys.has(key)) {
             errors.push(`${file}: semantic.${ns} has extra key '${key}' (not in ${ref.file})`)
+          }
+        }
+      }
+    }
+  }
+
+  // ── Parity: identical zone names and per-zone key sets across all skins ────
+
+  if (skins.length > 1) {
+    const ref = skins[0]
+    const refZones = ref.data.zones ?? {}
+    const refZoneNames = new Set(Object.keys(refZones))
+    for (const { file, data } of skins.slice(1)) {
+      const skinZones = data.zones ?? {}
+      const skinZoneNames = new Set(Object.keys(skinZones))
+      for (const name of refZoneNames) {
+        if (!skinZoneNames.has(name)) {
+          errors.push(`${file}: missing zone '${name}' (present in ${ref.file})`)
+        }
+      }
+      for (const name of skinZoneNames) {
+        if (!refZoneNames.has(name)) {
+          errors.push(`${file}: has extra zone '${name}' (not in ${ref.file})`)
+        }
+      }
+      for (const name of refZoneNames) {
+        if (!skinZoneNames.has(name)) continue
+        for (const ns of SEMANTIC_NAMESPACES) {
+          const refKeys = new Set(Object.keys(refZones[name]?.tokens?.[ns] ?? {}))
+          const skinKeys = new Set(Object.keys(skinZones[name]?.tokens?.[ns] ?? {}))
+          for (const key of refKeys) {
+            if (!skinKeys.has(key)) {
+              errors.push(
+                `${file}: zones.${name}.${ns} missing key '${key}' (present in ${ref.file})`,
+              )
+            }
+          }
+          for (const key of skinKeys) {
+            if (!refKeys.has(key)) {
+              errors.push(
+                `${file}: zones.${name}.${ns} has extra key '${key}' (not in ${ref.file})`,
+              )
+            }
           }
         }
       }
@@ -281,6 +371,13 @@ export function buildTokens({ tokensDir, outDir, fontsDir } = {}) {
     for (const tokens of Object.values(data.semantic ?? {})) {
       for (const value of Object.values(tokens)) {
         for (const ref of getRawRefs(value)) refs.add(ref)
+      }
+    }
+    for (const zone of Object.values(data.zones ?? {})) {
+      for (const tokens of Object.values(zone.tokens ?? {})) {
+        for (const value of Object.values(tokens)) {
+          for (const ref of getRawRefs(value)) refs.add(ref)
+        }
       }
     }
     for (const [group, keys] of Object.entries(raw)) {
@@ -342,7 +439,23 @@ export function buildTokens({ tokensDir, outDir, fontsDir } = {}) {
         lines.push(`  --${ns}-${key}: ${resolveRefs(value)};`)
       }
     }
-    lines.push('}', '')
+    lines.push('}')
+    // zones: scoped re-assignments of the same semantic custom properties
+    for (const [zoneName, zone] of Object.entries(data.zones ?? {})) {
+      lines.push('')
+      lines.push(
+        `[data-skin='${stem}'] [data-zone='${zoneName}'],`,
+        `[data-skin='${stem}'][data-zone='${zoneName}'] {`,
+      )
+      lines.push(`  color-scheme: ${zone.colorScheme};`)
+      for (const [ns, tokens] of Object.entries(zone.tokens ?? {})) {
+        for (const [key, value] of Object.entries(tokens)) {
+          lines.push(`  --${ns}-${key}: ${resolveRefs(value)};`)
+        }
+      }
+      lines.push('}')
+    }
+    lines.push('')
     write(`skin-${stem}.css`, lines.join('\n'))
   }
 
@@ -449,6 +562,21 @@ export function buildTokens({ tokensDir, outDir, fontsDir } = {}) {
       return `  ${ns}: [${props}]`
     }).join(',\n')
 
+    // zones: names + overridden CSS prop names from default skin in source order
+    const defaultZones = defaultEntry.data.zones ?? {}
+    const zoneNamesLiteral = Object.keys(defaultZones)
+      .map((z) => `'${z}'`)
+      .join(', ')
+    const zoneTokensLiteral = Object.entries(defaultZones)
+      .map(([zoneName, zone]) => {
+        const props = []
+        for (const [ns, tokens] of Object.entries(zone.tokens ?? {})) {
+          for (const key of Object.keys(tokens)) props.push(`'--${ns}-${key}'`)
+        }
+        return `  '${zoneName}': [${props.join(', ')}]`
+      })
+      .join(',\n')
+
     // baseTokens
     const spaceProps = Object.keys(base.space ?? {})
       .map((k) => `'--space-${k}'`)
@@ -476,6 +604,11 @@ export function buildTokens({ tokensDir, outDir, fontsDir } = {}) {
     ts += `  'color' | 'radius' | 'type' | 'density' | 'motion' | 'shadow',\n`
     ts += `  readonly string[]\n`
     ts += `> = {\n${semanticLiteral},\n}\n\n`
+    ts += `export const zoneNames = [${zoneNamesLiteral}] as const\n`
+    ts += `export type ZoneName = (typeof zoneNames)[number]\n`
+    ts += `export const zoneTokens: Record<ZoneName, readonly string[]> = {\n${
+      zoneTokensLiteral ? zoneTokensLiteral + ',\n' : ''
+    }}\n\n`
     ts += `export const baseTokens: Record<'space' | 'z', readonly string[]> = {\n`
     ts += `  space: [${spaceProps}],\n`
     ts += `  z: [${zProps}],\n`

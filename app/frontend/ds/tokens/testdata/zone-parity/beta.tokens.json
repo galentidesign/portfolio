@@ -6,7 +6,7 @@
     "colorScheme": "dark",
     "default": false,
     "hidden": true,
-    "description": "Test beta skin",
+    "description": "Beta — no zones at all",
     "fonts": []
   },
   "raw": {
@@ -19,14 +19,5 @@
     "density": { "gap": "var(--space-1)" },
     "motion": { "duration-xs": "50ms" },
     "shadow": { "raised": "none" }
-  },
-  "zones": {
-    "night": {
-      "colorScheme": "dark",
-      "tokens": {
-        "color": { "surface": "{raw.color.dark}", "ink": "{raw.color.light}" },
-        "shadow": { "raised": "none" }
-      }
-    }
   }
 }

@@ -28,5 +28,14 @@
     "density": { "gap": "var(--space-1)" },
     "motion": { "duration-xs": "90ms" },
     "shadow": { "raised": "0 1px 2px {raw.color.black}" }
+  },
+  "zones": {
+    "night": {
+      "colorScheme": "dark",
+      "tokens": {
+        "color": { "surface": "{raw.color.black}", "ink": "{raw.color.white}" },
+        "shadow": { "raised": "0 1px 2px {raw.color.white}" }
+      }
+    }
   }
 }

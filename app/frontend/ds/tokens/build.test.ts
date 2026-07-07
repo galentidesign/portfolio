@@ -85,6 +85,28 @@ describe('happy path', () => {
     expect(css).toContain('--shadow-raised: 0 1px 2px var(--raw-color-black);')
   })
 
+  it('skin-alpha.css: zone block re-assigns semantic props under both selectors', () => {
+    happyBuild(outDir)
+    const css = read(outDir, 'skin-alpha.css')
+    expect(css).toContain("[data-skin='alpha'] [data-zone='night'],")
+    expect(css).toContain("[data-skin='alpha'][data-zone='night'] {")
+    // zone block declares its own color-scheme and re-assigns the same semantic props
+    const zoneBlock = css.slice(css.indexOf("[data-zone='night']"))
+    expect(zoneBlock).toContain('color-scheme: dark;')
+    expect(zoneBlock).toContain('--color-surface: var(--raw-color-black);')
+    expect(zoneBlock).toContain('--color-ink: var(--raw-color-white);')
+    expect(zoneBlock).toContain('--shadow-raised: 0 1px 2px var(--raw-color-white);')
+  })
+
+  it('skins.ts: zone exports from default skin', () => {
+    happyBuild(outDir)
+    const ts = read(outDir, 'skins.ts')
+    expect(ts).toContain("export const zoneNames = ['night'] as const")
+    expect(ts).toContain('export type ZoneName = (typeof zoneNames)[number]')
+    expect(ts).toContain('export const zoneTokens: Record<ZoneName, readonly string[]>')
+    expect(ts).toContain("'night': ['--color-surface', '--color-ink', '--shadow-raised']")
+  })
+
   it('skin-beta.css: dark color-scheme, correct values', () => {
     happyBuild(outDir)
     const css = read(outDir, 'skin-beta.css')
@@ -281,6 +303,25 @@ describe('failure cases', () => {
     const msg = fails('extra-namespace')
     expect(msg).toContain('custom')
     expect(msg).toContain('extra semantic namespace')
+  })
+
+  it('zone re-assigning a nonexistent semantic key names the offender', () => {
+    const msg = fails('zone-unknown-key')
+    expect(msg).toContain('zones.night.color.phantom')
+    expect(msg).toContain('may only re-assign existing semantic keys')
+  })
+
+  it('zone value with unresolved raw ref names the bad ref', () => {
+    const msg = fails('zone-bad-ref')
+    expect(msg).toContain('zones.night.color.surface')
+    expect(msg).toContain('{raw.color.void}')
+  })
+
+  it('zone missing from one skin fails parity and names both files', () => {
+    const msg = fails('zone-parity')
+    expect(msg).toContain('beta.tokens.json')
+    expect(msg).toContain("missing zone 'night'")
+    expect(msg).toContain('alpha.tokens.json')
   })
 })
 

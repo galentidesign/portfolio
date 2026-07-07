@@ -33,6 +33,7 @@
       "cream-100": "#faf6ee",
       "cream-200": "#f2ecdf",
       "sand-200": "#e5ddcb",
+      "sand-300": "#b5a88f",
       "sand-400": "#93825f",
       "umber-500": "#746a57",
       "umber-700": "#5c5547",
@@ -46,7 +47,21 @@
       "amber-100": "#f7efd9",
       "amber-700": "#85620e",
       "rust-100": "#f8e2dd",
-      "rust-600": "#b0372a"
+      "rust-600": "#b0372a",
+      "night-950": "#100d0b",
+      "night-900": "#171310",
+      "night-800": "#211c16",
+      "night-700": "#2d261d",
+      "ember-300": "#ffc09a",
+      "ember-500": "#ff8a4a",
+      "ember-900": "#3a2317",
+      "cobalt-300": "#8fa8ee",
+      "moss-300": "#9dc47a",
+      "moss-900": "#1d2a14",
+      "amber-300": "#e3c26a",
+      "amber-900": "#302505",
+      "rust-300": "#f0a196",
+      "rust-900": "#38120d"
     },
     "font": {
       "sans": "'Hanken Grotesk', system-ui, -apple-system, sans-serif",
@@ -73,7 +88,8 @@
       "caution": "{raw.color.amber-700}",
       "caution-surface": "{raw.color.amber-100}",
       "critical": "{raw.color.rust-600}",
-      "critical-surface": "{raw.color.rust-100}"
+      "critical-surface": "{raw.color.rust-100}",
+      "glow-ink": "{raw.color.sienna-600}"
     },
     "radius": {
       "control": "4px",
@@ -81,6 +97,16 @@
       "pill": "999px"
     },
     "type": {
+      "hero-family": "{raw.font.sans}",
+      "hero-size": "clamp(3.25rem, 1.8rem + 8.5vw, 9.5rem)",
+      "hero-weight": "740",
+      "hero-line": "0.98",
+      "hero-tracking": "-0.028em",
+      "numeral-family": "{raw.font.sans}",
+      "numeral-size": "clamp(4.5rem, 3rem + 9vw, 12rem)",
+      "numeral-weight": "760",
+      "numeral-line": "1",
+      "numeral-tracking": "-0.03em",
       "display-family": "{raw.font.sans}",
       "display-size": "clamp(2.75rem, 2.1rem + 3.2vw, 4.5rem)",
       "display-weight": "640",
@@ -125,13 +151,53 @@
       "duration-md": "240ms",
       "duration-lg": "400ms",
       "duration-xl": "650ms",
+      "duration-2xl": "1100ms",
       "ease-enter": "cubic-bezier(0.22, 1, 0.36, 1)",
       "ease-exit": "cubic-bezier(0.55, 0, 0.55, 0.2)",
-      "ease-move": "cubic-bezier(0.45, 0.05, 0.15, 1)"
+      "ease-move": "cubic-bezier(0.45, 0.05, 0.15, 1)",
+      "ease-drama": "cubic-bezier(0.7, 0, 0.2, 1)",
+      "ease-spring": "cubic-bezier(0.34, 1.56, 0.64, 1)"
     },
     "shadow": {
       "raised": "0 1px 2px rgb(34 30 23 / 6%), 0 2px 8px rgb(34 30 23 / 5%)",
-      "overlay": "0 4px 12px rgb(34 30 23 / 8%), 0 16px 48px rgb(34 30 23 / 14%)"
+      "overlay": "0 4px 12px rgb(34 30 23 / 8%), 0 16px 48px rgb(34 30 23 / 14%)",
+      "glow-accent": "0 0 24px rgb(166 70 33 / 22%), 0 0 64px rgb(166 70 33 / 12%)",
+      "glow-soft": "0 0 20px rgb(34 30 23 / 10%)"
+    }
+  },
+  "zones": {
+    "night": {
+      "colorScheme": "dark",
+      "tokens": {
+        "color": {
+          "surface": "{raw.color.night-900}",
+          "surface-raised": "{raw.color.night-800}",
+          "surface-sunken": "{raw.color.night-950}",
+          "surface-overlay": "{raw.color.night-700}",
+          "ink": "{raw.color.cream-100}",
+          "ink-muted": "{raw.color.sand-300}",
+          "ink-faint": "{raw.color.sand-400}",
+          "accent": "{raw.color.ember-500}",
+          "accent-ink": "{raw.color.night-950}",
+          "accent-muted": "{raw.color.ember-900}",
+          "line": "{raw.color.night-700}",
+          "line-strong": "{raw.color.sand-400}",
+          "focus": "{raw.color.cobalt-300}",
+          "positive": "{raw.color.moss-300}",
+          "positive-surface": "{raw.color.moss-900}",
+          "caution": "{raw.color.amber-300}",
+          "caution-surface": "{raw.color.amber-900}",
+          "critical": "{raw.color.rust-300}",
+          "critical-surface": "{raw.color.rust-900}",
+          "glow-ink": "{raw.color.ember-300}"
+        },
+        "shadow": {
+          "raised": "0 1px 2px rgb(0 0 0 / 40%), 0 2px 8px rgb(0 0 0 / 30%)",
+          "overlay": "0 4px 12px rgb(0 0 0 / 50%), 0 16px 48px rgb(0 0 0 / 40%)",
+          "glow-accent": "0 0 32px rgb(255 138 74 / 30%), 0 0 80px rgb(255 138 74 / 14%)",
+          "glow-soft": "0 0 24px rgb(255 192 154 / 12%)"
+        }
+      }
     }
   }
 }
