@@ -248,15 +248,15 @@ export const receipts: MilestoneReceipt[] = [
     sourcePath: 'docs/receipts/2026-07-06-m10.md',
     title: 'Hardening + launch',
     goal: 'Close the launch gate — receipts chapter assembled, cookieless restored on the wire, jgalenti.com live, production Lighthouse 99–100.',
-    // 5 pushed during the session + the 3-commit close batch; verified
-    // against git rev-list before the close push.
-    commits: 8,
+    // 8 through the launch-day close + the next-day prose landing (leakcheck
+    // PDF gate, prose, close-out); verified against git rev-list pre-push.
+    commits: 11,
     agents: [
       { tier: 'frontier', count: 1, role: 'orchestrator' },
       { tier: 'mid', count: 1, role: 'receipts extraction' },
       { tier: 'mid', count: 1, role: 'README' },
     ],
-    suite: { unit: 875, rspec: 212, e2e: 173 },
+    suite: { unit: 887, rspec: 214, e2e: 175 },
     moments: [
       'Launch-day wire check found Set-Cookie on a cookieless-by-contract site — an env-dependent default meant 202 green specs asserted only the test environment.',
       "The extraction agent refused to invent commit counts for three thin receipts; git ranges settled them — per-milestone sums hit the repo's 75 exactly.",
