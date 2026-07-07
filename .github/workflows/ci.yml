@@ -82,6 +82,8 @@ jobs:
         run: npm run test:unit
       - name: Build frontend for e2e
         run: bin/vite build
+      - name: Bundle budgets
+        run: npm run perf:budget
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Playwright smoke

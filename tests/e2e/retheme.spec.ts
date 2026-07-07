@@ -169,8 +169,8 @@ test('reduced motion: swap applies instantly and motion/gsap chunk never request
   const motionInReduced = [...reducedJsUrls].filter((url) => /\/motion[^/]*\.js$/.test(url))
   expect(motionInReduced).toHaveLength(0)
 
-  // Belt-and-suspenders: no gsap-named bundle either.
-  const gsapInReduced = [...reducedJsUrls].filter((url) => /gsap/.test(url))
+  // Belt-and-suspenders: no gsap/ogl/matter-named bundle either.
+  const gsapInReduced = [...reducedJsUrls].filter((url) => /gsap|ogl|matter/.test(url))
   expect(gsapInReduced).toHaveLength(0)
 
   // Control: motion mode DOES load the chunk. New page in the same context
