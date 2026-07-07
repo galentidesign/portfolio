@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react'
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { SkinProvider } from '@/shell/skin/SkinProvider'
 import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
-import { skins as allSkins, semanticTokens } from '@/ds/tokens/generated/skins'
+import { skins as allSkins, semanticTokens, zoneTokens } from '@/ds/tokens/generated/skins'
 import type { SystemNavEntry } from '@/system/DocShell'
 import TokensPage from './tokens'
 
@@ -59,11 +59,20 @@ describe('TokensPage', () => {
     expect(cards).toHaveLength(semanticTokens.color.length)
   })
 
-  it('renders six type specimens', () => {
+  it('renders eight type specimens', () => {
     renderPage()
     const typeList = screen.getByRole('list', { name: 'Type role specimens' })
     const rows = within(typeList).getAllByRole('listitem')
-    expect(rows).toHaveLength(6)
+    expect(rows).toHaveLength(8)
+  })
+
+  it('renders the night zone specimen inside a data-zone wrapper', () => {
+    renderPage()
+    expect(screen.getByRole('heading', { name: 'Zones' })).toBeInTheDocument()
+    const zoneList = screen.getByRole('list', { name: 'night zone color overrides' })
+    expect(zoneList.closest('[data-zone="night"]')).not.toBeNull()
+    const nightColors = zoneTokens.night.filter((t) => t.startsWith('--color-'))
+    expect(within(zoneList).getAllByRole('listitem')).toHaveLength(nightColors.length)
   })
 
   it('shows the active skin label in the meta paragraph', () => {

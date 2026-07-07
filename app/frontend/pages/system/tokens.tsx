@@ -5,6 +5,8 @@ import {
   semanticTokens,
   baseTokens,
   breakpoints,
+  zoneNames,
+  zoneTokens,
 } from '@/ds/tokens/generated/skins'
 import type { SystemNavEntry } from '@/system/DocShell'
 import { DocShell } from '@/system/DocShell'
@@ -136,6 +138,70 @@ export default function TokensPage({ nav }: Props) {
                 )
               })}
             </ul>
+          </section>
+
+          {/* ── Zones ── */}
+          <section aria-labelledby="section-zones" className={styles.section}>
+            <h2 id="section-zones" className={styles['section-title']}>
+              Zones
+            </h2>
+            <p className={styles['zone-note']}>
+              Zones re-assign the same semantic custom properties inside a{' '}
+              <span className={styles.mono}>data-zone</span> subtree, so a zone composes with every
+              skin — each skin supplies its own values for the zone.
+            </p>
+            {zoneNames.map((zone) => {
+              const zoneColorNames = zoneTokens[zone]
+                .filter((t) => t.startsWith('--color-'))
+                .map((t) => t.replace('--color-', ''))
+              const zoneOtherTokens = zoneTokens[zone].filter((t) => !t.startsWith('--color-'))
+              return (
+                <div key={zone} data-zone={zone} className={styles['zone-panel']}>
+                  <p className={styles['zone-label']}>data-zone=&quot;{zone}&quot;</p>
+                  <ul className={styles['color-grid']} aria-label={`${zone} zone color overrides`}>
+                    {zoneColorNames.map((name) => {
+                      const figure = deriveFigure(name, zoneColorNames)
+                      const tokenVar = `--color-${name}`
+                      return (
+                        <li key={name} className={styles['color-card']}>
+                          {figure ? (
+                            <div
+                              className={styles['swatch-pair']}
+                              style={{
+                                backgroundColor: `var(--color-${name})`,
+                                color: `var(--color-${figure})`,
+                              }}
+                              aria-hidden="true"
+                            >
+                              Aa
+                            </div>
+                          ) : (
+                            <div
+                              className={styles.swatch}
+                              style={{ backgroundColor: `var(${tokenVar})` }}
+                              aria-hidden="true"
+                            />
+                          )}
+                          <span className={styles['color-label']}>{tokenVar}</span>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                  {zoneOtherTokens.length > 0 && (
+                    <ul
+                      className={styles['zone-token-list']}
+                      aria-label={`${zone} zone non-color overrides`}
+                    >
+                      {zoneOtherTokens.map((token) => (
+                        <li key={token}>
+                          <span className={styles.mono}>{token}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )
+            })}
           </section>
 
           {/* ── Type ── */}

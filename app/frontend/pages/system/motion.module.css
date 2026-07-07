@@ -276,6 +276,51 @@
   outline-offset: 2px;
 }
 
+/* ── Night zone ───────────────────────────────────────────────────────────── */
+
+.zone-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line); /* 1px hairline */
+  border-radius: var(--radius-surface);
+}
+
+.zone-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.zone-body {
+  margin: 0;
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink);
+}
+
+.zone-muted {
+  margin: 0;
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+}
+
+.zone-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
 /* ── Footer ───────────────────────────────────────────────────────────────── */
 
 .footer {

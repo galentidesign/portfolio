@@ -150,6 +150,47 @@
   word-break: break-all;
 }
 
+/* ── Zones ───────────────────────────────────────────────────────────── */
+
+.zone-note {
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  color: var(--color-ink-muted);
+  margin: 0;
+  max-width: 52rem;
+}
+
+.zone-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+}
+
+.zone-label {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-muted);
+  margin: 0;
+}
+
+.zone-token-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 /* ── Type section ────────────────────────────────────────────────────── */
 
 .type-list {

@@ -4,6 +4,9 @@ import { Link } from '@inertiajs/react'
 import { semanticTokens } from '@/ds/tokens/generated/skins'
 import type { SystemNavEntry } from '@/system/DocShell'
 import { DocShell } from '@/system/DocShell'
+import { Badge } from '@/ds/components/Badge/Badge'
+import { Button } from '@/ds/components/Button/Button'
+import { Card } from '@/ds/components/Card/Card'
 import { useSkin } from '@/shell/skin/SkinProvider'
 import { useMotionPref } from '@/ds/motion/useMotionPref'
 import styles from './motion.module.css'
@@ -220,6 +223,38 @@ export default function MotionPage({ nav }: Props) {
               >
                 {manualReduced ? 'Restore full motion' : 'Enable reduced motion'}
               </button>
+            </div>
+          </section>
+
+          {/* ── Night zone ── */}
+          <section aria-labelledby="section-zone" className={styles.section}>
+            <h2 id="section-zone" className={styles['section-heading']}>
+              Night zone
+            </h2>
+            <p className={styles.note}>
+              Dark sections re-token, not re-skin — inside{' '}
+              <code className={styles.code}>data-zone=&apos;night&apos;</code> the same semantic
+              custom properties resolve to the active skin&apos;s night palette.
+            </p>
+
+            <div data-zone="night" className={styles['zone-stage']}>
+              <Card title="Night zone specimen">
+                <div className={styles['zone-card-body']}>
+                  <p className={styles['zone-body']}>
+                    The surface, text, and control below use the exact same tokens as the rest of
+                    this page — the zone re-assigns their values.
+                  </p>
+                  <p className={styles['zone-muted']}>
+                    Muted ink keeps its role; only the palette changes.
+                  </p>
+                  <div className={styles['zone-row']}>
+                    <Badge tone="accent">accent</Badge>
+                    <Button variant="primary" size="sm">
+                      Night control
+                    </Button>
+                  </div>
+                </div>
+              </Card>
             </div>
           </section>
 

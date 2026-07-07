@@ -109,6 +109,13 @@ describe('MotionPage', () => {
     expect(toggle).toHaveAttribute('aria-pressed', 'false')
   })
 
+  it('renders the night-zone specimen inside a data-zone wrapper', () => {
+    renderPage()
+    expect(screen.getByRole('heading', { name: 'Night zone' })).toBeInTheDocument()
+    const control = screen.getByRole('button', { name: 'Night control' })
+    expect(control.closest('[data-zone="night"]')).not.toBeNull()
+  })
+
   it('renders a link to /system/tokens', () => {
     renderPage()
     expect(screen.getByRole('link', { name: 'Tokens' })).toHaveAttribute('href', '/system/tokens')
