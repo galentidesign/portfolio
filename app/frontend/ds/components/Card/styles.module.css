@@ -30,6 +30,29 @@
   outline-offset: 2px;
 }
 
+/* ── Proximity glow paint layer (fx) ───────────────────────────────────────────
+   Painted only while the fx layer marks the card [data-fx-glow] (motion mode;
+   ds/motion/fx/proximityGlow.ts owns the attribute and writes --glow-x/
+   --glow-y/--glow-a). Reduced-motion and base renders never grow this layer. */
+
+.card[data-fx-glow] {
+  position: relative;
+}
+
+.card[data-fx-glow]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--glow-a, 0);
+  background: radial-gradient(
+    circle 14rem at var(--glow-x, 50%) var(--glow-y, 50%),
+    color-mix(in srgb, var(--color-glow-ink) 12%, transparent),
+    transparent 70%
+  );
+}
+
 /* ── Title row ─────────────────────────────────────────────────────────────── */
 
 .title {

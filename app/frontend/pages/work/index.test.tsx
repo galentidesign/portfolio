@@ -22,6 +22,12 @@ vi.mock('@inertiajs/react', async (importOriginal) => ({
   ),
 }))
 
+// useFx gates on the motion-pref context; pin the gate to reduced so the
+// page renders its static base with no dynamic fx import (home test pattern).
+vi.mock('@/ds/motion/useMotionPref', () => ({
+  useMotionPref: () => ({ reduced: true, manualReduced: false, setManualReduced: vi.fn() }),
+}))
+
 vi.mock('@/ds/components/Card/Card', () => ({
   Card: ({
     href,

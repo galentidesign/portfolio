@@ -27,32 +27,51 @@
 }
 
 .gateway-heading {
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  line-height: var(--type-mono-line);
-  letter-spacing: var(--type-mono-tracking);
-  color: var(--color-ink-muted);
-  margin: 0 0 var(--space-5);
-  text-transform: uppercase;
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  color: var(--color-ink);
+  margin: 0 0 var(--space-6);
 }
 
 .gateway-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
-/* ── Card content inside gateway ────────────────────────────────────────────── */
+/* ── Gateway cells — oversized decorative numerals behind the cards ─────────── */
 
-.chapter-num {
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  line-height: var(--type-mono-line);
-  letter-spacing: var(--type-mono-tracking);
+.gateway-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  /* Headroom for the numeral; the card rises over its lower third. */
+  padding-top: calc(var(--type-numeral-size) * 0.62);
+}
+
+.gateway-numeral {
+  position: absolute;
+  top: 0;
+  left: -0.02em;
+  z-index: var(--z-base);
+  font-family: var(--type-numeral-family);
+  font-size: var(--type-numeral-size);
+  font-weight: var(--type-numeral-weight);
+  line-height: var(--type-numeral-line);
+  letter-spacing: var(--type-numeral-tracking);
   color: var(--color-ink-faint);
-  margin: 0 0 var(--space-2);
+  pointer-events: none;
+  user-select: none;
+}
+
+.gateway-cell > a {
+  position: relative;
+  z-index: var(--z-raised);
+  flex: 1;
 }
 
 .chapter-title {

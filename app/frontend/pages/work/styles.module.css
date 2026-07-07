@@ -1,17 +1,25 @@
+/* ── /work — the skim hub at editorial scale (R3) ────────────────────────────
+ * Thesis at hero scale → marquee strip → asymmetric study tiles (Study A is
+ * the first night-zone surface) → system tile with live palette chips → act.
+ * Semantic tokens only; type sizes ride the clamp()-based scale tokens; the
+ * below-fold blocks use content-visibility for cheap first paint.
+ * ───────────────────────────────────────────────────────────────────────── */
+
 .page {
   background-color: var(--color-surface);
   color: var(--color-ink);
   min-height: 100dvh;
   padding-bottom: var(--space-10);
+  overflow-x: clip;
 }
 
 .container {
-  max-width: 72rem;
+  max-width: 90rem;
   margin-inline: auto;
   padding-inline: var(--density-pad);
 }
 
-/* Block 1: Thesis */
+/* ── Block 1: Thesis ───────────────────────────────────────────────────────── */
 
 .thesis-block {
   padding-top: var(--space-8);
@@ -28,55 +36,199 @@
 }
 
 .thesis {
-  font-family: var(--type-display-family);
+  font-family: var(--type-hero-family);
+  font-weight: var(--type-hero-weight);
+  line-height: var(--type-hero-line);
+  letter-spacing: var(--type-hero-tracking);
+  margin: 0;
+}
+
+.thesis-lead {
+  display: block;
+
+  /* Hero scale, with a viewport cap so the longest word ("technologist")
+     never overruns a narrow phone column. */
+  font-size: min(var(--type-hero-size), 14vw);
+  text-wrap: balance;
+}
+
+.thesis-rest {
+  display: block;
   font-size: var(--type-display-size);
   font-weight: var(--type-display-weight);
   line-height: var(--type-display-line);
   letter-spacing: var(--type-display-tracking);
-  margin: 0;
-  max-width: 22ch;
+  max-width: 28ch;
+  margin-top: var(--space-5);
+  text-wrap: balance;
 }
 
-/* Block 2: Proof */
+/* ── Marquee strip ─────────────────────────────────────────────────────────── */
+
+.marquee-strip {
+  margin-top: var(--space-8);
+  border-block: 1px solid var(--color-line);
+  padding-block: var(--space-4);
+  overflow: hidden;
+}
+
+.marquee-track {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-7);
+  width: max-content;
+  white-space: nowrap;
+
+  /* Centered at rest — the reduced-motion render clips evenly at both edges
+     instead of starting flush at the viewport. The fx mount sizes its clone
+     loop to cover the centered start, so motion mode needs no override. */
+  margin-inline: auto;
+}
+
+.marquee-term {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-7);
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  color: var(--color-ink-muted);
+}
+
+.marquee-dot {
+  color: var(--color-accent);
+}
+
+/* ── Block 2: Proof — asymmetric editorial tiles ───────────────────────────── */
 
 .proof-block {
-  margin-top: var(--space-9);
+  margin-top: var(--space-8);
 }
 
-.card-grid {
+.tile-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-5);
 }
 
-@media (width >= 720px) {
-  .card-grid {
-    grid-template-columns: 1fr 1fr;
+@media (--bp-lg) {
+  .tile-grid {
+    grid-template-columns: repeat(12, 1fr);
+    align-items: start;
+  }
+
+  .study-tile {
+    grid-column: 1 / span 8;
+  }
+
+  .study-tile-b {
+    grid-column: 9 / -1;
   }
 }
 
-/* Block 3: System */
-
-.system-block {
-  margin-top: var(--space-9);
+/* Tiles fill their cells; footers sink to the bottom edge. The child
+   selectors target the Card's root anchor — layout concerns stay page-side,
+   the component API stays untouched. */
+.study-tile > a,
+.study-tile-b > a {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: clamp(1.25rem, 0.75rem + 2.5vw, 2.75rem);
 }
 
-/* Block 4: Act */
+.study-tile > a > :last-child,
+.study-tile-b > a > :last-child {
+  margin-top: auto;
+}
+
+.study-tile-b > a {
+  min-height: clamp(18rem, 10rem + 26vw, 36rem);
+}
+
+.study-tile > a {
+  min-height: clamp(16rem, 10rem + 18vw, 26rem);
+
+  /* Subtle scanline code-texture over the night surface — re-tokens with the
+     zone (ember-warm in galenti, CRT green in rails-era). */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-line) 55%, transparent) 0,
+    color-mix(in srgb, var(--color-line) 55%, transparent) 1px,
+    transparent 1px,
+    transparent 9px
+  );
+  transition:
+    transform var(--motion-duration-xs) var(--motion-ease-move),
+    box-shadow var(--motion-duration-sm) var(--motion-ease-enter);
+}
+
+.study-tile > a:hover,
+.study-tile > a:focus-visible {
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.tile-lede {
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  margin: var(--space-4) 0 var(--space-6);
+  max-width: 24ch;
+  text-wrap: pretty;
+}
+
+/* Mono accent on the night tile's cue — the code-texture voice. */
+.tile-cue {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-accent);
+}
+
+/* ── Block 3: System ───────────────────────────────────────────────────────── */
+
+.system-block {
+  margin-top: var(--space-5);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 18rem;
+}
+
+.chip-row {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.chip {
+  width: var(--space-6);
+  height: var(--space-4);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-line-strong);
+}
+
+/* ── Block 4: Act ──────────────────────────────────────────────────────────── */
 
 .act-block {
   margin-top: var(--space-9);
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5) var(--space-7);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 8rem;
 }
 
 .mailto-link {
-  font-family: var(--type-body-family);
-  font-size: var(--type-body-size);
-  font-weight: var(--type-body-weight);
-  line-height: var(--type-body-line);
-  letter-spacing: var(--type-body-tracking);
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
   color: var(--color-accent);
   text-decoration: underline;
   border-radius: var(--radius-control);

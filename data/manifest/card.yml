@@ -29,6 +29,7 @@ props:
 
 tokens:
   - --color-focus
+  - --color-glow-ink
   - --color-ink
   - --color-ink-muted
   - --color-line
