@@ -1,0 +1,135 @@
+/* ── Night kit (Ch3 kilnlight) ───────────────────────────────────────────────
+ * The light↔dark crossing (NightBoundary), the re-tokened night-zone wrapper,
+ * and the compact orchestration map. The boundary is generic — no chapter
+ * copy lives here. Reduced motion: this base render IS the design (bridge
+ * fully ramped, horizon pre-drawn, map static); the motion layer only ever
+ * re-plays it. Semantic tokens only. Every texture is STATIC (WCAG 2.3.1) —
+ * the glow never animates; DrawSVG makes exactly one pass, on scroll-enter.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/* Re-tokened subtree: inside [data-zone='night'] this same token resolves to
+   the skin's night surface, so the wrapper needs nothing but the variable. */
+.zone {
+  background-color: var(--color-surface);
+}
+
+/* ── Boundary band ──────────────────────────────────────────────────────────
+ * Full-width horizon band. The root paints the OUTER zone's surface; the
+ * bridge child (data-zone='night') ramps to the night surface with a
+ * same-hue alpha gradient — ~36vh of scroll travel, never a hard cut. */
+
+.boundary {
+  position: relative;
+  height: clamp(14rem, 36vh, 22rem);
+  background-color: var(--color-surface);
+}
+
+.bridge {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-surface) 0%, transparent),
+    var(--color-surface)
+  );
+}
+
+.boundary[data-direction='exit'] .bridge {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-surface) 0%, transparent),
+    var(--color-surface)
+  );
+}
+
+/* Ember horizon — one glowing line across the crossing, sitting in the dark
+   reach of the ramp, bowing toward the light side. The glow is a static
+   drop-shadow of the night zone's glow ink; only the draw is ever animated. */
+.horizon {
+  position: absolute;
+  inset-inline: 0;
+  top: 58%;
+  width: 100%;
+  height: clamp(2rem, 5vh, 3rem);
+  overflow: visible;
+}
+
+.boundary[data-direction='exit'] .horizon {
+  top: auto;
+  bottom: 58%;
+  transform: scaleY(-1);
+}
+
+.horizon-line {
+  fill: none;
+  stroke: var(--color-glow-ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 6px var(--color-glow-ink));
+}
+
+/* ── Orchestration map ──────────────────────────────────────────────────────
+ * Compact SVG variant of the study's architecture flow, built for the night
+ * zone: nodes on raised surface, edges in line-strong, role accents matching
+ * the study's color language. The SVG is decorative (aria-hidden); the
+ * figcaption carries the flow for readers. */
+
+.map {
+  margin: var(--space-6) 0 0;
+}
+
+.map-svg {
+  display: block;
+  width: 100%;
+  max-width: 26rem;
+  height: auto;
+  margin-inline: auto;
+}
+
+.map-edge {
+  fill: none;
+  stroke: var(--color-line-strong);
+  stroke-width: 1.5;
+}
+
+.map-node rect {
+  fill: var(--color-surface-raised);
+  stroke: var(--color-line-strong);
+  stroke-width: 1;
+  rx: var(--radius-control);
+}
+
+.map-node text {
+  fill: var(--color-ink);
+  font-family: var(--type-mono-family);
+  font-size: 12px;
+  font-weight: var(--type-mono-weight);
+  letter-spacing: var(--type-mono-tracking);
+}
+
+.map-node[data-role='orchestrator'] rect {
+  fill: var(--color-accent-muted);
+  stroke: var(--color-accent);
+}
+
+.map-node[data-role='gate'] rect {
+  fill: var(--color-caution-surface);
+  stroke: var(--color-caution);
+}
+
+.map-node[data-role='artifact'] rect {
+  fill: var(--color-positive-surface);
+  stroke: var(--color-positive);
+}
+
+.map-caption {
+  margin-block-start: var(--space-4);
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+  text-align: center;
+}

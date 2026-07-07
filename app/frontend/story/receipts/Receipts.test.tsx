@@ -1,11 +1,28 @@
-import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import type { ReactElement } from 'react'
+import { render as rtlRender, screen, within } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
 import { Receipts } from './Receipts'
 import { receipts } from './data'
 
 const BLOB_PREFIX = 'https://github.com/galentidesign/portfolio/blob/main/docs/receipts/'
 
+// Receipts now carries THE MOTION GATE (night feed motion), so renders need
+// the provider; reduced motion keeps jsdom on the static path (no dynamic
+// GSAP import — reduced-motion parity is the base render itself).
+function render(ui: ReactElement) {
+  return rtlRender(<MotionPrefProvider>{ui}</MotionPrefProvider>)
+}
+
 describe('Receipts (Ch3 §6.7)', () => {
+  beforeEach(() => {
+    document.documentElement.dataset.motion = 'reduced'
+  })
+
+  afterEach(() => {
+    delete document.documentElement.dataset.motion
+  })
+
   it('renders one timeline entry per receipt file', () => {
     render(<Receipts />)
     const timeline = screen.getByRole('list', { name: /build sessions/i })

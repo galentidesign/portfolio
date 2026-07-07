@@ -3,10 +3,13 @@ import { Head, Link } from '@inertiajs/react'
 import { ScrollProgress } from '@/shell/story/ScrollProgress'
 import { Prose } from '@/ds/components/Prose/Prose'
 import { Receipts } from '@/story/receipts/Receipts'
+import { NightBoundary } from '@/story/night/NightBoundary'
+import { OrchestrationMap } from '@/story/night/OrchestrationMap'
 import { track } from '@/telemetry/track'
 import { CONTACT_EMAIL, LINKEDIN_URL } from '@/shell/contact'
 import styles from './story.module.css'
 import noteStyles from './era-note.module.css'
+import nightStyles from '@/story/night/night.module.css'
 
 export default function Agentic() {
   const outroRef = useRef<HTMLElement>(null)
@@ -49,47 +52,58 @@ export default function Agentic() {
           </p>
         </aside>
 
-        <section aria-labelledby="agentic-receipts" className={styles.section}>
-          <h2 id="agentic-receipts" className={styles['section-heading']}>
-            Agent receipts
-          </h2>
-          <Receipts />
-        </section>
+        {/* The kiln descent: the chapter body crosses into the skin's night
+            zone — receipts + playbook re-token to the ember palette — and
+            resolves back to the outer surface before the outro. The
+            boundaries are decorative; headings and tab order are untouched. */}
+        <NightBoundary direction="enter" />
 
-        <section aria-labelledby="agentic-playbook" className={styles.section}>
-          <h2 id="agentic-playbook" className={styles['section-heading']}>
-            The agentic playbook
-          </h2>
-          <Prose>
-            <p>The receipts above are the evidence. This section is the method behind them.</p>
-            <p>
-              One orchestrator owns the session. It plans the milestone, builds the shared pieces
-              the parallel agents would collide on first (routes, migrations, shared chrome, the
-              contract doc), then hands each agent one task, with the model size matched to the
-              work: the biggest models for design judgment and architecture, mid-size for features
-              with clear specs, small ones for the mechanical template stuff.
-            </p>
-            <p>
-              The contract docs do the coordination. Parallel agents never see each other; they
-              build against those pinned docs and meet at integration with almost no rework. The
-              orchestrator runs the integration itself; each agent only checks its own files.
-            </p>
-            <p>
-              Passing tests turned out to be nowhere near enough. Every session’s real catches came
-              from looking at the actual output (screenshots, served HTML, headers on the wire)
-              after the test suites had already passed. So the rule became: check the real thing in
-              the environment that actually ships, even when a more convenient one is sitting right
-              there.
-            </p>
-            <p>
-              And the work logs itself as it happens. Every session appends its receipt (agents
-              used, what broke, what the review caught) before it closes, because a receipt
-              reconstructed later is mostly fiction with good intentions. Eleven sessions of those
-              receipts sit above this paragraph, and the craft numbers they produced are on the{' '}
-              <Link href="/colophon">colophon</Link>.
-            </p>
-          </Prose>
-        </section>
+        <div className={nightStyles.zone} data-zone="night" data-testid="night-zone">
+          <section aria-labelledby="agentic-receipts" className={styles.section}>
+            <h2 id="agentic-receipts" className={styles['section-heading']}>
+              Agent receipts
+            </h2>
+            <Receipts />
+          </section>
+
+          <section aria-labelledby="agentic-playbook" className={styles.section}>
+            <h2 id="agentic-playbook" className={styles['section-heading']}>
+              The agentic playbook
+            </h2>
+            <Prose>
+              <p>The receipts above are the evidence. This section is the method behind them.</p>
+              <p>
+                One orchestrator owns the session. It plans the milestone, builds the shared pieces
+                the parallel agents would collide on first (routes, migrations, shared chrome, the
+                contract doc), then hands each agent one task, with the model size matched to the
+                work: the biggest models for design judgment and architecture, mid-size for features
+                with clear specs, small ones for the mechanical template stuff.
+              </p>
+              <p>
+                The contract docs do the coordination. Parallel agents never see each other; they
+                build against those pinned docs and meet at integration with almost no rework. The
+                orchestrator runs the integration itself; each agent only checks its own files.
+              </p>
+              <p>
+                Passing tests turned out to be nowhere near enough. Every session’s real catches
+                came from looking at the actual output (screenshots, served HTML, headers on the
+                wire) after the test suites had already passed. So the rule became: check the real
+                thing in the environment that actually ships, even when a more convenient one is
+                sitting right there.
+              </p>
+              <p>
+                And the work logs itself as it happens. Every session appends its receipt (agents
+                used, what broke, what the review caught) before it closes, because a receipt
+                reconstructed later is mostly fiction with good intentions. Eleven sessions of those
+                receipts sit above this paragraph, and the craft numbers they produced are on the{' '}
+                <Link href="/colophon">colophon</Link>.
+              </p>
+            </Prose>
+            <OrchestrationMap />
+          </section>
+        </div>
+
+        <NightBoundary direction="exit" />
 
         <footer ref={outroRef} className={styles['chapter-footer']} data-testid="story-outro">
           <div className={styles['outro-links']}>

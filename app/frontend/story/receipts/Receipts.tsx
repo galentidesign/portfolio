@@ -1,3 +1,6 @@
+import { useEffect, useRef } from 'react'
+import { useMotionPref } from '@/ds/motion/useMotionPref'
+import type { NightMotionHandle } from '@/story/night/motion'
 import type { AgentGroup } from './types'
 import { receipts } from './data'
 import styles from './receipts.module.css'
@@ -12,9 +15,40 @@ function crewLabel(agents: readonly AgentGroup[]): string {
 /**
  * Ch3 centerpiece (§6.7): the agent-build receipts, assembled from
  * docs/receipts/ — one entry per build session, captured in the moment and
- * never reconstructed. Static by design; reduced-motion parity is inherent.
+ * never reconstructed. Rendered as a terminal feed for the night zone:
+ * timestamp gutter, raised session cards, glowing stat tiles.
+ *
+ * Motion (dynamic import, THE MOTION GATE): on scroll-enter each card rises
+ * in once and its title decodes with ScrambleText — the real title is the
+ * DOM text, so reduced motion (which never downloads the chunk) renders the
+ * identical feed, static and fully legible.
  */
 export function Receipts() {
+  const { reduced } = useMotionPref()
+  const feedRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const feed = feedRef.current
+    if (reduced || feed === null) return
+
+    let cancelled = false
+    let handle: NightMotionHandle | null = null
+    void import('@/story/night/motion')
+      .then(({ mountFeedMotion }) => {
+        if (cancelled || feedRef.current === null) return
+        handle = mountFeedMotion(feedRef.current)
+      })
+      .catch(() => {
+        // Decorative enhancement only — a chunk error leaves the static feed.
+      })
+
+    return () => {
+      cancelled = true
+      handle?.destroy()
+      handle = null
+    }
+  }, [reduced])
+
   const sessions = receipts.length
   const commits = receipts.reduce((sum, r) => sum + r.commits, 0)
   const agentCount = receipts.reduce((sum, r) => sum + r.agents.reduce((n, g) => n + g.count, 0), 0)
@@ -25,7 +59,7 @@ export function Receipts() {
   const excerpted = receipts.filter((r) => r.excerpt !== undefined)
 
   return (
-    <div className={styles.receipts}>
+    <div ref={feedRef} className={styles.receipts}>
       <p className={styles.intro}>
         Every milestone of this site was one orchestrated agent session — a frontier orchestrator
         delegating to mid- and small-tier subagents against pinned file contracts. Each session
@@ -63,41 +97,44 @@ export function Receipts() {
 
       <ol className={styles.timeline} role="list" aria-label="Build sessions, one per milestone">
         {receipts.map((r) => (
-          <li key={r.id} className={styles.session}>
-            <div className={styles['session-head']}>
-              <span className={styles['session-id']}>{r.id}</span>
-              <a
-                className={styles['session-title']}
-                href={`${REPO_BLOB_URL}${r.sourcePath}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {r.title} →
-              </a>
-              <span className={styles['session-date']}>{r.date}</span>
-            </div>
-            <div className={styles['session-meta']}>
-              <span className={styles.crew} aria-hidden="true">
-                {r.agents.map((g, groupIndex) => (
-                  <span key={groupIndex} className={styles['crew-group']}>
-                    {Array.from({ length: g.count }, (_, i) => (
-                      <span key={i} className={[styles.dot, styles[`dot-${g.tier}`]].join(' ')} />
-                    ))}
-                  </span>
+          <li key={r.id} className={styles.session} data-receipt-card>
+            <span className={styles['session-date']}>{r.date}</span>
+            <div className={styles['session-card']}>
+              <div className={styles['session-head']}>
+                <span className={styles['session-id']}>{r.id}</span>
+                <a
+                  className={styles['session-title']}
+                  data-receipt-title
+                  href={`${REPO_BLOB_URL}${r.sourcePath}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {r.title} →
+                </a>
+              </div>
+              <div className={styles['session-meta']}>
+                <span className={styles.crew} aria-hidden="true">
+                  {r.agents.map((g, groupIndex) => (
+                    <span key={groupIndex} className={styles['crew-group']}>
+                      {Array.from({ length: g.count }, (_, i) => (
+                        <span key={i} className={[styles.dot, styles[`dot-${g.tier}`]].join(' ')} />
+                      ))}
+                    </span>
+                  ))}
+                </span>
+                <span className={styles['crew-label']}>{crewLabel(r.agents)}</span>
+                <span className={styles['session-commits']}>
+                  {r.commits} {r.commits === 1 ? 'commit' : 'commits'}
+                </span>
+              </div>
+              <ul className={styles.moments} role="list">
+                {r.moments.map((moment) => (
+                  <li key={moment} className={styles.moment}>
+                    {moment}
+                  </li>
                 ))}
-              </span>
-              <span className={styles['crew-label']}>{crewLabel(r.agents)}</span>
-              <span className={styles['session-commits']}>
-                {r.commits} {r.commits === 1 ? 'commit' : 'commits'}
-              </span>
+              </ul>
             </div>
-            <ul className={styles.moments} role="list">
-              {r.moments.map((moment) => (
-                <li key={moment} className={styles.moment}>
-                  {moment}
-                </li>
-              ))}
-            </ul>
           </li>
         ))}
       </ol>

@@ -139,19 +139,38 @@ describe('ReactEra page', () => {
 // ---------------------------------------------------------------------------
 
 describe('Agentic page', () => {
+  // The chapter now hosts THE MOTION GATE (night boundaries, receipts feed,
+  // orchestration map), so renders need the provider; reduced motion keeps
+  // jsdom on the static path — no dynamic GSAP imports.
+  function renderPage() {
+    return render(
+      <MotionPrefProvider>
+        <Agentic />
+      </MotionPrefProvider>,
+    )
+  }
+
+  beforeEach(() => {
+    document.documentElement.dataset.motion = 'reduced'
+  })
+
+  afterEach(() => {
+    delete document.documentElement.dataset.motion
+  })
+
   it('renders the chapter h1', () => {
-    render(<Agentic />)
+    renderPage()
     expect(screen.getByRole('heading', { level: 1, name: 'The agentic era' })).toBeInTheDocument()
   })
 
   it('has a handoff link to /work — the end of the story arc', () => {
-    render(<Agentic />)
+    renderPage()
     const link = screen.getByRole('link', { name: /see the work/i })
     expect(link).toHaveAttribute('href', '/work')
   })
 
   it('labels the agent receipts section with aria-labelledby pointing to an h2', () => {
-    render(<Agentic />)
+    renderPage()
     const heading = screen.getByRole('heading', { level: 2, name: 'Agent receipts' })
     expect(heading).toBeInTheDocument()
     expect(heading).toHaveAttribute('id', 'agentic-receipts')
@@ -159,13 +178,29 @@ describe('Agentic page', () => {
     expect(section).toHaveAttribute('aria-labelledby', 'agentic-receipts')
   })
 
+  it('wraps the chapter body in the night zone with boundaries on both sides', () => {
+    renderPage()
+    const zone = screen.getByTestId('night-zone')
+    expect(zone).toHaveAttribute('data-zone', 'night')
+    // Receipts and playbook live INSIDE the zone; the outro stays outside.
+    expect(zone.contains(screen.getByRole('heading', { level: 2, name: 'Agent receipts' }))).toBe(
+      true,
+    )
+    expect(
+      zone.contains(screen.getByRole('heading', { level: 2, name: 'The agentic playbook' })),
+    ).toBe(true)
+    expect(zone.contains(screen.getByTestId('story-outro'))).toBe(false)
+    expect(screen.getByTestId('night-boundary-enter')).toBeInTheDocument()
+    expect(screen.getByTestId('night-boundary-exit')).toBeInTheDocument()
+  })
+
   it('renders the story outro with data-testid="story-outro"', () => {
-    render(<Agentic />)
+    renderPage()
     expect(screen.getByTestId('story-outro')).toBeInTheDocument()
   })
 
   it('story outro contains a mailto link for the contact email', () => {
-    render(<Agentic />)
+    renderPage()
     const outro = screen.getByTestId('story-outro')
     const mailtoLink = outro.querySelector('a[href^="mailto:"]')
     expect(mailtoLink).not.toBeNull()
@@ -173,7 +208,7 @@ describe('Agentic page', () => {
   })
 
   it('story outro contains a LinkedIn link opening in a new tab', () => {
-    render(<Agentic />)
+    renderPage()
     const outro = screen.getByTestId('story-outro')
     const linkedInLink = outro.querySelector('a[href*="linkedin.com"]')
     expect(linkedInLink).not.toBeNull()

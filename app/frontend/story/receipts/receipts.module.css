@@ -1,6 +1,14 @@
 /* ── Agent receipts (Ch3 §6.7) ──────────────────────────────────────────────
- * Assembled build-session timeline. Semantic tokens only; fully static —
- * no motion, so reduced-motion parity is inherent.
+ * The build-session timeline as a terminal feed for the night zone:
+ * timestamp gutter (mono, faint), session cards on the raised surface with
+ * a soft glow, milestone ids as mono badges, and the totals strip as glowing
+ * stat tiles. Semantic tokens only — inside [data-zone='night'] they resolve
+ * to the skin's night palette; outside it the same rules read in daylight.
+ *
+ * Contrast discipline on night surfaces: ink-faint only ever sits on the
+ * zone surface (the gutter); everything small inside a raised card uses
+ * ink-muted. The base render is the complete design — the motion layer only
+ * replays card entrances; reduced motion ships this file and nothing else.
  * ───────────────────────────────────────────────────────────────────────── */
 
 .receipts {
@@ -21,12 +29,12 @@
   max-width: 44rem;
 }
 
-/* ── Totals strip ─────────────────────────────────────────────────────────── */
+/* ── Totals strip → glowing stat tiles ────────────────────────────────────── */
 
 .totals {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-6);
+  gap: var(--space-4);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -36,6 +44,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-glow-accent);
 }
 
 .total-value {
@@ -44,7 +57,7 @@
   font-weight: var(--type-title-weight);
   line-height: var(--type-title-line);
   letter-spacing: var(--type-title-tracking);
-  color: var(--color-ink);
+  color: var(--color-glow-ink);
 }
 
 .total-label {
@@ -91,7 +104,7 @@
   background-color: var(--color-line-strong);
 }
 
-/* ── Session timeline ─────────────────────────────────────────────────────── */
+/* ── Session feed ─────────────────────────────────────────────────────────── */
 
 .timeline {
   list-style: none;
@@ -99,18 +112,46 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+  gap: var(--space-4);
 }
 
+/* One feed entry: timestamp gutter + session card. Stacks under --bp-sm. */
 .session {
-  padding-block: var(--space-4);
-  border-top: 1px solid var(--color-line);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-.session:last-child {
-  border-bottom: 1px solid var(--color-line);
+@media (--bp-sm) {
+  .session {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: var(--space-4);
+    align-items: start;
+  }
+}
+
+/* Timestamp gutter — mono, faint, on the ZONE surface (never on the card:
+   ink-faint holds AA on the night surface, not the raised one). */
+.session-date {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-faint);
+  padding-block-start: var(--space-3);
+}
+
+.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-glow-soft);
 }
 
 .session-head {
@@ -120,6 +161,7 @@
   gap: var(--space-3);
 }
 
+/* Milestone id — mono badge. */
 .session-id {
   font-family: var(--type-mono-family);
   font-size: var(--type-mono-size);
@@ -127,11 +169,15 @@
   line-height: var(--type-mono-line);
   letter-spacing: var(--type-mono-tracking);
   color: var(--color-accent);
+  background-color: var(--color-accent-muted);
+  border-radius: var(--radius-control);
+  padding-inline: var(--space-2);
   min-inline-size: 2.25rem;
+  text-align: center;
 }
 
 .session-title {
-  font-family: var(--type-body-family);
+  font-family: var(--type-mono-family);
   font-size: var(--type-body-size);
   font-weight: var(--type-heading-weight);
   line-height: var(--type-body-line);
@@ -149,16 +195,6 @@
 .session-title:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
-}
-
-.session-date {
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  line-height: var(--type-mono-line);
-  letter-spacing: var(--type-mono-tracking);
-  color: var(--color-ink-faint);
-  margin-inline-start: auto;
 }
 
 .session-meta {
@@ -195,7 +231,7 @@
   font-weight: var(--type-mono-weight);
   line-height: var(--type-mono-line);
   letter-spacing: var(--type-mono-tracking);
-  color: var(--color-ink-faint);
+  color: var(--color-ink-muted);
   margin-inline-start: auto;
 }
 
@@ -223,7 +259,7 @@
   content: '·';
   position: absolute;
   inset-inline-start: var(--space-2);
-  color: var(--color-ink-faint);
+  color: var(--color-ink-muted);
 }
 
 /* ── Excerpts ─────────────────────────────────────────────────────────────── */
