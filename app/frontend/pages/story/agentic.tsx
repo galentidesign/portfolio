@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Head, Link } from '@inertiajs/react'
 import { ScrollProgress } from '@/shell/story/ScrollProgress'
+import { Prose } from '@/ds/components/Prose/Prose'
 import { Receipts } from '@/story/receipts/Receipts'
 import { track } from '@/telemetry/track'
 import { CONTACT_EMAIL, LINKEDIN_URL } from '@/shell/contact'
@@ -59,9 +60,35 @@ export default function Agentic() {
           <h2 id="agentic-playbook" className={styles['section-heading']}>
             The agentic playbook
           </h2>
-          <p className={styles.annotation}>
-            agentic design-ops playbook — content workstream (portfolio-spec Task 2)
-          </p>
+          <Prose>
+            <p>The receipts above are the evidence. This section is the method behind them.</p>
+            <p>
+              One orchestrator owns the session. It plans the milestone, builds the shared pieces
+              the parallel agents would collide on first (routes, migrations, shared chrome, the
+              contract doc), then hands each agent one task, with the model size matched to the
+              work: the biggest models for design judgment and architecture, mid-size for features
+              with clear specs, small ones for the mechanical template stuff.
+            </p>
+            <p>
+              The contract docs do the coordination. Parallel agents never see each other; they
+              build against those pinned docs and meet at integration with almost no rework. The
+              orchestrator runs the integration itself; each agent only checks its own files.
+            </p>
+            <p>
+              Passing tests turned out to be nowhere near enough. Every session’s real catches came
+              from looking at the actual output (screenshots, served HTML, headers on the wire)
+              after the test suites had already passed. So the rule became: check the real thing in
+              the environment that actually ships, even when a more convenient one is sitting right
+              there.
+            </p>
+            <p>
+              And the work logs itself as it happens. Every session appends its receipt (agents
+              used, what broke, what the review caught) before it closes, because a receipt
+              reconstructed later is mostly fiction with good intentions. Eleven sessions of those
+              receipts sit above this paragraph, and the craft numbers they produced are on the{' '}
+              <Link href="/colophon">colophon</Link>.
+            </p>
+          </Prose>
         </section>
 
         <footer ref={outroRef} className={styles['chapter-footer']} data-testid="story-outro">

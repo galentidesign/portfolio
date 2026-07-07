@@ -14,12 +14,11 @@ studies/
 
 ## Rules that bind every file here
 
-- **Prose slots, not prose.** Study narrative is written outside build
-  sessions. Pages render labeled slots (`<ProseSlot id="…">` or an
-  equivalent placeholder with a visible `Content slot: <id>` marker) —
-  never draft study copy inline. Table content, diagram labels, and
-  captions authored from extracted facts are fine; narrative paragraphs
-  are not.
+- **Prose comes from the content workstream.** Study narrative was drafted
+  outside build sessions and landed at M10 with J's approval (the ProseSlot
+  placeholder mechanism retired with it). Copy edits go through J; build
+  sessions never redraft narrative. Table content, diagram labels, and
+  captions authored from extracted facts remain fair game.
 - **Fictional data only.** Demo seeds, table examples, and diagram labels
   use invented names — no real families, users, or production values, and
   no employer-internal system names. Neutral diagram labels

@@ -53,27 +53,33 @@ describe('ShadcnToPolaris page', () => {
     })
   })
 
-  describe('ProseSlot ids', () => {
-    it('renders study-b/framing slot', () => {
-      const { container } = render(<ShadcnToPolaris />)
-      expect(container.querySelector('[data-prose-slot="study-b/framing"]')).toBeInTheDocument()
-    })
-
-    it('renders study-b/governance slot', () => {
-      const { container } = render(<ShadcnToPolaris />)
-      expect(container.querySelector('[data-prose-slot="study-b/governance"]')).toBeInTheDocument()
-    })
-
-    it('renders study-b/a11y slot', () => {
-      const { container } = render(<ShadcnToPolaris />)
-      expect(container.querySelector('[data-prose-slot="study-b/a11y"]')).toBeInTheDocument()
-    })
-
-    it('renders study-b/framework-close slot', () => {
-      const { container } = render(<ShadcnToPolaris />)
+  describe('landed prose (slots retired at M10)', () => {
+    it('framing states the philosophy gap', () => {
+      render(<ShadcnToPolaris />)
       expect(
-        container.querySelector('[data-prose-slot="study-b/framework-close"]'),
+        screen.getByText(/opposite answers to where design decisions should live/i),
       ).toBeInTheDocument()
+    })
+
+    it('governance names the drift example as inline code', () => {
+      render(<ShadcnToPolaris />)
+      const drift = screen.getByText('px-[13px]')
+      expect(drift.tagName).toBe('CODE')
+    })
+
+    it('a11y prose covers both gaps: ChoiceList fix and dnd-kit keyboard', () => {
+      render(<ShadcnToPolaris />)
+      expect(
+        screen.getByText(/Migrating to Polaris ChoiceList fixes this for real/i),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/The second gap survives the migration untouched/i),
+      ).toBeInTheDocument()
+    })
+
+    it('framework close carries the 2019 web-components bet', () => {
+      render(<ShadcnToPolaris />)
+      expect(screen.getByText(/Back in 2019 I bet on web components/i)).toBeInTheDocument()
     })
   })
 

@@ -1,8 +1,9 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-// M8 milestone verify: Study A and Study B page structure, table row counts,
-// prose-slot presence, demo Card link, and axe matrix over both routes.
+// M8 milestone verify (updated at M10 prose landing): Study A and Study B page
+// structure, landed prose, table row counts, demo Card link, and axe matrix
+// over both routes.
 
 // ── Study A: /work/agentic-design-ops ────────────────────────────────────────
 
@@ -27,18 +28,42 @@ test('Study A: diagrams and pattern gallery render', async ({ page }) => {
   await expect(page.getByTestId('pattern-gallery')).toBeVisible()
 })
 
-test('Study A: five prose slots present', async ({ page }) => {
+test('Study A: prose landed in all five sections, no slots remain', async ({ page }) => {
   await page.goto('/work/agentic-design-ops')
   await expect(page.getByRole('navigation', { name: 'Site' })).toBeVisible()
 
-  // Five distinct prose slot ids: framing, decision, build, ripple, close.
-  const slots = page.locator('[data-prose-slot]')
-  await expect(slots).toHaveCount(5)
-  await expect(page.locator('[data-prose-slot="study-a/framing"]')).toBeAttached()
-  await expect(page.locator('[data-prose-slot="study-a/decision"]')).toBeAttached()
-  await expect(page.locator('[data-prose-slot="study-a/build"]')).toBeAttached()
-  await expect(page.locator('[data-prose-slot="study-a/ripple"]')).toBeAttached()
-  await expect(page.locator('[data-prose-slot="study-a/close"]')).toBeAttached()
+  // One anchor phrase per former slot: framing, decision, build, ripple, close.
+  await expect(page.getByText(/the design system is my deity/i)).toBeVisible()
+  await expect(page.getByText(/The pipeline was the problem/i)).toBeVisible()
+  await expect(page.getByText(/Review gets its own UI/i)).toBeVisible()
+  await expect(page.getByText(/Nobody had to push adoption/i)).toBeVisible()
+  await expect(page.getByText(/This site is its own evidence/i)).toBeVisible()
+  await expect(page.locator('[data-prose-slot]')).toHaveCount(0)
+})
+
+test('Study B: prose landed in all four sections, no slots remain', async ({ page }) => {
+  await page.goto('/work/shadcn-to-polaris')
+  await expect(page.getByRole('navigation', { name: 'Site' })).toBeVisible()
+
+  await expect(
+    page.getByText(/opposite answers to where design decisions should live/i),
+  ).toBeVisible()
+  await expect(page.getByText(/an exception that gets reviewed/i)).toBeVisible()
+  await expect(page.getByText(/The second gap survives the migration untouched/i)).toBeVisible()
+  await expect(page.getByText(/Back in 2019 I bet on web components/i)).toBeVisible()
+  await expect(page.locator('[data-prose-slot]')).toHaveCount(0)
+})
+
+test('Story chapters: era prose landed, no content-workstream annotations remain', async ({
+  page,
+}) => {
+  await page.goto('/story/react-era')
+  await expect(page.getByText(/the token engine story in one move/i)).toBeVisible()
+  await expect(page.getByText(/content workstream/i)).toHaveCount(0)
+
+  await page.goto('/story/agentic')
+  await expect(page.getByText(/One orchestrator owns the session/i)).toBeVisible()
+  await expect(page.getByText(/content workstream/i)).toHaveCount(0)
 })
 
 // ── Study B: /work/shadcn-to-polaris ─────────────────────────────────────────

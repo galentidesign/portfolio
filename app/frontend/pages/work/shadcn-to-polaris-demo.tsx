@@ -53,7 +53,7 @@ export default function ShadcnToPolarisDemo() {
           {/* heading — explicit margin set in module CSS (Polaris resets h1 margin) */}
           <h1 className={styles.heading}>Polaris Chores — live demo</h1>
 
-          {/* Intro: factual UI copy, not study prose (prose goes in ProseSlots) */}
+          {/* Intro: factual UI copy, not study prose */}
           <p className={styles.intro}>
             A Polaris 13.x recreation of the Chores Index / Create / Edit flow, bundle-isolated so
             it never loads on other routes.

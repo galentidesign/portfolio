@@ -40,18 +40,23 @@ describe('AgenticDesignOps', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders every expected prose slot id', () => {
-    const { container } = render(<AgenticDesignOps />)
-    const SLOT_IDS = [
-      'study-a/framing',
-      'study-a/decision',
-      'study-a/build',
-      'study-a/ripple',
-      'study-a/close',
-    ]
-    for (const id of SLOT_IDS) {
-      expect(container.querySelector(`[data-prose-slot="${id}"]`)).toBeInTheDocument()
-    }
+  it('renders landed prose in all five sections (slots retired at M10)', () => {
+    render(<AgenticDesignOps />)
+    // One anchor phrase per former slot: framing, decision, build, ripple, close.
+    expect(screen.getByText(/the design system is my deity/i)).toBeInTheDocument()
+    expect(screen.getByText(/The pipeline was the problem/i)).toBeInTheDocument()
+    expect(screen.getByText(/Review gets its own UI/i)).toBeInTheDocument()
+    expect(screen.getByText(/Nobody had to push adoption/i)).toBeInTheDocument()
+    expect(screen.getByText(/This site is its own evidence/i)).toBeInTheDocument()
+  })
+
+  it('the close links its evidence: Chapter 3 and the colophon', () => {
+    render(<AgenticDesignOps />)
+    expect(screen.getByRole('link', { name: /Chapter 3 of the story/i })).toHaveAttribute(
+      'href',
+      '/story/agentic',
+    )
+    expect(screen.getByRole('link', { name: /^colophon$/i })).toHaveAttribute('href', '/colophon')
   })
 
   it('renders the orchestration diagram node labels', () => {

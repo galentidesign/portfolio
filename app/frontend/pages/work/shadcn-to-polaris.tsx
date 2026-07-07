@@ -3,7 +3,7 @@ import { Badge } from '@/ds/components/Badge/Badge'
 import { Card } from '@/ds/components/Card/Card'
 import { Table } from '@/ds/components/Table/Table'
 import type { TableColumn } from '@/ds/components/Table/Table'
-import { ProseSlot } from '@/studies/shared/ProseSlot'
+import { Prose } from '@/ds/components/Prose/Prose'
 import { TOKENS } from '@/studies/shadcn-to-polaris/tokens-map'
 import { API_MAP } from '@/studies/shadcn-to-polaris/api-map'
 import { A11Y_MAP } from '@/studies/shadcn-to-polaris/a11y-map'
@@ -168,9 +168,36 @@ export default function ShadcnToPolaris() {
             <h2 id="framing-heading" className={styles['section-heading']}>
               Philosophy gap
             </h2>
-            <ProseSlot id="study-b/framing">
-              copy-in/unstyled vs. governed/central — 2–3 paragraphs, ~300 words
-            </ProseSlot>
+            <Prose>
+              <p>
+                shadcn and Polaris aren’t just two component libraries with different looks. They’re
+                opposite answers to where design decisions should live. shadcn is copy-in by design:
+                you vendor the source, own every file, and style with Tailwind utilities right at
+                the point of use, so control is total and local. Polaris sits at the other pole: a
+                governed, centralized system where the tokens and component APIs are the deal you
+                sign up for, the defaults carry strong opinions, and consistency is enforced
+                centrally, before it ever reaches a product team. One is made for a small team
+                moving fast, the other for hundreds of teams that can’t be allowed to drift apart.
+              </p>
+              <p>
+                CoBlend is my own product, a Laravel/Inertia/React app with a UI built on shadcn and
+                Tailwind v4, which makes it an honest migration subject: I own both the before and
+                the after, and the “before” carries the real accumulated decisions of a shipping app
+                rather than a demo’s clean slate. The Chores flow was the right one to lead with:
+                it’s data-dense, it has four real states (success, loading, empty, error), it
+                touches most of the system (tables, forms, modals, toggles), and it has real
+                accessibility work in it.
+              </p>
+              <p>
+                Migrating between these two philosophies means the interesting work is mostly
+                invisible. Every Tailwind value has to find its place in Polaris’s semantic tokens,
+                or get called out as a local invention that shouldn’t survive the move. Every
+                hand-rolled control has to map to a Polaris component, or it exposes a spot where
+                local control was quietly covering for a missing pattern. The tables below document
+                both mappings honestly, mismatches included. The mismatches are where the two
+                philosophies actually argue, and they taught me more than the clean rows did.
+              </p>
+            </Prose>
           </section>
 
           {/* ── 2. Token translation table ───────────────────────────────────── */}
@@ -210,9 +237,36 @@ export default function ShadcnToPolaris() {
             <h2 id="governance-heading" className={styles['section-heading']}>
               Governance model
             </h2>
-            <ProseSlot id="study-b/governance">
-              central token authority, PR review cadence, design-eng sync — ~250 words
-            </ProseSlot>
+            <Prose>
+              <p>
+                In the shadcn version, governance is a social convention. Every component is local
+                source, so any override is just an edit, and nothing structural stops utility values
+                from drifting away from the system. A one-off <code>px-[13px]</code> ships as easily
+                as the right spacing token. To be fair, that’s the model working as intended. It’s
+                also exactly what breaks down once more than one team touches the code.
+              </p>
+              <p>
+                The Polaris version changes where decisions get made. Tokens are the single
+                authority for color, space, and type; components pull from them; and a value that
+                isn’t in the token set is a design decision nobody has made yet, a nudge to go make
+                it properly rather than something to hand-roll inline. Component behavior is owned
+                centrally, which turns an override into what it should have been all along: an
+                exception that gets reviewed.
+              </p>
+              <p>
+                Process-wise, three things stay standing after the migration: a central token
+                authority (additions go through the system, not around it), regular PR review where
+                one-off deviations from system components get flagged and either folded back into
+                the system or reverted, and a recurring design-engineering sync where the component
+                API is a shared agreement: both sides can change it, neither side can quietly go
+                around it.
+              </p>
+              <p>
+                The trade is real: local flexibility gets slower. At one team’s scale you barely
+                feel the win. At the scale Polaris was built for, that win is the reason the system
+                exists. The Chores flow shows what paying that cost on purpose actually looks like.
+              </p>
+            </Prose>
           </section>
 
           {/* ── 5. A11y layer ───────────────────────────────────────────────── */}
@@ -230,10 +284,23 @@ export default function ShadcnToPolaris() {
               />
             </div>
             <div className={styles['prose-gap']}>
-              <ProseSlot id="study-b/a11y">
-                two gaps (ToggleGroup semantics + dnd-kit keyboard), one resolved by migration, one
-                open on both platforms — ~150 words
-              </ProseSlot>
+              <Prose>
+                <p>
+                  Two gaps in the table are worth calling out, because they end two different ways.
+                  The hand-rolled ToggleGroup renders plain buttons: no radiogroup role, no{' '}
+                  <code>aria-checked</code>, no arrow-key navigation, every option its own tab stop.
+                  Migrating to Polaris ChoiceList fixes this for real, because the system ships the
+                  radiogroup pattern by default. That’s about the strongest practical argument for a
+                  governed system I know of.
+                </p>
+                <p>
+                  The second gap survives the migration untouched. Step reordering uses dnd-kit with
+                  only a PointerSensor registered (pointer-only, a WCAG 2.1.1 failure), and Polaris
+                  has no drag-and-drop component to inherit a fix from. A keyboard reorder path has
+                  to be built by hand on either platform. That’s the honest limit of any migration:
+                  the new system fixes what it covers, and you keep owning everything it doesn’t.
+                </p>
+              </Prose>
             </div>
           </section>
 
@@ -242,9 +309,23 @@ export default function ShadcnToPolaris() {
             <h2 id="close-heading" className={styles['section-heading']}>
               Framework-agnostic close
             </h2>
-            <ProseSlot id="study-b/framework-close">
-              Polaris web-components move — token layer survives framework swap — ~150 words
-            </ProseSlot>
+            <Prose>
+              <p>
+                Back in 2019 I bet on web components as the way design systems would outlive their
+                frameworks, and I spent years feeling early. Then in late 2025, Polaris began its
+                own move to web components: the industry’s most opinionated React system deciding
+                the framework layer should be swappable after all. I felt that.
+              </p>
+              <p>
+                The bigger lesson isn’t about any one library: the tokens are the actual system, and
+                components just render decisions that were already made. When the tokens are the
+                thing everyone agrees on, swapping frameworks is closer to a re-render than a
+                rewrite. That’s how this site works too: one JSON token source compiling out to CSS
+                custom properties and Figma variables alike. Rails, React, web components…the stack
+                under me keeps changing, and the systems thinking is the part that’s transferred
+                every time.
+              </p>
+            </Prose>
           </section>
 
           {/* ── 7. Live demo entry ──────────────────────────────────────────── */}
