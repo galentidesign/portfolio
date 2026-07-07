@@ -1,21 +1,80 @@
 #!/usr/bin/env bash
 # Leak check: fails if any tracked file matches a deny-listed pattern,
 # or if git history carries a non-approved author/committer identity.
+#
+# Pattern sources (all case-insensitive extended regexes, one per line):
+#   .leakcheck.txt        public deny-list — safe-to-publish patterns only
+#   .leakcheck.local.txt  gitignored overlay for patterns that must not be
+#                         published in the public list itself (PII literals)
+#   $LEAKCHECK_EXTRA      same overlay for CI, fed from a repo secret
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 DENYLIST=".leakcheck.txt"
+LOCAL_OVERLAY=".leakcheck.local.txt"
 STATUS=0
 
-# Content scan: tracked text files, excluding the denylist itself.
+all_patterns() {
+  grep -vE '^\s*(#|$)' "$DENYLIST" || true
+  if [[ -f "$LOCAL_OVERLAY" ]]; then
+    grep -vE '^\s*(#|$)' "$LOCAL_OVERLAY" || true
+  fi
+  if [[ -n "${LEAKCHECK_EXTRA:-}" ]]; then
+    printf '%s\n' "$LEAKCHECK_EXTRA" | grep -vE '^\s*$' || true
+  fi
+}
+
+# Content scan: tracked + untracked-unignored text files, excluding the
+# public denylist itself (the gitignored overlay is excluded by git).
 while IFS= read -r pattern; do
-  [[ -z "$pattern" || "$pattern" == \#* ]] && continue
   if hits=$(git grep -I -n -i -E --untracked -e "$pattern" -- ':!'"$DENYLIST"); then
     echo "LEAK: pattern '$pattern' matched:"
     echo "$hits"
     STATUS=1
   fi
-done < "$DENYLIST"
+done < <(all_patterns)
+
+# PDF scan: `git grep -I` skips binaries, so deny-listed strings inside PDF
+# text streams sail through the scan above (caught by eyeball at M10 — a
+# résumé placeholder carrying personal contact info passed the gate). Extract
+# text from every tracked / untracked-unignored PDF (stdlib-only python3:
+# FlateDecode streams + joined parenthesized text chunks) and scan that.
+# Catches standard PDF exports; custom-encoded subset fonts remain eyeball
+# territory — treat any new PDF as a manual-review surface regardless.
+# Implementation note: the extracted text is scanned from a temp FILE, not a
+# pipe — under `pipefail`, `grep -q` exiting at first match SIGPIPEs the
+# producer and turns every successful match into a failed pipeline (found the
+# hard way: the planted-leak self-test read all hits as misses).
+while IFS= read -r pdf; do
+  [[ -z "$pdf" ]] && continue
+  pdf_text=$(mktemp)
+  python3 - "$pdf" > "$pdf_text" <<'PY' || true
+import re, sys, zlib
+data = open(sys.argv[1], 'rb').read()
+chunks = [data]
+for m in re.finditer(rb'stream\r?\n(.*?)\r?\nendstream', data, re.S):
+    try:
+        chunks.append(zlib.decompress(m.group(1)))
+    except Exception:
+        pass
+blob = b'\n'.join(chunks)
+paren = b''.join(re.findall(rb'\(((?:[^()\\]|\\.)*)\)', blob))
+out = (blob + b'\n' + paren).decode('latin-1', 'replace')
+# DELETE non-printables rather than replacing with separators: PDF text
+# ops interleave glyph runs with control bytes (e.g. NUL-padded codes),
+# so a separator would split "galante" into unmatchable fragments, and
+# raw bytes would make grep classify the input as binary and miss. The
+# possible false joins are acceptable for a tripwire.
+sys.stdout.write(re.sub(r'[^\x20-\x7e\n]', '', out))
+PY
+  while IFS= read -r pattern; do
+    if LC_ALL=C grep -aqiE -e "$pattern" "$pdf_text"; then
+      echo "LEAK: pattern '$pattern' matched inside PDF: $pdf"
+      STATUS=1
+    fi
+  done < <(all_patterns)
+  rm -f "$pdf_text"
+done < <(git ls-files -co --exclude-standard -- '*.pdf' '*.PDF')
 
 # Identity scan: every author/committer in history must be the public identity.
 ALLOWED_EMAIL="299908360+galentidesign@users.noreply.github.com"

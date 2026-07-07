@@ -44,3 +44,6 @@ node_modules
 
 # Generated token artifacts
 app/frontend/ds/tokens/generated/
+
+# leak-check private overlay (PII literals; see bin/leakcheck)
+.leakcheck.local.txt

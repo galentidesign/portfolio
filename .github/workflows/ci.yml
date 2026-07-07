@@ -13,6 +13,10 @@ jobs:
         with:
           fetch-depth: 0
       - run: bin/leakcheck
+        env:
+          # Private pattern overlay (PII literals that must not live in the
+          # public deny-list). Optional repo secret; empty = no-op.
+          LEAKCHECK_EXTRA: ${{ secrets.LEAKCHECK_EXTRA }}
 
   lint:
     runs-on: ubuntu-latest
