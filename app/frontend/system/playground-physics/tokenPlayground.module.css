@@ -1,0 +1,177 @@
+/* ── Token playground — the pen ───────────────────────────────────────────── */
+
+.playground {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  color: var(--color-ink);
+}
+
+.description {
+  margin: 0;
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* ── Pen ──────────────────────────────────────────────────────────────────────
+   Fixed height at any given viewport (CLS 0 — mounting physics never resizes
+   it); overflow hidden clips chips pouring in from above the pen. Below the
+   md breakpoint the full grid needs more room than 55vh — the mobile height
+   is a taller fixed value so no chip row ever clips. */
+
+.pen {
+  position: relative;
+  height: 34rem;
+  overflow: hidden;
+  border: 1px solid var(--color-line); /* 1px hairline */
+  border-radius: var(--radius-surface);
+  background-color: var(--color-surface-sunken);
+}
+
+/* ── Chip grid — the static base render ─────────────────────────────────── */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  place-content: center;
+  height: 100%;
+  margin: 0;
+  padding: var(--space-3);
+  list-style: none;
+}
+
+.chip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: center;
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-raised);
+}
+
+/* Demo swatch — background/radius/type arrive as inline var() styles. */
+.demo {
+  width: 2rem;
+  height: 2rem;
+}
+
+.chip[data-kind='color'] .demo {
+  border: 1px solid var(--color-line); /* keeps surface-on-raised swatches visible */
+  border-radius: var(--radius-control);
+}
+
+.chip[data-kind='radius'] .demo {
+  border: 1px solid var(--color-line-strong);
+  background-color: var(--color-surface);
+}
+
+.chip[data-kind='type'] .demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 2rem;
+  font-size: 1.375rem;
+  line-height: 1;
+  color: var(--color-ink);
+}
+
+/* Label sits OUTSIDE the swatch on the raised chip surface — AA against
+   --color-surface-raised in every skin, never against the swatch color.
+   Size is a deliberate one-off below the mono token: pen density; family,
+   weight, and tracking stay token-true. */
+.chip-label {
+  font-family: var(--type-mono-family);
+  font-size: 0.625rem;
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-muted);
+}
+
+@media (--bp-md) {
+  .pen {
+    height: clamp(24rem, 55vh, 36rem);
+  }
+
+  .chips {
+    gap: var(--space-3);
+  }
+
+  .demo {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .chip[data-kind='type'] .demo {
+    min-width: 2.5rem;
+    font-size: 1.625rem;
+  }
+
+  .chip-label {
+    font-size: 0.6875rem;
+  }
+}
+
+/* ── Physics mode ────────────────────────────────────────────────────────────
+   The motion layer sets data-physics='on' on the pen; chips leave the flow
+   and follow their matter bodies via inline transforms. touch-action: none
+   only on chips — the pen background still scrolls under a finger. */
+
+.pen[data-physics='on'] .chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  will-change: transform;
+}
+
+.pen[data-dragging='on'] .chip {
+  cursor: grabbing;
+}
+
+.reset {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: var(--z-raised);
+}
+
+/* Standard visually-hidden pattern (clip-path replaces deprecated clip) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

@@ -3,6 +3,7 @@ import type { SystemNavEntry } from '@/system/DocShell'
 import { DocShell } from '@/system/DocShell'
 import { Badge } from '@/ds/components/Badge/Badge'
 import { Card } from '@/ds/components/Card/Card'
+import { TokenPlayground } from '@/system/playground-physics/TokenPlayground'
 import { REPO_URL, FIGMA_LIBRARY_URL } from '@/system/links'
 import styles from './index.module.css'
 
@@ -43,6 +44,9 @@ export default function SystemIndex({ nav, components }: Props) {
             and shadow compiles from one JSON file per skin — swap the file, rebuild, and the entire
             system re-themes itself.
           </p>
+
+          {/* ── Token physics playground ── */}
+          <TokenPlayground />
 
           {/* ── System page tiles ── */}
           <nav aria-label="System sections" className={styles.tiles}>

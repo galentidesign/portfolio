@@ -29,6 +29,14 @@ vi.mock('@/system/DocShell', () => ({
   DocShell: ({ children }: { children: ReactNode }) => <main>{children}</main>,
 }))
 
+// TokenPlayground requires MotionPrefProvider (and owns its own tests) — mock
+// it to a labeled section so the page test can assert placement only.
+vi.mock('@/system/playground-physics/TokenPlayground', () => ({
+  TokenPlayground: () => (
+    <section aria-label="Token playground mock" data-testid="token-playground" />
+  ),
+}))
+
 // DS components under test — use real Badge; mock Card to a simple anchor so
 // href + children are testable without the full CSS module graph.
 vi.mock('@/ds/components/Card/Card', () => ({
@@ -69,6 +77,11 @@ describe('SystemIndex', () => {
   it('renders the "Design system" h1', () => {
     renderPage()
     expect(screen.getByRole('heading', { level: 1, name: /design system/i })).toBeInTheDocument()
+  })
+
+  it('renders the token playground section', () => {
+    renderPage()
+    expect(screen.getByTestId('token-playground')).toBeInTheDocument()
   })
 
   it('renders tile links for Tokens, Motion, and Skins', () => {
