@@ -18,6 +18,11 @@ export interface EraRethemeProps {
   announce?: string
   /** Font families to warm on mount so era type is resident before the swap. */
   warmFonts?: readonly string[]
+  /**
+   * HUD caption the era-crossing band types out mid-travel (decorative,
+   * aria-hidden). Defaults to "loading <label>…".
+   */
+  caption?: string
   children: ReactNode
 }
 
@@ -45,7 +50,7 @@ function readStoredSkin(): string | null {
  * choreography. Never persists: a story re-theme must not clobber the
  * visitor's explicit skin choice.
  */
-export function EraRetheme({ skin, announce, warmFonts, children }: EraRethemeProps) {
+export function EraRetheme({ skin, announce, warmFonts, caption, children }: EraRethemeProps) {
   const { setSkin } = useSkin()
   const { reduced } = useMotionPref()
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -62,6 +67,7 @@ export function EraRetheme({ skin, announce, warmFonts, children }: EraRethemePr
 
   const label = skins.find((s) => s.name === skin)?.label ?? skin
   const message = announce ?? `Theme: ${label}`
+  const captionText = caption ?? `loading ${label.toLowerCase()}…`
 
   // Entry/exit bookkeeping — the persistence contract (README).
   useEffect(() => {
@@ -136,7 +142,22 @@ export function EraRetheme({ skin, announce, warmFonts, children }: EraRethemePr
 
   return (
     <div ref={containerRef} data-testid="era-retheme" data-era-skin={skin}>
-      <span aria-hidden="true" data-retheme-sweep className={styles.sweep} />
+      {/* Era-crossing band: inert at rest (opacity 0, pointer-events none) —
+          only the motion layer ever shows or moves it. The interior binds to
+          the ERA skin's night zone (data-skin + data-zone on one element), so
+          the crossing frame renders in the destination era's CRT palette even
+          while the page around it still wears the outgoing skin. */}
+      <div aria-hidden="true" data-retheme-band className={styles.band}>
+        <div className={styles['band-interior']} data-skin={skin} data-zone="night">
+          <p className={styles['band-caption']}>
+            {Array.from(captionText).map((char, i) => (
+              <span key={i} data-retheme-caption-char>
+                {char}
+              </span>
+            ))}
+          </p>
+        </div>
+      </div>
       <div role="status" className={styles['sr-announce']}>
         {announced}
       </div>

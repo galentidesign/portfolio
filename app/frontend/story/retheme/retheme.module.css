@@ -1,17 +1,71 @@
 /* ── EraRetheme boundary ─────────────────────────────────────────────────────
- * The sweep is inert at rest (opacity 0) — only the GSAP motion layer ever
- * shows or moves it, so reduced-motion sessions never see it at all.
- * Semantic tokens only.
+ * The era-crossing band is inert at rest (opacity 0) — only the GSAP motion
+ * layer ever shows or moves it, so reduced-motion sessions never see it.
+ * Semantic tokens only. Every texture here is STATIC (WCAG 2.3.1): the
+ * scanlines, vignette, glow, and chromatic offset never animate — the band
+ * makes exactly one smooth pass, driven by transform/opacity alone.
  * ───────────────────────────────────────────────────────────────────────── */
 
-.sweep {
+/* Full-viewport horizontal band frame. Sits ABOVE page content but BELOW the
+   fixed chrome (nav, escape-hatch pill, scroll rail — all --z-nav), so it can
+   never occlude wayfinding mid-travel. Transform/opacity only — the interior
+   is painted once and rides along composited. */
+.band {
   position: fixed;
   inset: 0 0 auto;
-  height: 3px;
-  background: var(--color-accent);
+  height: clamp(11.5rem, 32vh, 25rem);
   opacity: 0;
   pointer-events: none;
-  z-index: var(--z-toast);
+  z-index: var(--z-raised);
+}
+
+/* Band interior — a transient CRT window into the era being loaded. The
+   data-skin + data-zone attributes on this element (set by EraRetheme) bind
+   it to the era skin's `night` zone, so in rails-era it re-tokens to the
+   green-phosphor palette regardless of which skin the page is still wearing
+   ahead of the band. Scanlines: static repeating gradient. Vignette: static
+   radial falloff toward the sunken surface. */
+.band-interior {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-surface);
+  background-image:
+    radial-gradient(
+      ellipse 130% 96% at 50% 50%,
+      transparent 0%,
+      transparent 48%,
+      color-mix(in srgb, var(--color-surface-sunken) 82%, transparent) 100%
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-surface-sunken) 85%, transparent) 0,
+      color-mix(in srgb, var(--color-surface-sunken) 85%, transparent) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  border-block: 1px solid var(--color-line-strong);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+/* Mono HUD caption — era type tokens (Source Code Pro in rails-era), sized up
+   to title scale for the moment. The ±1px chromatic offset is a static
+   text-shadow (caption only; never animated). Characters are revealed by the
+   motion layer with per-char opacity — layout is fixed up front, so the
+   type-out costs zero reflow. */
+.band-caption {
+  margin: 0;
+  padding-inline: var(--space-5);
+  font-family: var(--type-mono-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink);
+  text-shadow:
+    1px 0 0 color-mix(in srgb, var(--color-critical) 45%, transparent),
+    -1px 0 0 color-mix(in srgb, var(--color-accent) 45%, transparent);
 }
 
 /* Visually hidden live region — announces the theme change politely. */

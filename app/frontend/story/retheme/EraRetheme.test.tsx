@@ -126,18 +126,41 @@ describe('EraRetheme with motion allowed', () => {
   it('applies the era skin via the motion module and restores on unmount', async () => {
     document.documentElement.dataset.skin = 'galenti'
     const { unmount } = renderBoundary()
-    await waitFor(() => expect(skinAttr()).toBe('rails-era'))
+    // The swap beat sits mid-travel (~0.55s on the fallback tokens jsdom
+    // resolves) — allow the GSAP ticker time to reach it.
+    await waitFor(() => expect(skinAttr()).toBe('rails-era'), { timeout: 3000 })
     expect(localStorage.getItem(SKIN_STORAGE_KEY)).toBeNull()
     unmount()
     expect(skinAttr()).toBe('galenti')
   })
 
-  it('renders the inert sweep element for the timeline to drive', () => {
+  it('renders the inert era-crossing band for the timeline to drive', () => {
     document.documentElement.dataset.skin = 'galenti'
     const { container } = renderBoundary()
-    const sweep = container.querySelector('[data-retheme-sweep]')
-    expect(sweep).not.toBeNull()
-    expect(sweep).toHaveAttribute('aria-hidden', 'true')
+    const band = container.querySelector('[data-retheme-band]')
+    expect(band).not.toBeNull()
+    expect(band).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it("binds the band interior to the era skin's night zone (CRT palette)", () => {
+    document.documentElement.dataset.skin = 'galenti'
+    const { container } = renderBoundary()
+    const interior = container.querySelector('[data-retheme-band] [data-zone="night"]')
+    expect(interior).not.toBeNull()
+    // data-skin + data-zone on ONE element: the compound skin selector keeps
+    // the interior phosphor-toned even while the page still wears galenti.
+    expect(interior).toHaveAttribute('data-skin', 'rails-era')
+  })
+
+  it('renders the HUD caption as per-character spans for the type-out', () => {
+    document.documentElement.dataset.skin = 'galenti'
+    const { container } = renderBoundary()
+    const chars = container.querySelectorAll('[data-retheme-caption-char]')
+    expect(chars.length).toBeGreaterThan(0)
+    const text = Array.from(chars)
+      .map((el) => el.textContent)
+      .join('')
+    expect(text).toBe('loading rails era…')
   })
 
   it('exposes the boundary container with the era skin marked', () => {

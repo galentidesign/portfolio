@@ -9,32 +9,51 @@
  *
  * No ScrollTrigger: this module is gsap core only. The test file itself never
  * imports ScrollTrigger as an additional guarantee.
+ *
+ * jsdom resolves no custom properties, so the module runs on its fallback
+ * travel duration/ease — the swap beat lands at ~0.55s of a ~1.1s travel.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mountRethemeMotion } from './motion'
 
 // ---------------------------------------------------------------------------
-// DOM helpers
+// DOM helpers — mirror the EraRetheme band + grouped stagger markup
 // ---------------------------------------------------------------------------
 
-function makeContainer(staggerCount = 0): HTMLElement {
+function makeContainer(staggerGroups: readonly string[] = []): HTMLElement {
   const container = document.createElement('div')
-  const staggerEls = Array.from(
-    { length: staggerCount },
-    () => '<section data-retheme-stagger></section>',
-  ).join('')
+  const staggerEls = staggerGroups
+    .map((group) =>
+      group === ''
+        ? '<section data-retheme-stagger></section>'
+        : `<section data-retheme-stagger="${group}"></section>`,
+    )
+    .join('')
   container.innerHTML = `
-    <span aria-hidden="true" data-retheme-sweep></span>
+    <div aria-hidden="true" data-retheme-band>
+      <div data-skin="rails-era" data-zone="night">
+        <p>
+          <span data-retheme-caption-char>2</span>
+          <span data-retheme-caption-char>0</span>
+          <span data-retheme-caption-char>1</span>
+          <span data-retheme-caption-char>4</span>
+        </p>
+      </div>
+    </div>
     ${staggerEls}
   `
   document.body.appendChild(container)
   return container
 }
 
-function getSweep(container: HTMLElement): HTMLElement {
-  const el = container.querySelector<HTMLElement>('[data-retheme-sweep]')
-  if (!el) throw new Error('missing [data-retheme-sweep]')
+function getBand(container: HTMLElement): HTMLElement {
+  const el = container.querySelector<HTMLElement>('[data-retheme-band]')
+  if (!el) throw new Error('missing [data-retheme-band]')
   return el
+}
+
+function getCaptionChars(container: HTMLElement): HTMLElement[] {
+  return Array.from(container.querySelectorAll<HTMLElement>('[data-retheme-caption-char]'))
 }
 
 function getStaggerTargets(container: HTMLElement): HTMLElement[] {
@@ -65,13 +84,13 @@ describe('mountRethemeMotion', () => {
   // -- onSwap exactly-once guarantee ----------------------------------------
 
   it('fires onSwap exactly once when the timeline plays through (with stagger targets)', async () => {
-    const container = makeContainer(2)
+    const container = makeContainer(['type', 'surface'])
     const onSwap = vi.fn()
     mountRethemeMotion(container, { onSwap })
 
-    // Wait for GSAP's ticker to advance the playhead past SWAP_AT (~140ms).
-    // jsdom provides requestAnimationFrame; vi.waitFor polls until the
-    // assertion passes within the timeout.
+    // Wait for GSAP's ticker to advance the playhead past the swap beat
+    // (~0.55s on the fallback travel). jsdom provides requestAnimationFrame;
+    // vi.waitFor polls until the assertion passes within the timeout.
     await vi.waitFor(() => expect(onSwap).toHaveBeenCalledTimes(1), { timeout: 3000 })
 
     // Confirm no second fire after a further short wait.
@@ -80,7 +99,7 @@ describe('mountRethemeMotion', () => {
   })
 
   it('fires onSwap exactly once with zero stagger targets (timeline still runs)', async () => {
-    const container = makeContainer(0)
+    const container = makeContainer([])
     const onSwap = vi.fn()
     mountRethemeMotion(container, { onSwap })
 
@@ -88,13 +107,23 @@ describe('mountRethemeMotion', () => {
     expect(onSwap).toHaveBeenCalledTimes(1)
   })
 
+  // -- before-states ----------------------------------------------------------
+
+  it('hides the caption characters up front so the type-out can reveal them', () => {
+    const container = makeContainer()
+    const handle = mountRethemeMotion(container, { onSwap: vi.fn() })
+
+    getCaptionChars(container).forEach((el) => expect(el.style.opacity).toBe('0'))
+    handle.destroy()
+  })
+
   // -- destroy() mid-flight --------------------------------------------------
 
   it('destroy() mid-flight does not throw and does not invoke onSwap', () => {
-    // Immediately after mount, the GSAP ticker has not advanced past SWAP_AT
-    // (~0.14s) — the swap callback is pending. Destroying synchronously must
+    // Immediately after mount, the GSAP ticker has not advanced past the swap
+    // beat — the swap callback is pending. Destroying synchronously must
     // kill the timeline without firing the callback.
-    const container = makeContainer(2)
+    const container = makeContainer(['type', 'surface'])
     const onSwap = vi.fn()
     const handle = mountRethemeMotion(container, { onSwap })
 
@@ -105,7 +134,7 @@ describe('mountRethemeMotion', () => {
   // -- destroy() idempotency -------------------------------------------------
 
   it('destroy() is idempotent — calling twice never throws', () => {
-    const container = makeContainer(1)
+    const container = makeContainer(['type'])
     const handle = mountRethemeMotion(container, { onSwap: vi.fn() })
 
     expect(() => {
@@ -116,12 +145,12 @@ describe('mountRethemeMotion', () => {
 
   // -- destroy() clearProps --------------------------------------------------
 
-  it('destroy() clears all inline styles on the sweep element', () => {
-    const container = makeContainer(0)
+  it('destroy() clears all inline styles on the band element', () => {
+    const container = makeContainer([])
     const handle = mountRethemeMotion(container, { onSwap: vi.fn() })
-    const el = getSweep(container)
+    const el = getBand(container)
 
-    // GSAP applied the before-state via gsap.set (opacity: 0) — verify the
+    // GSAP applied the before-state via gsap.set (opacity: 0, y) — verify the
     // inline style is present before destroy.
     expect(el.style.opacity).not.toBe('')
 
@@ -131,8 +160,20 @@ describe('mountRethemeMotion', () => {
     expect(el.style.transform).toBe('')
   })
 
-  it('destroy() clears all inline styles on stagger targets', () => {
-    const container = makeContainer(3)
+  it('destroy() clears all inline styles on caption characters', () => {
+    const container = makeContainer([])
+    const handle = mountRethemeMotion(container, { onSwap: vi.fn() })
+    const chars = getCaptionChars(container)
+
+    chars.forEach((el) => expect(el.style.opacity).not.toBe(''))
+
+    handle.destroy()
+
+    chars.forEach((el) => expect(el.style.opacity).toBe(''))
+  })
+
+  it('destroy() clears all inline styles on stagger targets (grouped and bare)', () => {
+    const container = makeContainer(['chrome', 'type', 'surface', ''])
     const handle = mountRethemeMotion(container, { onSwap: vi.fn() })
     const targets = getStaggerTargets(container)
 
@@ -147,8 +188,28 @@ describe('mountRethemeMotion', () => {
     })
   })
 
+  it('destroy() after the swap also kills the settle cascade and clears its styles', async () => {
+    const container = makeContainer(['surface', 'chrome'])
+    const onSwap = vi.fn()
+    const handle = mountRethemeMotion(container, { onSwap })
+
+    await vi.waitFor(() => expect(onSwap).toHaveBeenCalledTimes(1), { timeout: 3000 })
+
+    // The settle cascade is live (or pending via its delayed call) — destroy
+    // must kill it and leave the targets base-styled.
+    handle.destroy()
+
+    getStaggerTargets(container).forEach((el) => {
+      expect(el.style.opacity).toBe('')
+      expect(el.style.transform).toBe('')
+    })
+
+    // Still exactly one call — destroy must not re-fire the swap.
+    expect(onSwap).toHaveBeenCalledTimes(1)
+  })
+
   it('destroy() after timeline completion does not call onSwap again', async () => {
-    const container = makeContainer(0)
+    const container = makeContainer([])
     const onSwap = vi.fn()
     const handle = mountRethemeMotion(container, { onSwap })
 

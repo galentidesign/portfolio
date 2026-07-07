@@ -1,19 +1,28 @@
 /**
- * Retheme motion layer — wave 1A implementation.
+ * Retheme motion layer — R4 "era-crossing" choreography.
  *
  * Mount-triggered GSAP timeline (no ScrollTrigger — gsap core only).
- * See story/retheme/README.md for the pinned choreography spec.
+ * See story/retheme/README.md for the pinned interface contract and the
+ * choreography spec.
  *
- * ~700ms total, era-snappy:
- *   0ms      sweep fades in (80ms) + begins travel (420ms, power1.inOut)
- *   ~140ms   onSwap fires (at 1/3 of travel); page re-tokens on this frame
- *   ~190ms   stagger settle begins (50ms offset from swap for perf)
- *   420ms    sweep fade-out starts (120ms)
- *   540ms    sweep fully faded out
+ * Timing is token-true (the pre-swap skin's tokens; galenti ⇒ ~1.1s travel):
+ *   0ms      band fades in (~100ms) and starts its viewport top→bottom travel
+ *            (--motion-duration-2xl, token-drama ease); the CRT interior and
+ *            HUD caption ride inside it
+ *   ~12% t   caption starts typing (per-char opacity reveal — no blink, no
+ *            cursor, zero reflow)
+ *   e(p)=0.5 the band's centre crosses the viewport centre → onSwap fires
+ *            EXACTLY once; the whole page re-tokens on that frame, hidden
+ *            under the band
+ *   +50ms    settle cascade begins (STAGGER_LEAD keeps the first tween off
+ *            the style-recalc frame), grouped chrome → type → surface; eases
+ *            are re-registered first so the settle rides the ERA's curves
+ *   ~100% t  band exits below the viewport and fades out
  *
  * The interface below is the pinned contract — do not change it.
  */
 import { gsap } from 'gsap'
+import { registerTokenEases, tokenDuration } from '@/ds/motion/gsapPlugins'
 
 export interface RethemeMotionHandle {
   /** Kill the timeline and leave the DOM base-styled. Must NOT call onSwap. */
@@ -21,42 +30,115 @@ export interface RethemeMotionHandle {
 }
 
 export interface RethemeMotionOptions {
-  /** Called exactly once, at the sweep-cross beat. */
+  /** Called exactly once, as the band's centre crosses the viewport centre. */
   onSwap: () => void
 }
 
-// Timing constants (seconds) matching the README choreography.
-const FADE_IN = 0.08 // sweep opacity 0 → 1
-const TRAVEL = 0.42 // sweep translateY 0 → innerHeight, power1.inOut
-const SWAP_AT = TRAVEL / 3 // ~0.14s — call onSwap at 1/3 of travel
+// Timing constants (seconds). Travel and settle durations come from motion
+// tokens at runtime; the fallbacks only matter where custom properties don't
+// resolve (jsdom) — real reduced-motion sessions never load this module.
+const FADE_IN = 0.1 // band opacity 0 → 1 as it enters
+const FADE_OUT = 0.12 // band opacity 1 → 0 as it exits below the fold
+const TRAVEL_FALLBACK = 1.1 // --motion-duration-2xl fallback
+const CAPTION_AT = 0.12 // caption type-out starts at this fraction of travel
+const CHAR_INTERVAL = 0.045 // per-character reveal cadence
 const STAGGER_LEAD = 0.05 // offset from swap beat to settle start; keeps the
 // first stagger tween off the style-recalc frame (§9.3 perf budget)
-const SETTLE = 0.24 // per-element settle duration
-const INTERVAL = 0.04 // stagger interval between elements
-const FADE_OUT = 0.12 // sweep opacity 1 → 0 at the end of travel
+const SETTLE_FALLBACK = 0.24 // --motion-duration-lg fallback
+const INTERVAL = 0.04 // stagger interval between settle elements
+
+// Settle cascade order by token family. Elements declare their group via
+// data-retheme-stagger="chrome|type|surface"; a bare (valueless) attribute
+// ranks last, which keeps the DOM-final target the completion marker the
+// e2e suite waits on.
+const GROUP_RANK: Record<string, number> = { chrome: 0, type: 1, surface: 2 }
+const rankOf = (el: HTMLElement): number =>
+  GROUP_RANK[el.getAttribute('data-retheme-stagger') ?? ''] ?? 3
+
+/** Parse a registered ease by name, falling back to a GSAP-core ease. */
+function easeFn(name: string, fallback: string): gsap.EaseFunction {
+  const parsed = gsap.parseEase(name)
+  return typeof parsed === 'function' ? parsed : (gsap.parseEase(fallback) as gsap.EaseFunction)
+}
+
+/**
+ * Invert a monotonic ease: smallest p with ease(p) ≈ target (bisection).
+ * Used to schedule onSwap at the exact moment the band's eased travel puts
+ * its centre on the viewport centre — for symmetric geometry that is always
+ * eased-progress 0.5, independent of band/viewport heights.
+ */
+function invertEase(ease: gsap.EaseFunction, target: number): number {
+  let lo = 0
+  let hi = 1
+  for (let i = 0; i < 24; i++) {
+    const mid = (lo + hi) / 2
+    if (ease(mid) < target) lo = mid
+    else hi = mid
+  }
+  return (lo + hi) / 2
+}
 
 export function mountRethemeMotion(
   container: HTMLElement,
   { onSwap }: RethemeMotionOptions,
 ): RethemeMotionHandle {
-  const sweep = container.querySelector<HTMLElement>('[data-retheme-sweep]')
+  // Register token eases from the CURRENT (pre-swap) skin — the band travels
+  // on the outgoing era's drama curve.
+  registerTokenEases()
+
+  const band = container.querySelector<HTMLElement>('[data-retheme-band]')
+  const captionChars = Array.from(
+    container.querySelectorAll<HTMLElement>('[data-retheme-caption-char]'),
+  )
   const staggerTargets = Array.from(
     container.querySelectorAll<HTMLElement>('[data-retheme-stagger]'),
   )
+  // Stable sort: token-family group rank first, DOM order within a group.
+  const settleOrder = [...staggerTargets].sort((a, b) => rankOf(a) - rankOf(b))
+
+  const travel = tokenDuration('2xl') || TRAVEL_FALLBACK
+  const travelEase = easeFn('token-drama', 'power2.inOut')
+  // The band's centre crosses the viewport centre at eased progress 0.5.
+  const swapAt = travel * invertEase(travelEase, 0.5)
 
   // Guard: GSAP fires .call() once by design, but the swapped flag is a
   // belt-and-suspenders safety net if destroy() races with the ticker.
   let swapped = false
+  let settleCall: gsap.core.Tween | null = null
+  let settle: gsap.core.Tween | null = null
+
+  const startSettle = (): void => {
+    // The skin flipped a frame ago — re-register so the settle rides the
+    // incoming era's own motion curves (registerTokenEases overwrites by
+    // name; doing it here also keeps this style read off the swap frame).
+    registerTokenEases()
+    if (settleOrder.length === 0) return
+    settle = gsap.to(settleOrder, {
+      y: 0,
+      opacity: 1,
+      duration: tokenDuration('lg') || SETTLE_FALLBACK,
+      stagger: INTERVAL,
+      ease: easeFn('token-enter', 'power1.out'),
+    })
+  }
+
   const guardedSwap = (): void => {
     if (swapped) return
     swapped = true
     onSwap()
+    // Settle cascade: scheduled STAGGER_LEAD after the swap so it does not
+    // compete with the full-page style-recalc burst on the swap frame.
+    settleCall = gsap.delayedCall(STAGGER_LEAD, startSettle)
   }
 
   // Establish before-states. These write the inline properties that clearProps
   // will erase on destroy(), returning each element to its CSS-class baseline.
-  if (sweep) {
-    gsap.set(sweep, { opacity: 0, y: 0 })
+  const bandHeight = band?.offsetHeight ?? 0 // single layout read, pre-animation
+  if (band) {
+    gsap.set(band, { opacity: 0, y: -bandHeight })
+  }
+  if (captionChars.length > 0) {
+    gsap.set(captionChars, { opacity: 0 })
   }
   if (staggerTargets.length > 0) {
     gsap.set(staggerTargets, { y: 8, opacity: 0.85 })
@@ -64,42 +146,35 @@ export function mountRethemeMotion(
 
   const tl = gsap.timeline()
 
-  if (sweep) {
-    // Fade-in runs parallel to travel — the bar materialises as it moves so
+  if (band) {
+    // Fade-in runs parallel to travel — the band materialises as it moves so
     // the cross reads as intent rather than a raw overlay.
-    tl.to(sweep, { opacity: 1, duration: FADE_IN, ease: 'none' }, 0)
+    tl.to(band, { opacity: 1, duration: FADE_IN, ease: 'none' }, 0)
 
-    // Travel: viewport top → bottom. The element carries --color-accent so it
-    // re-tokens mid-travel (sienna → Bootstrap blue) — a designed artifact.
-    tl.to(sweep, { y: window.innerHeight, duration: TRAVEL, ease: 'power1.inOut' }, 0)
+    // Travel: from fully above the viewport to fully below it. The interior
+    // carries the era skin's night zone, so the crossing frame is already
+    // rendered in the destination era's CRT palette while the page ahead of
+    // it still wears the old skin — a designed artifact.
+    tl.to(band, { y: window.innerHeight, duration: travel, ease: travelEase }, 0)
+
+    // The band fades out over its final descent below the fold.
+    tl.to(band, { opacity: 0, duration: FADE_OUT, ease: 'none' }, travel - FADE_OUT / 2)
   }
 
-  // At 1/3 of travel: the data-skin flip fires. This triggers a full-page
-  // style recalc on the callback's frame — scheduled here to maximise stable
-  // frame budget on both sides of the event.
-  tl.call(guardedSwap, [], SWAP_AT)
-
-  // Settle stagger: the first tween starts STAGGER_LEAD seconds after the
-  // swap so it does not compete with the style-recalc burst on the swap frame.
-  if (staggerTargets.length > 0) {
+  // HUD caption types out while the band crosses — one opacity reveal per
+  // character (layout pre-measured; no reflow, no blink, no oscillation).
+  if (captionChars.length > 0) {
     tl.to(
-      staggerTargets,
-      {
-        y: 0,
-        opacity: 1,
-        duration: SETTLE,
-        stagger: INTERVAL,
-        ease: 'power1.out',
-      },
-      SWAP_AT + STAGGER_LEAD,
+      captionChars,
+      { opacity: 1, duration: 0.02, stagger: CHAR_INTERVAL, ease: 'none' },
+      travel * CAPTION_AT,
     )
   }
 
-  // Sweep fades out as it finishes its travel (it stays fully opaque while
-  // the content settles so the accent-bar is visible mid-travel).
-  if (sweep) {
-    tl.to(sweep, { opacity: 0, duration: FADE_OUT }, TRAVEL)
-  }
+  // The single data-skin flip fires while the band covers the viewport
+  // centre. This triggers a full-page style recalc on the callback's frame —
+  // the settle is deferred via STAGGER_LEAD (see guardedSwap).
+  tl.call(guardedSwap, [], swapAt)
 
   let destroyed = false
 
@@ -113,12 +188,17 @@ export function mountRethemeMotion(
       // advance or fire any pending .call() callbacks after kill(), so
       // guardedSwap cannot be invoked post-destroy.
       tl.kill()
+      settleCall?.kill()
+      settle?.kill()
 
-      // Return the DOM to its CSS-class baseline (sweep: opacity 0 via class;
+      // Return the DOM to its CSS-class baseline (band: opacity 0 via class;
       // stagger targets: whatever their base CSS defines). Safe to run even if
       // some tweens never started.
-      if (sweep) {
-        gsap.set(sweep, { clearProps: 'all' })
+      if (band) {
+        gsap.set(band, { clearProps: 'all' })
+      }
+      if (captionChars.length > 0) {
+        gsap.set(captionChars, { clearProps: 'all' })
       }
       if (staggerTargets.length > 0) {
         gsap.set(staggerTargets, { clearProps: 'all' })

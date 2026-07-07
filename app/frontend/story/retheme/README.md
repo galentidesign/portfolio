@@ -44,46 +44,66 @@ only when motion is allowed — reduced-motion visitors never download it
 the swap hadn't fired yet, it fires instantly. If the motion chunk fails to
 load, the swap fires instantly — the moment is never lost to a chunk error.
 
-### `mountRethemeMotion(container, { onSwap })` (motion.ts — wave 1A)
+### `mountRethemeMotion(container, { onSwap })` (motion.ts — R4 era-crossing)
 
 ```ts
 export interface RethemeMotionHandle {
-  destroy(): void // kill timeline + clearProps on sweep and stagger targets
+  destroy(): void // kill timeline + clearProps on band, caption, stagger targets
 }
 export interface RethemeMotionOptions {
-  onSwap: () => void // call EXACTLY once, at the sweep-cross beat
+  onSwap: () => void // call EXACTLY once, at the band-centre cross beat
 }
 ```
 
-Pinned choreography (~700ms total, era-snappy):
+The era-crossing (token-true timing; galenti tokens at trigger ⇒ ~1.1s travel):
 
-- `[data-retheme-sweep]` (rendered by the base, `opacity: 0` at rest): fade
-  in ~80ms, translate from viewport top to bottom over ~420ms, GSAP ease
-  `power1.inOut` (the jQuery-era quad). It is styled with
-  `var(--color-accent)` so the sweep itself re-tokens mid-travel
-  (sienna → Bootstrap blue) — a designed artifact, keep it.
-- At ~1/3 travel: `.call(onSwap)` — the whole page re-tokens on that frame.
-- From the swap beat: settle stagger over `[data-retheme-stagger]` elements
-  inside the container — `y: 8 → 0`, `opacity: 0.85 → 1`, ~240ms each,
-  ~40ms stagger, `power1.out`. Zero targets is valid (timeline still runs).
-- Sweep fades out ~120ms at the end of travel.
-- Transform/opacity ONLY. No layout reads. ≤ ~10 concurrent tweens. No
-  ScrollTrigger — this is mount-triggered, not scroll-scrubbed. gsap core
-  only.
+- `[data-retheme-band]` (rendered by the base, `opacity: 0` at rest): a
+  full-viewport horizontal band (~32vh tall, 100vw) fades in ~100ms and
+  travels viewport top → bottom over `--motion-duration-2xl` on the
+  `token-drama` ease. Its interior carries `data-skin="<era>"` +
+  `data-zone="night"` on one element, binding it to the era skin's night
+  zone — in rails-era that is the green-phosphor CRT palette, so the
+  crossing frame is already rendered in the destination era while the page
+  ahead of it still wears the old skin. Scanlines, vignette, glow, and the
+  caption's ±1px chromatic offset are all STATIC CSS (WCAG 2.3.1 — nothing
+  flickers; the band makes exactly one smooth pass).
+- A mono HUD caption (`[data-retheme-caption-char]` spans) types out during
+  travel — per-char opacity reveal, layout pre-measured (zero reflow), no
+  cursor blink.
+- When the band's centre crosses the viewport centre (eased progress 0.5,
+  solved by inverting the travel ease): `.call(onSwap)` — the whole page
+  re-tokens on that frame, hidden under the band.
+- STAGGER_LEAD (~50ms) after the swap beat: token eases are re-registered
+  (the settle rides the incoming era's curves) and the settle cascade runs
+  over `[data-retheme-stagger]` elements inside the container — `y: 8 → 0`,
+  `opacity: 0.85 → 1`, `--motion-duration-lg` each, ~40ms stagger. Order is
+  grouped by token family via the attribute value:
+  `data-retheme-stagger="chrome"` → `"type"` → `"surface"` → bare attribute
+  last (the DOM-final bare target doubles as the choreography-complete
+  marker the e2e suite waits on). Zero targets is valid (timeline still
+  runs).
+- Band fades out ~120ms over its final descent below the fold.
+- Band frame is transform/opacity ONLY (interior painted once, composited
+  along). One layout read at mount (band height). No ScrollTrigger — this is
+  mount-triggered, not scroll-scrubbed. gsap core only (+ the shared
+  `ds/motion/gsapPlugins` token helpers).
+- The band sits at `--z-raised` — above page content, BELOW the fixed chrome
+  (nav, escape-hatch pill, scroll rail at `--z-nav`).
 - `destroy()` must be safe mid-flight and must leave the DOM base-styled
   (`clearProps`); it must NOT call `onSwap`.
 
-`motion.ts` implements this timeline (wave 1A). The base component was built
-against a stub with the same interface — it remains fully functional if the
-motion layer is ever absent (chunk error → instant swap).
+`motion.ts` implements this timeline. The base component was built against a
+stub with the same interface — it remains fully functional if the motion
+layer is ever absent (chunk error → instant swap).
 
 ## Integration (chapter pages)
 
 ```tsx
 const ERA_FONTS = ['Source Sans 3', 'Source Code Pro'] as const // module-level
 
-<EraRetheme skin="rails-era" warmFonts={ERA_FONTS}>
-  …chapter content; sections opt into the settle with data-retheme-stagger…
+<EraRetheme skin="rails-era" warmFonts={ERA_FONTS} caption="loading 2014…">
+  …chapter content; elements opt into the settle with
+  data-retheme-stagger="chrome|type|surface" (bare = last, completion marker)…
 </EraRetheme>
 ```
 
