@@ -15,6 +15,10 @@ Rails.application.routes.draw do
   get "work/agentic-design-ops",    to: "work#agentic_design_ops"
   get "work/shadcn-to-polaris",     to: "work#shadcn_to_polaris"
   get "work/shadcn-to-polaris/demo", to: "work#shadcn_to_polaris_demo"
+  get "gallery",                    to: "gallery#index"
+  get "gallery/:slug",              to: "gallery#show",
+      as: :gallery_project,
+      constraints: { slug: /[a-z0-9-]+/ }
   get "resume",                     to: "pages#resume"
   get "colophon",                   to: "pages#colophon"
 

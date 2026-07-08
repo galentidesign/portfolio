@@ -1,0 +1,18 @@
+slug: widget
+title: Widget
+role: Designer
+client: Client Co
+year: '2020'
+featured: false
+disciplines: [UX]
+summary: A shot is missing its src.
+cover: null
+overview: |
+  Para.
+highlights:
+  - One.
+shots:
+  - { alt: No src here }
+links:
+  live: null
+  external: null

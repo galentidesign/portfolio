@@ -49,6 +49,14 @@ module OgHelper
       subtitle: "Token-compiled. A11y-first. Agent-built in public.",
       skin: "galenti"
     },
+    "gallery" => {
+      title: "Gallery — J Galenti",
+      description: "The product-design gallery: UX/UI and brand work across 20 years — " \
+                   "streaming apps, component systems, and brand identity.",
+      image_alt: "J Galenti — product-design gallery",
+      subtitle: "Product design, UX/UI, and brand — the selected work.",
+      skin: "galenti"
+    },
     "story-rails-era" => {
       title: "The Rails era",
       description: "Chapter 1: the Rails era — 2014–2019, the dense product years.",
@@ -96,6 +104,7 @@ module OgHelper
     "work/agentic-design-ops"      => "study-a",
     "work/shadcn-to-polaris"       => "study-b",
     "work/shadcn-to-polaris-demo"  => "study-b",
+    "gallery/index"                => "gallery",
     "system/index"                 => "system",
     "system/tokens"                => "system",
     "system/motion"                => "system",

@@ -1,0 +1,17 @@
+slug: widget
+title: Widget
+role: Designer
+client: Client Co
+year: '2020'
+featured: yes-please
+disciplines: [UX]
+summary: featured is not a boolean.
+cover: widget/cover.png
+overview: |
+  Para.
+highlights:
+  - One.
+shots: []
+links:
+  live: null
+  external: null

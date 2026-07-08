@@ -1,0 +1,32 @@
+# SEED PLACEHOLDER — J to confirm copy + drop real assets into public/gallery/marketpad/
+slug: marketpad
+title: MarketPad marketplace rebuild
+role: Product Manager · UX/UI Designer · Front-end Developer
+client: MarketPad.com
+year: '2016–2019'
+featured: false
+disciplines: [Product management, UX/UI design, Front-end development, Roadmapping]
+summary: An end-to-end Rails marketplace rebuild — product, design, and front-end in one seat.
+cover: marketpad/cover.png
+overview: |
+  I led the full rebuild of MarketPad.com's Ruby on Rails marketplace
+  application, wearing three hats: product manager, UX/UI designer, and
+  front-end developer.
+
+  On the product side I set strategic goals, prioritization, and tactical
+  roadmaps with executive staff, and managed the budget and Scrum backlog for a
+  distributed design + engineering team.
+
+  On the craft side I produced the wireframes, prototypes, UI, and user stories
+  that defined the rebuilt experience and its business logic.
+highlights:
+  - Led an end-to-end Rails marketplace rebuild across PM, design, and front-end.
+  - Produced wireframes, prototypes, UI, and user stories for the new experience.
+  - Managed roadmap, budget, and Scrum backlog for a distributed team.
+shots:
+  - { src: marketpad/shot-01.png, alt: Marketplace UI, caption: Rebuilt marketplace UI. }
+  - { src: marketpad/shot-02.png, alt: Wireframes and flows, caption: Wireframes & user flows. }
+  - { src: marketpad/shot-03.png, alt: Prototype, caption: Interactive prototype. }
+links:
+  live: null
+  external: null

@@ -1,0 +1,17 @@
+slug: widget
+title: Widget
+role: Designer
+client: Client Co
+year: '2020'
+featured: false
+disciplines: [UX]
+summary: links.live is not a valid URL.
+cover: null
+overview: |
+  Para.
+highlights:
+  - One.
+shots: []
+links:
+  live: not-a-url
+  external: null

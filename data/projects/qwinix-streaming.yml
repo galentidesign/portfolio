@@ -1,0 +1,34 @@
+# SEED PLACEHOLDER — J to confirm copy + drop real assets into public/gallery/qwinix-streaming/
+slug: qwinix-streaming
+title: Streaming UX at Qwinix
+role: Sr. Product Designer → Head of Design
+client: Dish Network · SlingTV · AirTV
+year: '2017–2020'
+featured: true
+disciplines: [Product design, UX strategy, Design systems, Design leadership]
+summary: Streaming product design across web and connected-TV, then building the design practice itself.
+cover: qwinix-streaming/cover.png
+overview: |
+  At Qwinix, a distributed UX/UI agency, I designed streaming products for Dish
+  Network, SlingTV, and AirTV, then grew into design leadership — Sr. Product
+  Designer → Sr. UX Strategist → Head of Design over roughly three years.
+
+  As a product designer I worked cross-functionally on complex streaming
+  experiences across web and connected-TV surfaces, pairing design with a
+  React / Styled-Components / SASS front-end stack under CI/CD.
+
+  As Head of Design I built the practice itself: design ops, standards, and a
+  design-system approach for a distributed five-designer team across three
+  countries running a 24-hour production schedule.
+highlights:
+  - Designed streaming product experiences for Dish, SlingTV, and AirTV.
+  - Promoted twice in ~3 years — Sr. Product Designer → UX Strategist → Head of Design.
+  - Led a distributed 5-designer team across 3 countries on a 24-hour schedule.
+  - Defined design ops, standards, and quarterly KPIs for an international UX/UI department.
+shots:
+  - { src: qwinix-streaming/shot-01.png, alt: Streaming home redesign, caption: Home — recommendations rail. }
+  - { src: qwinix-streaming/shot-02.png, alt: Playback controls, caption: Cross-surface playback controls. }
+  - { src: qwinix-streaming/shot-03.png, alt: Settings and account flow, caption: Account & device settings IA. }
+links:
+  live: null
+  external: null
