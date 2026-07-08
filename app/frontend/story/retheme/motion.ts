@@ -41,7 +41,9 @@ const FADE_IN = 0.1 // band opacity 0 → 1 as it enters
 const FADE_OUT = 0.12 // band opacity 1 → 0 as it exits below the fold
 const TRAVEL_FALLBACK = 1.1 // --motion-duration-2xl fallback
 const CAPTION_AT = 0.12 // caption type-out starts at this fraction of travel
-const CHAR_INTERVAL = 0.045 // per-character reveal cadence
+const CHAR_INTERVAL = 0.045 // per-character reveal cadence (upper bound — long
+// captions compress toward the cadence that completes the type-out before the
+// band exits, so multi-line terminal captions stream rather than truncate)
 const STAGGER_LEAD = 0.05 // offset from swap beat to settle start; keeps the
 // first stagger tween off the style-recalc frame (§9.3 perf budget)
 const SETTLE_FALLBACK = 0.24 // --motion-duration-lg fallback
@@ -163,10 +165,15 @@ export function mountRethemeMotion(
 
   // HUD caption types out while the band crosses — one opacity reveal per
   // character (layout pre-measured; no reflow, no blink, no oscillation).
+  // Cadence adapts down for long captions so the final character lands before
+  // the band starts its exit fade; DOM order makes multi-line captions stream
+  // line by line.
   if (captionChars.length > 0) {
+    const captionWindow = Math.max(travel * (1 - CAPTION_AT) - FADE_OUT, 0.1)
+    const interval = Math.min(CHAR_INTERVAL, captionWindow / captionChars.length)
     tl.to(
       captionChars,
-      { opacity: 1, duration: 0.02, stagger: CHAR_INTERVAL, ease: 'none' },
+      { opacity: 1, duration: 0.02, stagger: interval, ease: 'none' },
       travel * CAPTION_AT,
     )
   }

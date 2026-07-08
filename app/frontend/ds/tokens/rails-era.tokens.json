@@ -192,6 +192,39 @@
           "glow-soft": "0 0 12px rgb(143 232 168 / 18%)"
         }
       }
+    },
+    "day": {
+      "colorScheme": "light",
+      "tokens": {
+        "color": {
+          "surface": "{raw.color.white}",
+          "surface-raised": "{raw.color.chrome-100}",
+          "surface-sunken": "{raw.color.well-200}",
+          "surface-overlay": "{raw.color.white}",
+          "ink": "{raw.color.gray-900}",
+          "ink-muted": "{raw.color.gray-700}",
+          "ink-faint": "{raw.color.gray-600}",
+          "accent": "{raw.color.blue-600}",
+          "accent-ink": "{raw.color.white}",
+          "accent-muted": "{raw.color.blue-100}",
+          "line": "{raw.color.silver-300}",
+          "line-strong": "{raw.color.gray-500}",
+          "focus": "{raw.color.navy-800}",
+          "positive": "{raw.color.green-700}",
+          "positive-surface": "{raw.color.green-100}",
+          "caution": "{raw.color.gold-700}",
+          "caution-surface": "{raw.color.gold-100}",
+          "critical": "{raw.color.red-700}",
+          "critical-surface": "{raw.color.red-100}",
+          "glow-ink": "{raw.color.blue-600}"
+        },
+        "shadow": {
+          "raised": "0 1px 1px rgb(0 0 0 / 5%)",
+          "overlay": "0 3px 9px rgb(0 0 0 / 30%)",
+          "glow-accent": "0 0 0 rgb(0 0 0 / 0%)",
+          "glow-soft": "0 0 0 rgb(0 0 0 / 0%)"
+        }
+      }
     }
   }
 }

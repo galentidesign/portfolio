@@ -2,9 +2,17 @@
 
 The money shot: a chapter route that applies an era skin to the whole site
 while the visitor is inside it, as a designed moment — the same components
-visibly re-tokening. Ch1 (`/story/rails-era`) wraps its content in
-`<EraRetheme skin="rails-era">`. Ch2/Ch3 render own-brand and never mount
-this component.
+visibly re-tokening. Every era chapter mounts it:
+
+| Chapter | skin | treatment | caption |
+| --- | --- | --- | --- |
+| `/story/rails-era` | `rails-era` | `crt` | `"loading 2014…"` |
+| `/story/react-era` | `react-era` | `webpack` | `"webpack: compiling… ⚡ built in 2.4s"` |
+| `/story/agentic` | `agentic` | `terminal` | 3 streaming boot lines |
+
+One shared motion chunk drives all three crossings; the `treatment` prop only
+switches static CSS dressing on the band (scanlines / skeleton-shimmer
+stripes / kiln glow + ember hairlines — never an animation).
 
 ## The one mechanism
 
@@ -69,7 +77,9 @@ The era-crossing (token-true timing; galenti tokens at trigger ⇒ ~1.1s travel)
   flickers; the band makes exactly one smooth pass).
 - A mono HUD caption (`[data-retheme-caption-char]` spans) types out during
   travel — per-char opacity reveal, layout pre-measured (zero reflow), no
-  cursor blink.
+  cursor blink. Multi-line captions (`caption: string[]`) render one line per
+  `<p>` and stream in DOM order; the per-char cadence compresses for long
+  captions so the type-out always completes before the band's exit fade.
 - When the band's centre crosses the viewport centre (eased progress 0.5,
   solved by inverting the travel ease): `.call(onSwap)` — the whole page
   re-tokens on that frame, hidden under the band.
@@ -101,11 +111,20 @@ layer is ever absent (chunk error → instant swap).
 ```tsx
 const ERA_FONTS = ['Source Sans 3', 'Source Code Pro'] as const // module-level
 
-<EraRetheme skin="rails-era" warmFonts={ERA_FONTS} caption="loading 2014…">
+<EraRetheme skin="rails-era" treatment="crt" warmFonts={ERA_FONTS} caption="loading 2014…">
   …chapter content; elements opt into the settle with
   data-retheme-stagger="chrome|type|surface" (bare = last, completion marker)…
 </EraRetheme>
 ```
+
+- `treatment` defaults to `'crt'`; `'webpack'` and `'terminal'` restyle the
+  band statically (see the table above). The band interior always binds to
+  the TARGET era skin's `night` zone — material dark for react-era, deep
+  kiln for agentic.
+- `caption` accepts a string (one line) or a string array (stacked streaming
+  lines, left-aligned under the terminal treatment).
+- Skins with no font files (react-era's system Roboto stack) simply omit
+  `warmFonts`.
 
 - `warmFonts` fires `document.fonts.load()` on mount (both modes) so era
   type is resident before the swap — the moment must not FOUT.

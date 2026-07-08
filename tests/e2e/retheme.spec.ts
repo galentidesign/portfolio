@@ -28,6 +28,20 @@ function getSurfaceColor(page: Page): Promise<string> {
 /** The role="status" region inside the EraRetheme boundary. */
 const srAnnounce = (page: Page) => page.locator('[data-testid="era-retheme"] [role="status"]')
 
+/** The fixed site nav — client-side links to skin-neutral routes. */
+const siteNav = (page: Page) => page.locator('[data-testid="nav-header"]')
+
+/**
+ * Exit the chapter to a NEUTRAL (non-retheming) route via client-side nav.
+ * Since R8 every era chapter mounts EraRetheme, so exiting into the next
+ * chapter immediately starts that chapter's own swap — restore semantics can
+ * only be asserted deterministically against a route with no boundary.
+ */
+async function exitToNeutral(page: Page) {
+  await siteNav(page).getByRole('link', { name: 'Work' }).click()
+  await expect(page).toHaveURL(/\/work$/)
+}
+
 // ── §6.2 — 1. Entry re-themes ─────────────────────────────────────────────────
 
 test('entry re-themes: html[data-skin] flips to rails-era and shell components visibly re-token', async ({
@@ -54,7 +68,7 @@ test('entry re-themes: html[data-skin] flips to rails-era and shell components v
 
 // ── §6.2 — 2. Exit restores ───────────────────────────────────────────────────
 
-test('exit restores: navigating away via handoff link returns html[data-skin] to galenti', async ({
+test('exit restores: navigating away client-side returns html[data-skin] to galenti', async ({
   page,
 }) => {
   await page.goto('/story/rails-era')
@@ -62,9 +76,8 @@ test('exit restores: navigating away via handoff link returns html[data-skin] to
     timeout: 5_000,
   })
 
-  // Client-side navigation via the chapter handoff link.
-  await page.getByRole('link', { name: 'Next: The React era →' }).click()
-  await expect(page).toHaveURL(/\/story\/react-era$/)
+  // Client-side navigation to a neutral route (see exitToNeutral).
+  await exitToNeutral(page)
 
   // EraRetheme unmounted → restore fires → data-skin back to galenti.
   await expect(page.locator('html')).toHaveAttribute('data-skin', 'galenti', { timeout: 3_000 })
@@ -112,9 +125,9 @@ test('explicit skin choice wins: palette switch mid-chapter persists through exi
   await page.keyboard.press('Enter')
   await expect(page.locator('html')).toHaveAttribute('data-skin', 'galenti', { timeout: 3_000 })
 
-  // Navigate away — EraRetheme must NOT restore (visitor's explicit choice wins).
-  await page.getByRole('link', { name: 'Next: The React era →' }).click()
-  await expect(page).toHaveURL(/\/story\/react-era$/)
+  // Navigate away to a neutral route — EraRetheme must NOT restore (visitor's
+  // explicit choice wins).
+  await exitToNeutral(page)
 
   await expect(page.locator('html')).toHaveAttribute('data-skin', 'galenti')
   const stored = await page.evaluate(() => localStorage.getItem('portfolio:skin'))
@@ -136,9 +149,9 @@ test('deep link: already era-skinned entry skips swap and announce; exit is a no
   const announceText = await srAnnounce(page).textContent()
   expect(announceText?.trim()).toBe('')
 
-  // Navigate away — savedSkin was rails-era, restore is a visual no-op.
-  await page.getByRole('link', { name: 'Next: The React era →' }).click()
-  await expect(page).toHaveURL(/\/story\/react-era$/)
+  // Navigate away to a neutral route — savedSkin was rails-era, restore is a
+  // visual no-op.
+  await exitToNeutral(page)
 
   // Skin stays rails-era after the no-op restore.
   await expect(page.locator('html')).toHaveAttribute('data-skin', 'rails-era')
@@ -237,6 +250,15 @@ test('axe: /story/rails-era — rails-era skin (reduced motion), zero violations
 test('axe: /story/react-era (engine-note aside), zero violations', async ({ page }) => {
   await page.goto('/story/react-era')
   await expect(page.getByRole('heading', { name: 'The React era' })).toBeVisible()
+  // R8: the chapter mounts its own era-crossing — wait for the swap and the
+  // settle cascade to complete (same deterministic wait as the rails-era axe
+  // test) so the scan never lands on a transient opacity blend.
+  await expect(page.locator('html')).toHaveAttribute('data-skin', 'react-era', {
+    timeout: 5_000,
+  })
+  await expect(page.locator('[data-retheme-stagger]').last()).toHaveCSS('opacity', '1', {
+    timeout: 5_000,
+  })
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
 })
@@ -244,6 +266,13 @@ test('axe: /story/react-era (engine-note aside), zero violations', async ({ page
 test('axe: /story/agentic (engine-note aside), zero violations', async ({ page }) => {
   await page.goto('/story/agentic')
   await expect(page.getByRole('heading', { name: 'The agentic era' })).toBeVisible()
+  // R8: same settled-crossing wait as above.
+  await expect(page.locator('html')).toHaveAttribute('data-skin', 'agentic', {
+    timeout: 5_000,
+  })
+  await expect(page.locator('[data-retheme-stagger]').last()).toHaveCSS('opacity', '1', {
+    timeout: 5_000,
+  })
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
 })

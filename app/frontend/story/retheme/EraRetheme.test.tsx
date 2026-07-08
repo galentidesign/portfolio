@@ -168,4 +168,73 @@ describe('EraRetheme with motion allowed', () => {
     renderBoundary()
     expect(screen.getByTestId('era-retheme')).toHaveAttribute('data-era-skin', 'rails-era')
   })
+
+  it('defaults the band treatment to crt', () => {
+    document.documentElement.dataset.skin = 'galenti'
+    const { container } = renderBoundary()
+    const band = container.querySelector('[data-retheme-band]')
+    expect(band).toHaveAttribute('data-retheme-treatment', 'crt')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Per-era parametrization — treatment + multi-line captions (shared machinery)
+// ---------------------------------------------------------------------------
+
+describe('EraRetheme per-era parametrization', () => {
+  it('marks the band with the requested treatment and binds the interior to the era night zone', () => {
+    document.documentElement.dataset.skin = 'galenti'
+    const { container } = render(
+      <MotionPrefProvider>
+        <SkinProvider>
+          <EraRetheme skin="react-era" treatment="webpack" caption="webpack: compiling…">
+            <p>chapter content</p>
+          </EraRetheme>
+        </SkinProvider>
+      </MotionPrefProvider>,
+    )
+    const band = container.querySelector('[data-retheme-band]')
+    expect(band).toHaveAttribute('data-retheme-treatment', 'webpack')
+    const interior = container.querySelector('[data-retheme-band] [data-zone="night"]')
+    expect(interior).toHaveAttribute('data-skin', 'react-era')
+  })
+
+  it('renders a multi-line caption as one line per paragraph, chars in stream order', () => {
+    document.documentElement.dataset.skin = 'galenti'
+    const lines = ['$ session start — kiln', '▸ agents: fleet ready'] as const
+    const { container } = render(
+      <MotionPrefProvider>
+        <SkinProvider>
+          <EraRetheme skin="agentic" treatment="terminal" caption={lines}>
+            <p>chapter content</p>
+          </EraRetheme>
+        </SkinProvider>
+      </MotionPrefProvider>,
+    )
+    const band = container.querySelector('[data-retheme-band]')!
+    const paragraphs = band.querySelectorAll('p')
+    expect(paragraphs).toHaveLength(2)
+    const text = Array.from(band.querySelectorAll('[data-retheme-caption-char]'))
+      .map((el) => el.textContent)
+      .join('')
+    expect(text).toBe(lines.join(''))
+  })
+
+  it('announces the era label for the agentic skin under reduced motion', () => {
+    document.documentElement.dataset.motion = 'reduced'
+    document.documentElement.dataset.skin = 'galenti'
+    const { unmount } = render(
+      <MotionPrefProvider>
+        <SkinProvider>
+          <EraRetheme skin="agentic">
+            <p>chapter content</p>
+          </EraRetheme>
+        </SkinProvider>
+      </MotionPrefProvider>,
+    )
+    expect(document.documentElement.dataset.skin).toBe('agentic')
+    expect(screen.getByRole('status')).toHaveTextContent('Theme: Agentic era')
+    unmount()
+    expect(document.documentElement.dataset.skin).toBe('galenti')
+  })
 })

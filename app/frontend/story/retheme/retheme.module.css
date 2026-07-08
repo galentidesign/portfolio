@@ -2,8 +2,11 @@
  * The era-crossing band is inert at rest (opacity 0) — only the GSAP motion
  * layer ever shows or moves it, so reduced-motion sessions never see it.
  * Semantic tokens only. Every texture here is STATIC (WCAG 2.3.1): the
- * scanlines, vignette, glow, and chromatic offset never animate — the band
- * makes exactly one smooth pass, driven by transform/opacity alone.
+ * scanlines, shimmer stripes, kiln glow, vignette, and chromatic offset never
+ * animate — the band makes exactly one smooth pass, driven by
+ * transform/opacity alone. The band's data-retheme-treatment attribute picks
+ * the era dressing: 'crt' (rails-era), 'webpack' (react-era), 'terminal'
+ * (agentic).
  * ───────────────────────────────────────────────────────────────────────── */
 
 /* Full-viewport horizontal band frame. Sits ABOVE page content but BELOW the
@@ -19,18 +22,24 @@
   z-index: var(--z-raised);
 }
 
-/* Band interior — a transient CRT window into the era being loaded. The
+/* Band interior — a transient window into the era being loaded. The
    data-skin + data-zone attributes on this element (set by EraRetheme) bind
-   it to the era skin's `night` zone, so in rails-era it re-tokens to the
-   green-phosphor palette regardless of which skin the page is still wearing
-   ahead of the band. Scanlines: static repeating gradient. Vignette: static
-   radial falloff toward the sunken surface. */
+   it to the era skin's `night` zone, so it re-tokens to the destination
+   era's dark palette regardless of which skin the page is still wearing
+   ahead of the band. */
 .band-interior {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
   background-color: var(--color-surface);
+  border-block: 1px solid var(--color-line-strong);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+/* CRT treatment (rails-era) — scanlines: static repeating gradient.
+   Vignette: static radial falloff toward the sunken surface. */
+.band[data-retheme-treatment='crt'] .band-interior {
   background-image:
     radial-gradient(
       ellipse 130% 96% at 50% 50%,
@@ -45,27 +54,70 @@
       transparent 1px,
       transparent 3px
     );
-  border-block: 1px solid var(--color-line-strong);
-  box-shadow: var(--shadow-glow-accent);
 }
 
-/* Mono HUD caption — era type tokens (Source Code Pro in rails-era), sized up
-   to title scale for the moment. The ±1px chromatic offset is a static
-   text-shadow (caption only; never animated). Characters are revealed by the
-   motion layer with per-char opacity — layout is fixed up front, so the
-   type-out costs zero reflow. */
+/* Webpack treatment (react-era) — skeleton-shimmer texture: static diagonal
+   stripes of the raised surface over material dark, the loading-placeholder
+   idiom of 2018 product web. Nothing moves, nothing strobes. */
+.band[data-retheme-treatment='webpack'] .band-interior {
+  background-image: repeating-linear-gradient(
+    105deg,
+    transparent 0,
+    transparent 2.75rem,
+    color-mix(in srgb, var(--color-surface-raised) 72%, transparent) 2.75rem,
+    color-mix(in srgb, var(--color-surface-raised) 72%, transparent) 5.5rem
+  );
+}
+
+/* Terminal treatment (agentic) — deep-kiln session window: a static ember
+   glow pooled along the band floor, ember hairlines top and bottom. The glow
+   is painted once and rides with the band — no luminance animation at all. */
+.band[data-retheme-treatment='terminal'] .band-interior {
+  background-image: radial-gradient(
+    ellipse 130% 85% at 50% 100%,
+    color-mix(in srgb, var(--color-accent-muted) 60%, transparent) 0%,
+    transparent 62%
+  );
+  border-block: 1px solid var(--color-accent);
+}
+
+/* Caption stack — one <p> per line; multi-line captions (terminal) stream as
+   stacked mono lines revealed in DOM order by the motion layer. */
+.band-captions {
+  display: grid;
+  gap: var(--space-2);
+  padding-inline: var(--space-5);
+}
+
+.band[data-retheme-treatment='terminal'] .band-captions {
+  justify-items: start;
+}
+
+/* Mono HUD caption — era type tokens, sized up to title scale for the
+   moment. Characters are revealed by the motion layer with per-char
+   opacity — layout is fixed up front, so the type-out costs zero reflow. */
 .band-caption {
   margin: 0;
-  padding-inline: var(--space-5);
   font-family: var(--type-mono-family);
   font-size: var(--type-title-size);
   font-weight: var(--type-mono-weight);
   line-height: var(--type-mono-line);
   letter-spacing: var(--type-mono-tracking);
   color: var(--color-ink);
+}
+
+/* CRT caption signature — ±1px chromatic offset as a static text-shadow
+   (caption only; never animated). */
+.band[data-retheme-treatment='crt'] .band-caption {
   text-shadow:
     1px 0 0 color-mix(in srgb, var(--color-critical) 45%, transparent),
     -1px 0 0 color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+/* Terminal caption signature — a static ember text-glow (glow ink, not a
+   flash; painted once). */
+.band[data-retheme-treatment='terminal'] .band-caption {
+  text-shadow: 0 0 12px color-mix(in srgb, var(--color-glow-ink) 45%, transparent);
 }
 
 /* Visually hidden live region — announces the theme change politely. */

@@ -29,7 +29,16 @@
       "gold-300": "#ffd23f",
       "gold-900": "#2e2405",
       "red-300": "#ff6b5e",
-      "red-900": "#330b06"
+      "red-900": "#330b06",
+      "acid-100": "#e4ffd6",
+      "sky-100": "#d9f4ff",
+      "yellow-100": "#ffffc2",
+      "lilac-100": "#ece4ff",
+      "magenta-700": "#a3187a",
+      "magenta-100": "#ffdef2",
+      "green-100": "#ceffdb",
+      "gold-100": "#ffe9a8",
+      "red-100": "#ffd9d4"
     },
     "font": {
       "sans": "ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
@@ -164,6 +173,39 @@
           "overlay": "0 0 0 3px {raw.color.sky-300}, 0 0 60px rgb(77 255 171 / 45%)",
           "glow-accent": "0 0 40px rgb(77 255 171 / 60%)",
           "glow-soft": "0 0 20px rgb(108 217 255 / 40%)"
+        }
+      }
+    },
+    "day": {
+      "colorScheme": "light",
+      "tokens": {
+        "color": {
+          "surface": "{raw.color.acid-100}",
+          "surface-raised": "{raw.color.sky-100}",
+          "surface-sunken": "{raw.color.yellow-100}",
+          "surface-overlay": "{raw.color.lilac-100}",
+          "ink": "{raw.color.void-950}",
+          "ink-muted": "{raw.color.magenta-800}",
+          "ink-faint": "{raw.color.indigo-700}",
+          "accent": "{raw.color.magenta-700}",
+          "accent-ink": "{raw.color.yellow-100}",
+          "accent-muted": "{raw.color.magenta-100}",
+          "line": "{raw.color.indigo-400}",
+          "line-strong": "{raw.color.indigo-700}",
+          "focus": "{raw.color.magenta-700}",
+          "positive": "{raw.color.green-900}",
+          "positive-surface": "{raw.color.green-100}",
+          "caution": "{raw.color.gold-900}",
+          "caution-surface": "{raw.color.gold-100}",
+          "critical": "{raw.color.red-900}",
+          "critical-surface": "{raw.color.red-100}",
+          "glow-ink": "{raw.color.magenta-700}"
+        },
+        "shadow": {
+          "raised": "0 0 0 2px {raw.color.magenta-700}",
+          "overlay": "0 0 0 3px {raw.color.indigo-700}, 0 0 60px rgb(163 24 122 / 35%)",
+          "glow-accent": "0 0 0 4px {raw.color.green-900}",
+          "glow-soft": "0 0 0 2px {raw.color.indigo-400}"
         }
       }
     }

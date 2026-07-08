@@ -11,18 +11,29 @@ import {
 import type { RethemeMotionHandle } from './motion'
 import styles from './retheme.module.css'
 
+/**
+ * Visual dressing of the era-crossing band (all static CSS — WCAG 2.3.1):
+ * - 'crt'      — scanlines, vignette, chromatic caption (the 2014 tube).
+ * - 'webpack'  — skeleton-shimmer stripes, build-log caption (the 2018 bundler).
+ * - 'terminal' — kiln-glow floor, ember hairlines, streaming mono lines.
+ */
+export type RethemeTreatment = 'crt' | 'webpack' | 'terminal'
+
 export interface EraRethemeProps {
   /** The era skin this story boundary applies while mounted. */
   skin: SkinName
+  /** Band dressing for the crossing. Defaults to 'crt' (the rails-era tube). */
+  treatment?: RethemeTreatment
   /** Screen-reader announcement after the swap. Defaults to "Theme: <label>". */
   announce?: string
   /** Font families to warm on mount so era type is resident before the swap. */
   warmFonts?: readonly string[]
   /**
    * HUD caption the era-crossing band types out mid-travel (decorative,
-   * aria-hidden). Defaults to "loading <label>…".
+   * aria-hidden). A string is one line; an array streams as stacked mono
+   * lines (terminal treatment). Defaults to "loading <label>…".
    */
-  caption?: string
+  caption?: string | readonly string[]
   children: ReactNode
 }
 
@@ -50,7 +61,14 @@ function readStoredSkin(): string | null {
  * choreography. Never persists: a story re-theme must not clobber the
  * visitor's explicit skin choice.
  */
-export function EraRetheme({ skin, announce, warmFonts, caption, children }: EraRethemeProps) {
+export function EraRetheme({
+  skin,
+  treatment = 'crt',
+  announce,
+  warmFonts,
+  caption,
+  children,
+}: EraRethemeProps) {
   const { setSkin } = useSkin()
   const { reduced } = useMotionPref()
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -67,7 +85,12 @@ export function EraRetheme({ skin, announce, warmFonts, caption, children }: Era
 
   const label = skins.find((s) => s.name === skin)?.label ?? skin
   const message = announce ?? `Theme: ${label}`
-  const captionText = caption ?? `loading ${label.toLowerCase()}…`
+  const captionLines: readonly string[] =
+    caption === undefined
+      ? [`loading ${label.toLowerCase()}…`]
+      : typeof caption === 'string'
+        ? [caption]
+        : caption
 
   // Entry/exit bookkeeping — the persistence contract (README).
   useEffect(() => {
@@ -145,17 +168,27 @@ export function EraRetheme({ skin, announce, warmFonts, caption, children }: Era
       {/* Era-crossing band: inert at rest (opacity 0, pointer-events none) —
           only the motion layer ever shows or moves it. The interior binds to
           the ERA skin's night zone (data-skin + data-zone on one element), so
-          the crossing frame renders in the destination era's CRT palette even
-          while the page around it still wears the outgoing skin. */}
-      <div aria-hidden="true" data-retheme-band className={styles.band}>
+          the crossing frame renders in the destination era's dark palette
+          (CRT phosphor, material dark, deep kiln — per treatment) even while
+          the page around it still wears the outgoing skin. */}
+      <div
+        aria-hidden="true"
+        data-retheme-band
+        data-retheme-treatment={treatment}
+        className={styles.band}
+      >
         <div className={styles['band-interior']} data-skin={skin} data-zone="night">
-          <p className={styles['band-caption']}>
-            {Array.from(captionText).map((char, i) => (
-              <span key={i} data-retheme-caption-char>
-                {char}
-              </span>
+          <div className={styles['band-captions']}>
+            {captionLines.map((line, lineIndex) => (
+              <p key={lineIndex} className={styles['band-caption']}>
+                {Array.from(line).map((char, i) => (
+                  <span key={i} data-retheme-caption-char>
+                    {char}
+                  </span>
+                ))}
+              </p>
             ))}
-          </p>
+          </div>
         </div>
       </div>
       <div role="status" className={styles['sr-announce']}>
