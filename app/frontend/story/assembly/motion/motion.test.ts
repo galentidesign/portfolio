@@ -45,7 +45,7 @@ function makeSection(): HTMLElement {
         </tbody></table></div>
       </div></li>
       <li data-beat="shell"><div data-exhibit="shell">
-        <div data-assembly-part="frame"><div>bar</div><span>Skip to the work</span></div>
+        <div data-assembly-part="frame"><div>bar</div></div>
       </div></li>
     </ol>
   `
@@ -92,7 +92,7 @@ describe('mountAssemblyMotion', () => {
     expect(vars.pin).toBe(true)
     expect(vars.scrub).toBe(true)
     expect(vars.start).toBe('top top')
-    expect(vars.end).toBe('+=400%')
+    expect(vars.end).toBe('+=520%')
   })
 
   it('builds a master timeline labelled with the five beat ids in order', () => {
@@ -128,7 +128,7 @@ describe('mountAssemblyMotion', () => {
     expect(at(0.05)).toBe('tokens')
     expect(at(0.25)).toBe('atom')
     expect(at(0.45)).toBe('molecule')
-    expect(at(0.6)).toBe('organisms')
+    expect(at(0.65)).toBe('organisms')
     expect(at(0.9)).toBe('shell')
     // Still exactly one active step after all the transitions.
     expect(section.querySelectorAll('[data-beat-active]')).toHaveLength(1)
@@ -176,18 +176,22 @@ describe('mountAssemblyMotion', () => {
 })
 
 describe('beatForProgress', () => {
-  it('maps progress to the beat whose range contains it (boundaries -> next)', () => {
+  it('maps progress to the active beat — a beat holds through its trailing plateau', () => {
     const cases: [number, BeatId][] = [
       [-0.2, 'tokens'],
       [0, 'tokens'],
       [0.1, 'tokens'],
-      [0.15, 'atom'],
+      [0.15, 'tokens'], // trailing hold — tokens stays active until atom begins
+      [0.2, 'atom'],
       [0.3, 'atom'],
-      [0.35, 'molecule'],
+      [0.36, 'atom'], // trailing hold
+      [0.4, 'molecule'],
       [0.5, 'molecule'],
-      [0.52, 'organisms'],
-      [0.6, 'organisms'],
-      [0.7, 'shell'],
+      [0.57, 'molecule'], // trailing hold
+      [0.61, 'organisms'],
+      [0.7, 'organisms'],
+      [0.78, 'organisms'], // trailing hold
+      [0.82, 'shell'],
       [0.9, 'shell'],
       [1, 'shell'],
       [1.4, 'shell'],

@@ -9,16 +9,13 @@
  * Enhancements layered on the scrub (all motion-chunk-only bytes):
  *   - shader field (./field, ogl) behind the hero, capability-gated
  *   - SplitText name reveal on mount (chars rise, wght 300 → 740)
- *   - Physics2D scatter chips in the shell beat (created here, never in base)
  */
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
-import { Physics2DPlugin } from 'gsap/Physics2DPlugin'
 import { registerTokenEases } from '@/ds/motion/gsapPlugins'
 import { shouldMountGlLayer } from '@/ds/motion/capabilities'
 import { mountField, type FieldHandle } from './field'
-import { createScatterChips } from './beats/shell'
 import {
   applyInitialStates,
   beatForProgress,
@@ -46,7 +43,7 @@ export function mountAssemblyMotion(
   section: HTMLElement,
   opts?: AssemblyMotionOptions,
 ): AssemblyMotionHandle {
-  gsap.registerPlugin(ScrollTrigger, SplitText, Physics2DPlugin)
+  gsap.registerPlugin(ScrollTrigger, SplitText)
   registerTokenEases()
 
   let completed = false
@@ -62,13 +59,8 @@ export function mountAssemblyMotion(
   let field: FieldHandle | null = null
   let split: SplitText | null = null
   let reveal: gsap.core.Tween | null = null
-  let removeScatter: (() => void) | null = null
 
   const ctx = gsap.context(() => {
-    // (0) Shell-beat scatter chips exist before the initial states are set so
-    //     the beat module can style their before-state like any other part.
-    removeScatter = createScatterChips(section)
-
     const beatCtx = createBeatContext(section)
 
     // (1) Initial states FIRST — the flip below reveals the layered stage, and
@@ -81,7 +73,7 @@ export function mountAssemblyMotion(
     trigger = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: '+=400%',
+      end: '+=520%',
       scrub: true,
       pin: true,
       animation: master,
@@ -156,8 +148,6 @@ export function mountAssemblyMotion(
       split = null
       field?.destroy()
       field = null
-      removeScatter?.()
-      removeScatter = null
       delete section.dataset.motion
       section
         .querySelectorAll('[data-beat-active]')

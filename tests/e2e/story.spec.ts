@@ -8,13 +8,17 @@ import { expect, test, type Page } from '@playwright/test'
 const BEAT_IDS = ['tokens', 'atom', 'molecule', 'organisms', 'shell'] as const
 type BeatId = (typeof BEAT_IDS)[number]
 
-// Fractions from the prompt §9.2 table (mid-range of each RANGES entry).
+// Mid-range fraction of each RANGES entry (timeline.ts), plus two hold-plateau
+// probes: a beat keeps data-beat-active through its trailing hold, handing off
+// only where the next beat's range begins.
 const MOTION_FRACTIONS: Array<{ fraction: number; expected: BeatId }> = [
   { fraction: 0.05, expected: 'tokens' },
+  { fraction: 0.15, expected: 'tokens' }, // trailing hold — still tokens
   { fraction: 0.25, expected: 'atom' },
-  { fraction: 0.44, expected: 'molecule' },
-  { fraction: 0.6, expected: 'organisms' },
-  { fraction: 0.8, expected: 'shell' },
+  { fraction: 0.45, expected: 'molecule' },
+  { fraction: 0.65, expected: 'organisms' },
+  { fraction: 0.77, expected: 'organisms' }, // trailing hold — still organisms
+  { fraction: 0.9, expected: 'shell' },
 ]
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -50,7 +54,8 @@ async function scrollToFraction(page: Page, fraction: number): Promise<void> {
     // Prefer the pin-spacer (inserted by GSAP, stays in-flow at original position).
     const ref = section.closest<HTMLElement>('.pin-spacer') ?? section
     const pinStartDocTop = ref.getBoundingClientRect().top + window.scrollY
-    window.scrollTo(0, pinStartDocTop + frac * 4 * window.innerHeight)
+    // Pin distance is '+=520%' (timeline.ts) — 5.2 viewport heights.
+    window.scrollTo(0, pinStartDocTop + frac * 5.2 * window.innerHeight)
   }, fraction)
 }
 
@@ -111,9 +116,9 @@ test('keyboard story — complete variant: h1 immediate, skip tab, beats complet
   // Seed before any scroll — motion layer sets 'tokens' active at mount.
   await snapshot()
 
-  // ~10 PageDowns covers 4 × viewportHeight pin distance plus overshoot.
+  // ~10 PageDowns covers 5.2 × viewportHeight pin distance plus overshoot.
   // Typical viewport (768 px) × PageDown factor (~0.9) = ~692 px/press.
-  // Pin = 4 × 768 = 3072 px → 5 presses exhaust it; 10 gives comfortable margin.
+  // Pin = 5.2 × 768 ≈ 3994 px → 6 presses exhaust it; 10 gives comfortable margin.
   for (let i = 0; i < 10; i++) {
     await page.keyboard.press('PageDown')
     await page.waitForTimeout(150) // let ScrollTrigger onUpdate settle

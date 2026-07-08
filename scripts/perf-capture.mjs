@@ -180,7 +180,7 @@ async function captureAssemblyOpening(page) {
   const { docTop, pinDistance } = await page.evaluate(() => {
     const section = document.querySelector('[data-testid="assembly-opening"]')
     const docTop = section.getBoundingClientRect().top + window.scrollY
-    const pinDistance = 4 * window.innerHeight
+    const pinDistance = 5.2 * window.innerHeight
     return { docTop, pinDistance }
   })
 

@@ -1,5 +1,5 @@
 /**
- * Beat 0 — tokens (0.00–0.15). "Material on the table": the raw palette
+ * Beat 0 — tokens (0.00–0.12). "Material on the table": the raw palette
  * springs up from below the fold, type specimens drop in, the ruler ticks
  * grow, and the easing curve floats down — every group at its own rate, with
  * a slow whole-cluster drift underneath (differing rates read as depth under
@@ -38,7 +38,7 @@ export function setInitial(ctx: BeatContext): void {
 
 export function addToTimeline(tl: Timeline, ctx: BeatContext): void {
   const { ease } = ctx
-  const { start, end } = ctx.span('tokens')
+  const { start } = ctx.span('tokens')
 
   const step = ctx.step('tokens')
   const cluster = ctx.part('tokens', 'chips')
@@ -80,8 +80,8 @@ export function addToTimeline(tl: Timeline, ctx: BeatContext): void {
   // rates read as parallax depth. Ends before the atom borrows the cluster.
   if (cluster) tl.to(cluster, { y: -14, duration: 10, ease: 'none' }, start)
 
-  // Fade the field out and lift it away, landing two units before the beat
-  // boundary — the next entrance only gains opacity after this is gone, so
-  // captions never double-expose mid-crossfade.
-  if (step) tl.to(step, { opacity: 0, y: -56, duration: 4, ease: ease.exit }, end - 6)
+  // Fade the field out and lift it away in the exit slot at the end of the
+  // trailing hold — the next entrance only gains opacity after this is gone,
+  // so captions never double-expose mid-crossfade.
+  if (step) tl.to(step, { opacity: 0, y: -56, duration: 2, ease: ease.exit }, ctx.exitAt('tokens'))
 }

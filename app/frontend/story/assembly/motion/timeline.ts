@@ -25,13 +25,19 @@ export type Timeline = gsap.core.Timeline
 
 export const BEAT_IDS: readonly BeatId[] = ['tokens', 'atom', 'molecule', 'organisms', 'shell']
 
-/** Scroll ranges as fractions of the pinned distance (README timeline table). */
+/**
+ * Scroll ranges as fractions of the pinned distance (README timeline table).
+ * Ranges are deliberately non-contiguous: the gap after each beat is its hold
+ * plateau — the beat sits fully assembled with nothing animating, then the
+ * exit/entrance crossfade closes the gap (see EXIT_SLOT). A beat keeps
+ * `data-beat-active` through its own trailing hold (see beatForProgress).
+ */
 export const RANGES: Record<BeatId, { readonly start: number; readonly end: number }> = {
-  tokens: { start: 0.0, end: 0.15 },
-  atom: { start: 0.15, end: 0.35 },
-  molecule: { start: 0.35, end: 0.52 },
-  organisms: { start: 0.52, end: 0.7 },
-  shell: { start: 0.7, end: 1.0 },
+  tokens: { start: 0.0, end: 0.12 },
+  atom: { start: 0.2, end: 0.32 },
+  molecule: { start: 0.4, end: 0.53 },
+  organisms: { start: 0.61, end: 0.74 },
+  shell: { start: 0.82, end: 1.0 },
 }
 
 const SCALE = 100
@@ -42,6 +48,12 @@ const DURATION = SCALE
  * keys on the exact RANGES, so this visual lead never shifts a beat boundary.
  */
 const LEAD = 4
+/**
+ * Exit slot (timeline units) at the end of a beat's trailing hold: the 2-unit
+ * exit runs [next.start - 4, next.start - 2] and finishes exactly as the next
+ * entrance borrows its LEAD/2 — the hold stays still, the handoff stays clean.
+ */
+const EXIT_SLOT = 4
 
 /**
  * Ease vocabulary — the design tokens inform the curves; GSAP's power/back
@@ -81,6 +93,12 @@ export interface BeatContext {
   child: (el: Element, sel: string) => HTMLElement | null
   /** Absolute timeline positions for a beat's fractional range. */
   span: (id: BeatId) => { start: number; end: number; len: number }
+  /**
+   * Absolute position of the beat's exit slot — at the end of its trailing
+   * hold, leading the next beat's entrance. The final beat has no hold; its
+   * range end comes back (shell never exits anyway).
+   */
+  exitAt: (id: BeatId) => number
 }
 
 export interface BeatModule {
@@ -108,6 +126,10 @@ export function createBeatContext(section: HTMLElement): BeatContext {
     span: (id) => {
       const r = RANGES[id]
       return { start: pos(r.start), end: pos(r.end), len: pos(r.end - r.start) }
+    },
+    exitAt: (id) => {
+      const next = BEAT_IDS[BEAT_IDS.indexOf(id) + 1]
+      return next !== undefined ? pos(RANGES[next].start) - EXIT_SLOT : pos(RANGES[id].end)
     },
   }
 }
@@ -145,13 +167,14 @@ export function buildMasterTimeline(ctx: BeatContext): Timeline {
 }
 
 /**
- * Map a ScrollTrigger progress (0..1) to the beat whose range contains it.
- * Boundaries belong to the next beat; out-of-range clamps to the ends.
+ * Map a ScrollTrigger progress (0..1) to the active beat. A beat stays active
+ * through its trailing hold — the handoff happens only where the next beat's
+ * range begins. Boundaries belong to the next beat; out-of-range clamps.
  */
 export function beatForProgress(progress: number): BeatId {
   const p = Math.min(1, Math.max(0, progress))
-  for (const id of BEAT_IDS) {
-    if (p < RANGES[id].end) return id
+  for (let i = 0; i < BEAT_IDS.length - 1; i++) {
+    if (p < RANGES[BEAT_IDS[i + 1]].start) return BEAT_IDS[i]
   }
   return 'shell'
 }

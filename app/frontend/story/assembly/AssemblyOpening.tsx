@@ -236,7 +236,6 @@ function ShellExhibit() {
           <span>Résumé</span>
         </span>
       </div>
-      <span className={styles['hatch-facsimile']}>Skip to the work →</span>
     </div>
   )
 }

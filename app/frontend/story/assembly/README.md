@@ -54,16 +54,20 @@ export interface AssemblyOpeningProps {
 
 ## The beats
 
-Scroll ranges are fractions of the pinned distance (`+=400%`, ~4 viewport
+Scroll ranges are fractions of the pinned distance (`+=520%`, ~5.2 viewport
 heights). The master timeline uses GSAP labels named exactly as the ids.
+Ranges are non-contiguous: each 0.08 gap is a hold plateau — the beat sits
+fully assembled with nothing animating (~4–5% of true stillness), then the
+exit/entrance crossfade closes the gap. A beat keeps `data-beat-active`
+through its own trailing hold; the handoff lands where the next range begins.
 
 | #   | id          | range     | exhibit                                                                                                                                                                                          | figcaption (verbatim)                                                                |
 | --- | ----------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| 0   | `tokens`    | 0.00–0.15 | Field of raw material: 5 color chips (surface, ink, accent, positive, line), type specimens (display "Aa", mono "16px"), a spacing ruler of `--space` ticks, the enter-ease drawn as an SVG path | "Raw tokens — the palette, type, spacing, and easing every component compiles from." |
-| 1   | `atom`      | 0.15–0.35 | The chips converge into a real `<Button>` ("Assemble"): color chip → fill, specimen → label, ticks bracket the padding                                                                           | "Atom — a Button compiles from four tokens."                                         |
-| 2   | `molecule`  | 0.35–0.52 | Label + input + the button slide into a real `<FormField>` row; the focus ring pulses once (opacity)                                                                                             | "Molecule — label, input, and button become a Form Field."                           |
-| 3   | `organisms` | 0.52–0.70 | A Nav bar facsimile assembles above three `<Table>` rows building staggered                                                                                                                      | "Organisms — the same tokens, composed into Nav and Table."                          |
-| 4   | `shell`     | 0.70–1.00 | A facsimile of the site's own bar slides into the real bar's position and crossfades out; the hatch pill pops in; the hero (h1 + subline, always visible) settles                                | "The shell itself — the same system, snapped together. You're inside it now."        |
+| 0   | `tokens`    | 0.00–0.12 | Field of raw material: 5 color chips (surface, ink, accent, positive, line), type specimens (display "Aa", mono "16px"), a spacing ruler of `--space` ticks, the enter-ease drawn as an SVG path | "Raw tokens — the palette, type, spacing, and easing every component compiles from." |
+| 1   | `atom`      | 0.20–0.32 | The chips converge into a real `<Button>` ("Assemble"): color chip → fill, specimen → label, ticks bracket the padding                                                                           | "Atom — a Button compiles from four tokens."                                         |
+| 2   | `molecule`  | 0.40–0.53 | Label + input + the button slide into a real `<FormField>` row; the focus ring pulses once (opacity)                                                                                             | "Molecule — label, input, and button become a Form Field."                           |
+| 3   | `organisms` | 0.61–0.74 | A Nav bar facsimile assembles above three `<Table>` rows building staggered                                                                                                                      | "Organisms — the same tokens, composed into Nav and Table."                          |
+| 4   | `shell`     | 0.82–1.00 | A facsimile of the site's own bar slides into the real bar's position and crossfades out; the hero (h1 + subline, always visible) settles                                                        | "The shell itself — the same system, snapped together. You're inside it now."        |
 
 Motion choreography notes:
 

@@ -1,5 +1,5 @@
 /**
- * Beat 2 — molecule (0.35–0.52). The input and button slide in from opposite
+ * Beat 2 — molecule (0.40–0.53). The input and button slide in from opposite
  * sides and spring into the Form Field's rhythm, the field gives one
  * focus-ring pulse, then the molecule crossfades out.
  */
@@ -21,7 +21,7 @@ export function setInitial(ctx: BeatContext): void {
 
 export function addToTimeline(tl: Timeline, ctx: BeatContext): void {
   const { ease, lead } = ctx
-  const { start, end } = ctx.span('molecule')
+  const { start } = ctx.span('molecule')
   // Half the lead — the previous exit owns the first half (see atom.ts).
   const entrance = Math.max(0, start - lead / 2)
 
@@ -44,5 +44,6 @@ export function addToTimeline(tl: Timeline, ctx: BeatContext): void {
       start + 8.5,
     )
 
-  if (step) tl.to(step, { opacity: 0, y: -56, duration: 4, ease: ease.exit }, end - 6)
+  if (step)
+    tl.to(step, { opacity: 0, y: -56, duration: 2, ease: ease.exit }, ctx.exitAt('molecule'))
 }

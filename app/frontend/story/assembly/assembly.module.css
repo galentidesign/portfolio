@@ -387,42 +387,6 @@
   min-height: var(--space-10);
 }
 
-/* ── Scatter chips — created by the motion layer for the shell beat ────────
-   Small token squares the Physics2D pass rains toward the gateway. Motion
-   mode only (the layer creates and removes them); never in the static DOM.
-   Attribute-keyed (not module classes) so the motion chunk never has to
-   import this module's class map — that import would drag the whole home
-   page chunk into the motion payload. */
-
-.opening [data-assembly-scatter] {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.opening [data-scatter-chip] {
-  position: absolute;
-  width: var(--space-4);
-  height: var(--space-4);
-  border-radius: var(--radius-control);
-  border: 1px solid var(--color-line-strong);
-  box-shadow: var(--shadow-raised);
-}
-
-.hatch-facsimile {
-  justify-self: end;
-  background-color: var(--color-surface-raised);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-raised);
-  font-family: var(--type-small-family);
-  font-size: var(--type-small-size);
-  color: var(--color-ink);
-  padding-block: var(--space-2);
-  padding-inline: var(--space-4);
-}
-
 /* ── Motion geometry — applied by the motion layer only ───────────────────
    When the GSAP layer mounts it sets data-motion='on': the steps become
    stacked layers inside a viewport-height stage for the pinned sequence.
@@ -458,7 +422,6 @@
 
 /* Shadowed layers are paint-expensive while transforming over the real bar
    (§9.3 burst source); the live stage drops them — static keeps the depth. */
-.opening[data-motion='on'] .hatch-facsimile,
 .opening[data-motion='on'] .bar-facsimile {
   box-shadow: none;
 }
