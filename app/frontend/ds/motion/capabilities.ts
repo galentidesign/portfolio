@@ -47,3 +47,34 @@ export function shouldMountGlLayer(): boolean {
 export function shouldMountPhysicsLayer(): boolean {
   return !prefersLiteMotion()
 }
+
+/**
+ * Run `callback` after window load and an idle slot — heavy motion payloads
+ * must not race the LCP render for bandwidth. Returns a cancel function.
+ */
+export function whenIdle(callback: () => void, timeout = 2000): () => void {
+  let cancelled = false
+  let idleHandle: number | undefined
+  let usedIdleCallback = false
+
+  const schedule = () => {
+    if (cancelled) return
+    if (typeof window.requestIdleCallback === 'function') {
+      usedIdleCallback = true
+      idleHandle = window.requestIdleCallback(() => callback(), { timeout })
+    } else {
+      idleHandle = window.setTimeout(callback, 200)
+    }
+  }
+
+  if (document.readyState === 'complete') schedule()
+  else window.addEventListener('load', schedule, { once: true })
+
+  return () => {
+    cancelled = true
+    window.removeEventListener('load', schedule)
+    if (idleHandle === undefined) return
+    if (usedIdleCallback) window.cancelIdleCallback(idleHandle)
+    else window.clearTimeout(idleHandle)
+  }
+}

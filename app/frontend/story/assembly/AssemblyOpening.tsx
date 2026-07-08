@@ -3,6 +3,7 @@ import { Button } from '@/ds/components/Button/Button'
 import { FormField } from '@/ds/components/FormField/FormField'
 import { Table, type TableColumn } from '@/ds/components/Table/Table'
 import { useMotionPref } from '@/ds/motion/useMotionPref'
+import { whenIdle } from '@/ds/motion/capabilities'
 import { BEATS } from './beats'
 import type { AssemblyMotionHandle } from './motion'
 import styles from './assembly.module.css'
@@ -73,15 +74,21 @@ export function AssemblyOpening({ onComplete }: AssemblyOpeningProps) {
     if (reduced || section === null) return
 
     let cancelled = false
-    void import('./motion').then(({ mountAssemblyMotion }) => {
-      if (cancelled || sectionRef.current === null) return
-      handleRef.current = mountAssemblyMotion(sectionRef.current, {
-        onComplete: complete,
+    // The motion payload (~59kB with gsap + ogl) must not race the LCP text
+    // for bandwidth on slow connections — fetch it after load + idle. The
+    // static render is the base experience until it arrives.
+    const cancelIdle = whenIdle(() => {
+      void import('./motion').then(({ mountAssemblyMotion }) => {
+        if (cancelled || sectionRef.current === null) return
+        handleRef.current = mountAssemblyMotion(sectionRef.current, {
+          onComplete: complete,
+        })
       })
     })
 
     return () => {
       cancelled = true
+      cancelIdle()
       handleRef.current?.destroy()
       handleRef.current = null
     }

@@ -22,7 +22,7 @@
         "weight": "100 800",
         "style": "normal",
         "display": "swap",
-        "preload": true
+        "preload": false
       }
     ]
   },

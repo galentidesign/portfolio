@@ -68,12 +68,15 @@ test('reduced motion: reduced-motion note appears', async ({ page }) => {
 
 // ── Font preloads (galenti) ───────────────────────────────────────────────────
 
-test('tokens page galenti: two font preload links present', async ({ page }) => {
+test('tokens page galenti: only the LCP font (Hanken) is preloaded', async ({ page }) => {
   await page.goto('/system/tokens')
   await expect(page.getByRole('heading', { name: 'Tokens' })).toBeVisible()
 
-  const preloads = await page.locator('link[rel="preload"][as="font"]').count()
-  expect(preloads).toBe(2)
+  // JetBrains Mono is deliberately not preloaded — it isn't the LCP font, and
+  // its 40kB competed with the hero text for bandwidth on slow connections.
+  const preloads = page.locator('link[rel="preload"][as="font"]')
+  await expect(preloads).toHaveCount(1)
+  await expect(preloads).toHaveAttribute('href', /hanken-grotesk/)
 })
 
 test('tokens page galenti: Hanken Grotesk font eventually loads', async ({ page }) => {
