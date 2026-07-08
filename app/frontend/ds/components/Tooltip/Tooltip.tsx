@@ -1,10 +1,14 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Tooltip" page) — component "Tooltip", an
+ * inverted bubble (bg color/ink, text color/surface, radius/control, shadow/raised).
+ * - content → "Label" text
+ * - position (top | bottom) is code-only (offset; no arrow → visually identical)
+ * @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=91-3
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { cloneElement, useEffect, useId, useRef, useState, type ReactElement } from 'react'
 import styles from './styles.module.css'
-
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=91-3
-// Component "Tooltip" — inverted ink/surface bubble; content→"Label" text prop.
-// position (top/bottom) is code-only (offset; no arrow, so variants are
-// identical). Bound to "Tokens"; shadow via the "shadow/raised" effect styles.
 
 // Hover-intent threshold (ms) before a pointer-triggered show. Deliberately a
 // structural const and NOT a motion token: it is an interaction threshold —

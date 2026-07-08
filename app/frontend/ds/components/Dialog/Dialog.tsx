@@ -1,10 +1,14 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Dialog" page) — component set "Dialog",
+ * Size × booleans. Footer holds real Button instances; backdrop is page-level.
+ * - size (sm | md) → "Size"; dismissible → "Dismissible" bool
+ * - description | footer → "Show …" bools; title | description → text properties
+ * @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=33-38
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import styles from './styles.module.css'
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=33-38
-// Component set "Dialog" — size→Size (sm/md); dismissible→Dismissible;
-// description/footer→"Show …" booleans; title/description→TEXT properties.
-// Footer holds real Button instances. Backdrop is page-level in code, not in
-// the set. Tokens collection modes: galenti, rails-era.
 
 export interface DialogProps {
   /** Fully controlled — owner must flip this to mount/unmount the dialog. */

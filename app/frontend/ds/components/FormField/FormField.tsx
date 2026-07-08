@@ -1,9 +1,15 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Form Field" page) — component set
+ * "Form Field", Kind × State.
+ * - multiline → "Kind" (input | textarea); required → "Required" bool
+ * - CSS states (focus-visible ring | aria-invalid | disabled) → "State"
+ * - label | hint | value → text properties
+ * @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=30-60
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { useId, type ComponentPropsWithoutRef, type Ref } from 'react'
 import styles from './styles.module.css'
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=30-60
-// Component set "Form Field" — multiline→Kind (input/textarea); CSS states→
-// State (focus-visible ring, aria-invalid, disabled); required→Required;
-// label/hint/value→TEXT properties. Tokens collection modes: galenti, rails-era.
 
 // Merge all native input + textarea props (minus id and children which this
 // component owns). Using the intersection lets callers pass type, rows,

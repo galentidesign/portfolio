@@ -1,10 +1,15 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Button" page) — component set "Button",
+ * Variant × Size × State.
+ * - variant (primary | secondary | ghost) → "Variant"; size (sm | md) → "Size"
+ * - CSS states (default | hover | focus | disabled) → "State"
+ * - busy → "Busy" bool; iconStart → "Icon start" bool + "Icon" INSTANCE_SWAP (Icon set); label → "Label" text
+ * @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=25-2
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { type ComponentPropsWithoutRef, type ReactNode, type Ref } from 'react'
 import styles from './styles.module.css'
-
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=25-2
-// Component set "Button" — variant→Variant, size→Size; CSS states→State;
-// busy→Busy; iconStart→"Icon start" boolean + "Icon" INSTANCE_SWAP. Paints
-// bind to the "Tokens" variable collection (modes: galenti, rails-era).
 
 export interface ButtonProps extends Omit<ComponentPropsWithoutRef<'button'>, 'type'> {
   variant?: 'primary' | 'secondary' | 'ghost'

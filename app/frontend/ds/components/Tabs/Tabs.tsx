@@ -1,10 +1,16 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Tabs" page) — two nodes:
+ * - component "Tabs" (assembly) — tablist (Tab instances) + 1px baseline + panel.
+ *   @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=109-2
+ * - component set "Tab", State axis — tab state (idle | selected | hover) →
+ *   "State"; selected = accent underline; label → "Label" text.
+ *   @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=108-17
+ * Roving focus + the animated indicator are omitted (no static Figma home).
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { useId, useRef, useState, type ReactNode } from 'react'
 import styles from './styles.module.css'
-
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=109-2
-// Component "Tabs" (assembly) + set "Tab" (node-id=108-17) — tab state→State
-// (idle/selected/hover); label→"Label" text prop; selected underline = accent.
-// Roving focus + animated indicator omitted. Bound to the "Tokens" collection.
 
 export interface TabItem {
   id: string

@@ -1,10 +1,15 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Card" page) — component "Card":
+ * surface-raised, density/pad padding, line border, radius/surface, shadow/raised;
+ * title + body + footer (divider + small ink-muted).
+ * - flush | interactive hover-lift | proximity-glow | focus states are omitted
+ * - shadow via per-skin "shadow/raised" effect styles (effects can't mode-switch)
+ * @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=96-3
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { type ComponentPropsWithoutRef, type ReactNode, type Ref } from 'react'
 import styles from './styles.module.css'
-
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=96-3
-// Component "Card" — title + body + footer; shadow via "shadow/raised" styles.
-// flush, interactive hover-lift, proximity-glow and focus states omitted.
-// Bound to the "Tokens" collection.
 
 export interface CardProps {
   title?: string

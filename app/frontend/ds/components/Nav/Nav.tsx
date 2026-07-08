@@ -1,10 +1,15 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Nav" page) — two nodes:
+ * - component "Nav" — brand → "Brand" text; current link = ink + 2px accent
+ *   underline; palette trigger chip with a mono kbd hint.
+ *   @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=34-2
+ * - component "Nav / Palette" — the ⌘K command palette (its own node).
+ *   @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=35-2
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { useState, useRef, useEffect, type ElementType, type Ref } from 'react'
 import styles from './styles.module.css'
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=34-2
-// Component "Nav" (+ "Nav / Palette" node 35-2) — brand→Brand TEXT; current
-// link = ink + 2px accent underline; palette trigger chip with mono kbd hint.
-// Palette dialog is its own component on the Nav page. Tokens collection
-// modes: galenti, rails-era.
 import { Palette, type PaletteAction } from './palette'
 
 export interface NavItem {

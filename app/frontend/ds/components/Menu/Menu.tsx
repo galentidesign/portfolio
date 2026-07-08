@@ -1,10 +1,17 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Menu" page) — two nodes:
+ * - component "Menu" (surface) — surface-overlay, line border, radius/surface,
+ *   shadow/overlay; holds Menu Item instances.
+ *   @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=107-2
+ * - component set "Menu Item", State axis — item state (default | active |
+ *   disabled) → "State"; label → "Label" text.
+ *   @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=106-9
+ * Trigger maps to Button (secondary); roving focus + positioning omitted.
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import styles from './styles.module.css'
-
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=107-2
-// Component "Menu" (surface) + set "Menu Item" (node-id=106-9) — item state→
-// State (default/active/disabled); label→"Label" text prop. Trigger maps to
-// Button (secondary). Roving focus + positioning omitted. Bound to "Tokens".
 
 export interface MenuItem {
   id: string

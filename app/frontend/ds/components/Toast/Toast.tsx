@@ -1,10 +1,16 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Toast" page) — component set "Toast",
+ * Tone axis; dismiss × on the right.
+ * - tone (neutral | positive | caution | critical) → "Tone"
+ * - title → "Title" text; children → "Message" text
+ * - inline/toast mode, auto-hide and enter animation are omitted
+ * - shadow via per-skin "shadow/overlay" effect styles (effects can't mode-switch)
+ * @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=98-20
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import { useEffect, useRef, type ReactNode } from 'react'
 import styles from './styles.module.css'
-
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=98-20
-// Component set "Toast" — tone→Tone (neutral/positive/caution/critical);
-// title→"Title", children→"Message" text props; dismiss ×. inline/toast mode,
-// auto-hide and enter animation omitted. Bound to "Tokens"; "shadow/overlay".
 
 export interface ToastProps {
   tone?: 'neutral' | 'positive' | 'caution' | 'critical'

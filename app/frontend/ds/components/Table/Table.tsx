@@ -1,10 +1,14 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Table" page) — component "Table". Header
+ * row in the small role with a line-strong rule; body rows at --density-row.
+ * - caption → "Caption" text + "Show caption" bool
+ * - sort arrow is static in Figma (code rotates it per aria-sort)
+ * @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=32-2
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import type { ReactNode } from 'react'
 import styles from './styles.module.css'
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=32-2
-// Component "Table" — caption→Caption TEXT + "Show caption" boolean; header
-// row in the small role with line-strong rule, rows at --density-row. Sort
-// arrow is static in Figma (code rotates per aria-sort). Tokens collection
-// modes: galenti, rails-era.
 
 export interface TableColumn<T> {
   key: string

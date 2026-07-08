@@ -1,10 +1,14 @@
+/**
+ * Figma (file FDrHYp9F366R2GZ0Ra9koO, "Skeleton" page) — component set
+ * "Skeleton", Shape axis.
+ * - shape (text | block | circle) → "Shape"
+ * - static resting fill (color/surface-sunken); shimmer animation has no Figma home
+ * @see https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=90-9
+ * Tokens come from the "Tokens" variable collection — skins galenti | rails-era
+ * | react-era | agentic (+ night/day zones); flip mode at the frame level.
+ */
 import type { CSSProperties } from 'react'
 import styles from './styles.module.css'
-
-// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=90-9
-// Component set "Skeleton" — shape→Shape (text/block/circle). Static resting
-// fill (color/surface-sunken); the shimmer animation has no Figma home. Bound
-// to the "Tokens" collection (galenti, rails-era, react-era, agentic).
 
 export interface SkeletonProps {
   /** Placeholder shape. */
