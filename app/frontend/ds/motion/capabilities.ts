@@ -13,7 +13,18 @@ interface NavigatorWithHints extends Navigator {
 export function canUseWebGL(): boolean {
   try {
     const canvas = document.createElement('canvas')
-    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
+    const gl = (canvas.getContext('webgl2') ?? canvas.getContext('webgl')) as
+      WebGLRenderingContext | WebGL2RenderingContext | null
+    if (!gl) return false
+    // Software rasterizers (SwiftShader, llvmpipe — headless browsers,
+    // GPU-less runners, some VMs) report WebGL but burn main-thread CPU;
+    // that's exactly the case the CSS base render exists for.
+    const info = gl.getExtension('WEBGL_debug_renderer_info')
+    if (info) {
+      const renderer = String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL) ?? '')
+      if (/swiftshader|llvmpipe|softpipe|software/i.test(renderer)) return false
+    }
+    return true
   } catch {
     return false
   }
