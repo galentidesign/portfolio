@@ -25,6 +25,7 @@ props:
     description: >-
       Toast mode only: controls visibility. When false, the component unmounts
       completely. Inline mode ignores this prop.
+    playground: false # opt this prop out of generated controls
   - name: title
     type: 'string'
     description: >-

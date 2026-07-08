@@ -10,6 +10,7 @@ props:
   - name: code
     type: 'string'
     description: Code to display verbatim in `<pre><code>`; no highlighting at v1.
+    playground: false
   - name: label
     type: 'string'
     description: Optional filename or language chip in the header row.

@@ -138,3 +138,63 @@ test('button: first Tab lands on a focused element with a visible outline', asyn
   expect(probe.focusVisible).toBe(true)
   expect(probe.outlineStyle).not.toBe('none')
 })
+
+test('badge: playground — choose tone critical → stage reflects it and snippet shows tone="critical"', async ({
+  page,
+}) => {
+  await gotoComponent(page, 'badge')
+
+  const toneGroup = page.getByRole('radiogroup', { name: 'tone' })
+  await toneGroup.getByText('critical', { exact: true }).click()
+  await expect(toneGroup.getByRole('radio', { name: 'critical' })).toBeChecked()
+
+  // The host component in the stage should carry data-tone="critical"
+  const stage = page.locator('[data-testid="playground-stage"]')
+  await expect(stage.locator('[data-tone="critical"]')).toBeVisible()
+
+  const snippetPre = page.getByRole('group', { name: 'Snippet' })
+  await expect(snippetPre).toContainText('tone="critical"')
+})
+
+test('toast: playground — click Show toast → toast shows Saved, then tone critical updates the stage', async ({
+  page,
+}) => {
+  await gotoComponent(page, 'toast')
+
+  const stage = page.locator('[data-testid="playground-stage"]')
+  await stage.getByRole('button', { name: 'Show toast' }).click()
+
+  // Assert the role element itself, not an enclosing wrapper — the toast is
+  // fixed-positioned, so any wrapper div that collapses in normal flow reads
+  // as hidden to Playwright even though the toast is visible on screen.
+  const toast = stage.getByRole('status')
+  await expect(toast).toBeVisible()
+  await expect(toast).toContainText('Saved')
+
+  const toneGroup = page.getByRole('radiogroup', { name: 'tone' })
+  await toneGroup.getByText('critical', { exact: true }).click()
+  await expect(toneGroup.getByRole('radio', { name: 'critical' })).toBeChecked()
+
+  await expect(toast).toHaveAttribute('data-tone', 'critical')
+})
+
+test('tooltip: playground — focus trigger → tooltip shows More info, then position bottom updates snippet', async ({
+  page,
+}) => {
+  await gotoComponent(page, 'tooltip')
+
+  const stage = page.locator('[data-testid="playground-stage"]')
+  const trigger = stage.getByRole('button', { name: 'Focus me' })
+  await trigger.focus()
+
+  const tooltip = stage.getByRole('tooltip')
+  await expect(tooltip).toBeVisible()
+  await expect(tooltip).toContainText('More info')
+
+  const positionGroup = page.getByRole('radiogroup', { name: 'position' })
+  await positionGroup.getByText('bottom', { exact: true }).click()
+  await expect(positionGroup.getByRole('radio', { name: 'bottom' })).toBeChecked()
+
+  const snippetPre = page.getByRole('group', { name: 'Snippet' })
+  await expect(snippetPre).toContainText('position="bottom"')
+})
