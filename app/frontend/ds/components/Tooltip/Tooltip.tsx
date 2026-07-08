@@ -1,6 +1,11 @@
 import { cloneElement, useEffect, useId, useRef, useState, type ReactElement } from 'react'
 import styles from './styles.module.css'
 
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=91-3
+// Component "Tooltip" — inverted ink/surface bubble; content→"Label" text prop.
+// position (top/bottom) is code-only (offset; no arrow, so variants are
+// identical). Bound to "Tokens"; shadow via the "shadow/raised" effect styles.
+
 // Hover-intent threshold (ms) before a pointer-triggered show. Deliberately a
 // structural const and NOT a motion token: it is an interaction threshold —
 // how long the pointer must rest before we believe the user wants the tip —

@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import styles from './styles.module.css'
 
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=94-3
+// Component "CodeBlock" — header (filename + Copy button) + mono code body.
+// copied/hover/focus states and syntax highlighting omitted. Bound to "Tokens".
+
 export interface CodeBlockProps {
   code: string
   label?: string

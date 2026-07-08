@@ -1,6 +1,11 @@
 import { useId, useRef, useState, type ReactNode } from 'react'
 import styles from './styles.module.css'
 
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=109-2
+// Component "Tabs" (assembly) + set "Tab" (node-id=108-17) — tab state→State
+// (idle/selected/hover); label→"Label" text prop; selected underline = accent.
+// Roving focus + animated indicator omitted. Bound to the "Tokens" collection.
+
 export interface TabItem {
   id: string
   label: string

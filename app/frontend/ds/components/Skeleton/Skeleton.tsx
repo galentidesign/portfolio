@@ -1,6 +1,11 @@
 import type { CSSProperties } from 'react'
 import styles from './styles.module.css'
 
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=90-9
+// Component set "Skeleton" — shape→Shape (text/block/circle). Static resting
+// fill (color/surface-sunken); the shimmer animation has no Figma home. Bound
+// to the "Tokens" collection (galenti, rails-era, react-era, agentic).
+
 export interface SkeletonProps {
   /** Placeholder shape. */
   shape?: 'text' | 'block' | 'circle'

@@ -1,6 +1,11 @@
 import { type ElementType, type ReactNode } from 'react'
 import styles from './styles.module.css'
 
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=95-3
+// Component "EmptyState" — icon→"Icon" INSTANCE_SWAP (Icon set), action→
+// "Action" INSTANCE_SWAP (Button set); title/description text. titleAs is
+// code-only. Bound to the "Tokens" collection.
+
 export interface EmptyStateProps {
   title: string
   /**

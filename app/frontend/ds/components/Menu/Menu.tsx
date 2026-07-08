@@ -1,6 +1,11 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import styles from './styles.module.css'
 
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=107-2
+// Component "Menu" (surface) + set "Menu Item" (node-id=106-9) — item state→
+// State (default/active/disabled); label→"Label" text prop. Trigger maps to
+// Button (secondary). Roving focus + positioning omitted. Bound to "Tokens".
+
 export interface MenuItem {
   id: string
   label: string

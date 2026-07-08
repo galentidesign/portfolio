@@ -1,6 +1,11 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import styles from './styles.module.css'
 
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=98-20
+// Component set "Toast" — tone→Tone (neutral/positive/caution/critical);
+// title→"Title", children→"Message" text props; dismiss ×. inline/toast mode,
+// auto-hide and enter animation omitted. Bound to "Tokens"; "shadow/overlay".
+
 export interface ToastProps {
   tone?: 'neutral' | 'positive' | 'caution' | 'critical'
   inline?: boolean

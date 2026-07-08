@@ -1,6 +1,11 @@
 import { type ComponentPropsWithoutRef, type ReactNode, type Ref } from 'react'
 import styles from './styles.module.css'
 
+// Figma: https://www.figma.com/design/FDrHYp9F366R2GZ0Ra9koO/portfolio?node-id=96-3
+// Component "Card" — title + body + footer; shadow via "shadow/raised" styles.
+// flush, interactive hover-lift, proximity-glow and focus states omitted.
+// Bound to the "Tokens" collection.
+
 export interface CardProps {
   title?: string
   href?: string
