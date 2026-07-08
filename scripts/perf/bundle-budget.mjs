@@ -11,13 +11,38 @@
 //      one here when adding a feature.
 //
 // Run after `vite build` (or bin/vite build): node scripts/perf/bundle-budget.mjs
-import { readFileSync } from 'node:fs'
+import { readFileSync, existsSync, statSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..')
-const VITE_DIR = join(ROOT, 'public/vite')
+
+// vite_ruby writes to a per-env public output dir (vite, vite-test, vite-dev).
+// Honor an explicit override, else use the most recently built manifest so the
+// script measures whatever `bin/vite build` just produced (CI test job builds
+// with RAILS_ENV=test → public/vite-test).
+function resolveViteDir() {
+  const override = process.env.VITE_RUBY_PUBLIC_OUTPUT_DIR
+  const candidates = override ? [override] : ['vite', 'vite-test', 'vite-dev']
+  const found = candidates
+    .map((dir) => join(ROOT, 'public', dir))
+    .filter((dir) => existsSync(join(dir, '.vite/manifest.json')))
+    .sort(
+      (a, b) =>
+        statSync(join(b, '.vite/manifest.json')).mtimeMs -
+        statSync(join(a, '.vite/manifest.json')).mtimeMs,
+    )
+  if (found.length === 0) {
+    console.error(
+      `bundle-budget: no .vite/manifest.json under public/{${candidates.join(',')}} — run bin/vite build first`,
+    )
+    process.exit(1)
+  }
+  return found[0]
+}
+
+const VITE_DIR = resolveViteDir()
 const MANIFEST = join(VITE_DIR, '.vite/manifest.json')
 
 // gz kB budgets per motion feature (manifest source key).
@@ -69,7 +94,9 @@ const baseKeys = Object.keys(manifest).filter(
 const baseReachable = staticClosure(baseKeys)
 for (const key of motionSources) {
   if (baseReachable.has(key)) {
-    errors.push(`motion source '${key}' is statically reachable from a page/entry chunk — it must be behind a dynamic import`)
+    errors.push(
+      `motion source '${key}' is statically reachable from a page/entry chunk — it must be behind a dynamic import`,
+    )
   }
 }
 
@@ -78,16 +105,18 @@ for (const key of motionSources) {
 for (const key of motionSources) {
   const budget = BUDGETS_KB[key]
   if (budget === undefined) {
-    errors.push(`motion source '${key}' has no budget in scripts/perf/bundle-budget.mjs — declare one`)
+    errors.push(
+      `motion source '${key}' has no budget in scripts/perf/bundle-budget.mjs — declare one`,
+    )
     continue
   }
   const payloadKeys = [...staticClosure([key])].filter((k) => !baseReachable.has(k))
   const totalKb = payloadKeys.reduce((sum, k) => sum + gzKb(k), 0)
-  const detail = payloadKeys
-    .map((k) => `${k} (${gzKb(k).toFixed(1)}kB)`)
-    .join(', ')
+  const detail = payloadKeys.map((k) => `${k} (${gzKb(k).toFixed(1)}kB)`).join(', ')
   if (totalKb > budget) {
-    errors.push(`'${key}' payload ${totalKb.toFixed(1)}kB gz exceeds budget ${budget}kB — ${detail}`)
+    errors.push(
+      `'${key}' payload ${totalKb.toFixed(1)}kB gz exceeds budget ${budget}kB — ${detail}`,
+    )
   } else {
     console.log(`ok  ${key}: ${totalKb.toFixed(1)}kB gz / ${budget}kB budget`)
   }
