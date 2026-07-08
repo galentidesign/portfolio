@@ -1,0 +1,17 @@
+slug: right-slug
+title: Widget
+role: Designer
+client: Client Co
+year: '2020'
+featured: false
+disciplines: [UX]
+summary: Slug does not match the filename base.
+cover: null
+overview: |
+  Para.
+highlights:
+  - One.
+shots: []
+links:
+  live: null
+  external: null

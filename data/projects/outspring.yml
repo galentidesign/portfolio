@@ -1,0 +1,27 @@
+# SEED PLACEHOLDER — J to confirm copy + drop real assets into public/gallery/outspring/
+slug: outspring
+title: Outspring iOS app portfolio
+role: Lead UI Designer
+client: Outspring (now Micromat)
+year: '2010–2011'
+featured: false
+disciplines: [UI design, Mobile / iOS design, Web design, Print design]
+summary: Interface and experience design across a portfolio of 12+ iOS apps, plus web and print.
+cover: outspring/cover.png
+overview: |
+  As Lead UI Designer at Outspring (now Micromat), I designed the interface and
+  experience for a portfolio of more than a dozen iOS apps, plus the company's
+  outgoing web artwork and print marketing.
+
+  The role spanned mobile product UI, marketing web, and print — an early-career
+  breadth across the full visual surface of a mobile software company.
+highlights:
+  - Designed UI and experience for 12+ iOS apps.
+  - Produced all outgoing web artwork and print marketing materials.
+shots:
+  - { src: outspring/shot-01.png, alt: iOS app interface, caption: iOS app UI. }
+  - { src: outspring/shot-02.png, alt: Marketing web artwork, caption: Outgoing web artwork. }
+  - { src: outspring/shot-03.png, alt: Print marketing, caption: Print marketing collateral. }
+links:
+  live: null
+  external: null

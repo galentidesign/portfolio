@@ -1,0 +1,17 @@
+slug: featured-z
+title: Zeta Featured
+role: Designer
+client: Client Co
+year: '2021'
+featured: true
+disciplines: [Brand]
+summary: A second featured project.
+cover: featured-z/cover.png
+overview: |
+  Only paragraph.
+highlights:
+  - Did another thing.
+shots: []
+links:
+  live: https://example.com
+  external: null

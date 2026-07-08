@@ -1,0 +1,32 @@
+# SEED PLACEHOLDER — J to confirm copy + drop real assets into public/gallery/pivvot-aim/
+slug: pivvot-aim
+title: Pivvot geospatial platform
+role: Lead UX/UI Engineering Consultant (via AIM Consulting)
+client: Pivvot · IntegraLink
+year: '2018–2019'
+featured: false
+disciplines: [UX architecture, Information architecture, Design systems, Geospatial UI]
+summary: UX, IA, and a custom Angular UI component system for an infrastructure-mapping platform.
+cover: pivvot-aim/cover.png
+overview: |
+  Engaged through AIM Consulting as lead UX/UI engineering consultant, I
+  redesigned and re-platformed Pivvot's IntegraLink — an infrastructure
+  project-mapping platform built on Angular and the Google Maps API.
+
+  I designed the UX and information architecture for dense geospatial workflows,
+  then built a custom Angular UI component system to make the mapping interface
+  consistent and maintainable.
+
+  The work spanned architecture through implementation: IA, interaction design,
+  and a reusable component layer for a complex enterprise mapping product.
+highlights:
+  - Designed UX + IA for a geospatial infrastructure-mapping platform.
+  - Built a custom Angular UI component system on the Google Maps API.
+  - Led a product redesign and re-platforming from architecture through code.
+shots:
+  - { src: pivvot-aim/shot-01.png, alt: Map workspace, caption: Geospatial mapping workspace. }
+  - { src: pivvot-aim/shot-02.png, alt: UI component system, caption: Angular UI component system. }
+  - { src: pivvot-aim/shot-03.png, alt: Information architecture, caption: Workflow & IA map. }
+links:
+  live: null
+  external: null

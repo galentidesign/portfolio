@@ -25,6 +25,14 @@ RSpec.describe "Sitemap", type: :request do
       expect(response.body).to include("https://jgalenti.com/system/components/button")
     end
 
+    it "includes the gallery index URL" do
+      expect(response.body).to include("https://jgalenti.com/gallery")
+    end
+
+    it "includes a gallery project URL for a seeded slug" do
+      expect(response.body).to include("https://jgalenti.com/gallery/qwinix-streaming")
+    end
+
     it "includes the resume URL with the canonical host" do
       expect(response.body).to include("https://jgalenti.com/resume")
     end

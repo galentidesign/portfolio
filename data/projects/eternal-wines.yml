@@ -1,0 +1,32 @@
+# SEED PLACEHOLDER — J to confirm copy + drop real assets into public/gallery/eternal-wines/
+slug: eternal-wines
+title: Eternal Wines brand & packaging
+role: Senior Art Director
+client: Eternal Wines · Drink Washington
+year: '2015–2020'
+featured: true
+disciplines: [Brand identity, Packaging design, Print design, Art direction]
+summary: End-to-end visual brand and wine-label systems for two Washington beverage brands.
+cover: eternal-wines/cover.png
+overview: |
+  As Senior Art Director for Eternal Wines and Drink Washington, I owned the
+  visual brand end to end — label design, brand identity, and print production —
+  working directly with executive staff.
+
+  Every label and package was designed within Washington State Liquor & Cannabis
+  Board guidelines, balancing regulatory constraints with distinctive shelf
+  presence across a growing SKU range.
+
+  Over roughly five years I developed the full label and packaging systems for
+  two beverage brands, from identity through print-ready production.
+highlights:
+  - Owned all wine-label design, brand identity, and print production for two brands.
+  - Built label + packaging systems within WSLCB regulatory guidelines.
+  - Partnered directly with executive staff on brand direction.
+shots:
+  - { src: eternal-wines/shot-01.png, alt: Wine-label system, caption: Label system across the SKU range. }
+  - { src: eternal-wines/shot-02.png, alt: Brand identity, caption: Brand identity & marks. }
+  - { src: eternal-wines/shot-03.png, alt: Print collateral, caption: Print-ready production collateral. }
+links:
+  live: null
+  external: null

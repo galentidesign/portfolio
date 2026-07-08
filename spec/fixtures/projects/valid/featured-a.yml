@@ -1,0 +1,20 @@
+slug: featured-a
+title: Alpha Featured
+role: Designer
+client: Client Co
+year: '2020'
+featured: true
+disciplines: [UX, UI]
+summary: A featured project summary.
+cover: featured-a/cover.png
+overview: |
+  Paragraph one.
+
+  Paragraph two.
+highlights:
+  - Did a thing.
+shots:
+  - { src: featured-a/shot-01.png, alt: A shot, caption: A caption. }
+links:
+  live: null
+  external: null

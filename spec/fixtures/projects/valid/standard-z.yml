@@ -1,0 +1,22 @@
+slug: standard-z
+title: Zeta Standard
+role: Lead Designer
+client: Third Co
+year: '2011'
+featured: false
+disciplines: [UI design, Print design]
+summary: Another standard-tier project.
+cover: standard-z/cover.png
+overview: |
+  Paragraph A.
+
+  Paragraph B.
+highlights:
+  - One.
+  - Two.
+shots:
+  - { src: standard-z/shot-01.png, alt: First shot }
+  - { src: standard-z/shot-02.png, alt: Second shot, caption: With caption. }
+links:
+  live: null
+  external: null

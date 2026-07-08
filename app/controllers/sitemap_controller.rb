@@ -8,8 +8,7 @@ class SitemapController < ApplicationController
   SITEMAP_HOST = "https://jgalenti.com"
 
   def show
-    component_slugs = Manifest.slugs
-    @urls = build_urls(component_slugs)
+    @urls = build_urls(Manifest.slugs, ProjectGallery.slugs)
     respond_to do |format|
       format.xml { render layout: false }
     end
@@ -17,7 +16,7 @@ class SitemapController < ApplicationController
 
   private
 
-  def build_urls(slugs) # rubocop:disable Metrics/MethodLength
+  def build_urls(component_slugs, project_slugs) # rubocop:disable Metrics/MethodLength
     static = [
       "/",
       "/story/rails-era",
@@ -27,6 +26,7 @@ class SitemapController < ApplicationController
       "/work/agentic-design-ops",
       "/work/shadcn-to-polaris",
       "/work/shadcn-to-polaris/demo",
+      "/gallery",
       "/system",
       "/system/tokens",
       "/system/motion",
@@ -34,7 +34,8 @@ class SitemapController < ApplicationController
       "/resume",
       "/colophon"
     ]
-    component_paths = slugs.map { |slug| "/system/components/#{slug}" }
-    (static + component_paths).map { |path| "#{SITEMAP_HOST}#{path}" }
+    component_paths = component_slugs.map { |slug| "/system/components/#{slug}" }
+    project_paths   = project_slugs.map { |slug| "/gallery/#{slug}" }
+    (static + component_paths + project_paths).map { |path| "#{SITEMAP_HOST}#{path}" }
   end
 end
