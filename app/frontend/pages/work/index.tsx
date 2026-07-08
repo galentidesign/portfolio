@@ -30,15 +30,9 @@ export default function WorkIndex() {
   const revealRef = useFx<HTMLDivElement>((fx, el) =>
     fx.mountReveal(el, { selector: '[data-reveal]' }),
   )
-  const studyARef = useFx<HTMLDivElement | HTMLAnchorElement>((fx, el) =>
-    fx.mountProximityGlow(el),
-  )
-  const studyBRef = useFx<HTMLDivElement | HTMLAnchorElement>((fx, el) =>
-    fx.mountProximityGlow(el),
-  )
-  const systemRef = useFx<HTMLDivElement | HTMLAnchorElement>((fx, el) =>
-    fx.mountProximityGlow(el),
-  )
+  const studyARef = useFx<HTMLDivElement | HTMLAnchorElement>((fx, el) => fx.mountProximityGlow(el))
+  const studyBRef = useFx<HTMLDivElement | HTMLAnchorElement>((fx, el) => fx.mountProximityGlow(el))
+  const systemRef = useFx<HTMLDivElement | HTMLAnchorElement>((fx, el) => fx.mountProximityGlow(el))
   const resumeRef = useFx<HTMLButtonElement | HTMLAnchorElement>((fx, el) => fx.mountMagnetic(el))
 
   return (
@@ -93,8 +87,8 @@ export default function WorkIndex() {
                   footer={<span className={styles['tile-cue']}>Read the study →</span>}
                 >
                   <p className={styles['tile-lede']}>
-                    How this site (and its design system) is built by an agent fleet with
-                    governance gates.
+                    How this site (and its design system) is built by an agent fleet with governance
+                    gates.
                   </p>
                 </Card>
               </div>
@@ -107,8 +101,8 @@ export default function WorkIndex() {
                   footer="Read the study →"
                 >
                   <p className={styles['tile-lede']}>
-                    Migrating a production app&apos;s component layer between design systems
-                    without a rewrite.
+                    Migrating a production app&apos;s component layer between design systems without
+                    a rewrite.
                   </p>
                 </Card>
               </div>
@@ -122,8 +116,8 @@ export default function WorkIndex() {
               href="/system"
               title={`The design system behind this site — 16 components · ${visibleSkinCount} skins · zero axe violations`}
             >
-              Tokens are the single source of truth — every skin is one JSON file; components
-              never change.
+              Tokens are the single source of truth — every skin is one JSON file; components never
+              change.
               <span className={styles['chip-row']} aria-hidden="true">
                 {PALETTE_CHIPS.map((varName) => (
                   <span

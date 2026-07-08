@@ -41,8 +41,7 @@ function intersect(isIntersecting: boolean): void {
 
 function makeTarget(): HTMLElement {
   const el = document.createElement('a')
-  el.getBoundingClientRect = () =>
-    ({ left: 0, top: 0, width: 200, height: 100 }) as DOMRect
+  el.getBoundingClientRect = () => ({ left: 0, top: 0, width: 200, height: 100 }) as DOMRect
   document.body.appendChild(el)
   return el
 }

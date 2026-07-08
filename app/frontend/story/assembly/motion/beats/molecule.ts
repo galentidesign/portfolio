@@ -31,8 +31,7 @@ export function addToTimeline(tl: Timeline, ctx: BeatContext): void {
 
   if (step) tl.to(step, { opacity: 1, y: 0, duration: 8, ease: ease.enter }, entrance)
   // Input then button spring into the row — the slight offset is the rhythm.
-  if (field)
-    tl.to(field, { opacity: 1, x: 0, scale: 1, duration: 7, ease: ease.spring }, start)
+  if (field) tl.to(field, { opacity: 1, x: 0, scale: 1, duration: 7, ease: ease.spring }, start)
   if (button)
     tl.to(button, { opacity: 1, x: 0, scale: 1, duration: 7, ease: ease.spring }, start + 1.5)
   // One focus-ring pulse. The real ring is an outline (a paint property the

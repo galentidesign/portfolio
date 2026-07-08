@@ -4,11 +4,11 @@ The money shot: a chapter route that applies an era skin to the whole site
 while the visitor is inside it, as a designed moment — the same components
 visibly re-tokening. Every era chapter mounts it:
 
-| Chapter | skin | treatment | caption |
-| --- | --- | --- | --- |
-| `/story/rails-era` | `rails-era` | `crt` | `"loading 2014…"` |
-| `/story/react-era` | `react-era` | `webpack` | `"webpack: compiling… ⚡ built in 2.4s"` |
-| `/story/agentic` | `agentic` | `terminal` | 3 streaming boot lines |
+| Chapter            | skin        | treatment  | caption                                  |
+| ------------------ | ----------- | ---------- | ---------------------------------------- |
+| `/story/rails-era` | `rails-era` | `crt`      | `"loading 2014…"`                        |
+| `/story/react-era` | `react-era` | `webpack`  | `"webpack: compiling… ⚡ built in 2.4s"` |
+| `/story/agentic`   | `agentic`   | `terminal` | 3 streaming boot lines                   |
 
 One shared motion chunk drives all three crossings; the `treatment` prop only
 switches static CSS dressing on the band (scanlines / skeleton-shimmer

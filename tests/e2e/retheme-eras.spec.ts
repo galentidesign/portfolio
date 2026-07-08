@@ -245,7 +245,9 @@ test('axe: /story/agentic forced to galenti via palette — day-zone outro, zero
 
   await openPalette(page)
   await page.keyboard.type('galenti')
-  await expect(page.getByRole('dialog').getByRole('option', { name: 'Skin: Galenti' })).toBeVisible()
+  await expect(
+    page.getByRole('dialog').getByRole('option', { name: 'Skin: Galenti' }),
+  ).toBeVisible()
   await page.keyboard.press('Enter')
   await expect(page.locator('html')).toHaveAttribute('data-skin', 'galenti', { timeout: 3_000 })
 

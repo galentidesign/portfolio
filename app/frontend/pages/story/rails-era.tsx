@@ -112,7 +112,11 @@ export default function RailsEra() {
               {/* Browser chrome frame — the era in a snapshot */}
               <div className={chapter['artifact-frame']}>
                 {/* Chrome title bar is purely decorative chrome */}
-                <div className={chapter['chrome-bar']} aria-hidden="true" data-retheme-stagger="chrome">
+                <div
+                  className={chapter['chrome-bar']}
+                  aria-hidden="true"
+                  data-retheme-stagger="chrome"
+                >
                   <span className={chapter['chrome-dots']}>
                     <span className={chapter['chrome-dot']} />
                     <span className={chapter['chrome-dot']} />
@@ -199,9 +203,9 @@ export default function RailsEra() {
                 <p>
                   Those were product years: real users, real deadlines, and interfaces that had to
                   earn their keep. What survived from them isn’t the stack, it’s the habits. Name
-                  the pattern before you need it twice. Keep the density high and the cognition
-                  low. And write the styles like someone else will inherit them, because someone
-                  else always does.
+                  the pattern before you need it twice. Keep the density high and the cognition low.
+                  And write the styles like someone else will inherit them, because someone else
+                  always does.
                 </p>
               </Prose>
             </div>

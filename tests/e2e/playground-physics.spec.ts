@@ -129,9 +129,7 @@ test('content parity: grid labels match the visually-hidden mirror list', async 
 // motion mode pulls on /system must be absent from the reduced-mode set and
 // from every other route's set.
 
-test('network: physics chunk absent under reduced motion and on other routes', async ({
-  page,
-}) => {
+test('network: physics chunk absent under reduced motion and on other routes', async ({ page }) => {
   // Reduced-mode /system: collect every JS request.
   await page.emulateMedia({ reducedMotion: 'reduce' })
   const reducedJsUrls = collectJsRequests(page)
