@@ -26,9 +26,21 @@ highlights:
   - Led a distributed 5-designer team across 3 countries on a 24-hour schedule.
   - Defined design ops, standards, and quarterly KPIs for an international UX/UI department.
 shots:
-  - { src: qwinix-streaming/shot-01.png, alt: Streaming home redesign, caption: Home — recommendations rail. }
-  - { src: qwinix-streaming/shot-02.png, alt: Playback controls, caption: Cross-surface playback controls. }
-  - { src: qwinix-streaming/shot-03.png, alt: Settings and account flow, caption: Account & device settings IA. }
+  - {
+      src: qwinix-streaming/shot-01.png,
+      alt: Streaming home redesign,
+      caption: Home — recommendations rail.,
+    }
+  - {
+      src: qwinix-streaming/shot-02.png,
+      alt: Playback controls,
+      caption: Cross-surface playback controls.,
+    }
+  - {
+      src: qwinix-streaming/shot-03.png,
+      alt: Settings and account flow,
+      caption: Account & device settings IA.,
+    }
 links:
   live: null
   external: null
