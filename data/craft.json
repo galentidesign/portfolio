@@ -1,14 +1,14 @@
 {
   "lighthouse": {
     "base": "https://jgalenti.com",
-    "capturedAt": "2026-07-06T21:41:54.039Z",
+    "capturedAt": "2026-07-08T01:46:34.619Z",
     "min": 95,
     "results": [
       {
         "route": "/",
         "preset": "mobile",
         "scores": {
-          "performance": 100,
+          "performance": 99,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100
@@ -176,9 +176,9 @@
     }
   },
   "tests": {
-    "rspec": 212,
-    "vitest": 875,
-    "e2e": 173
+    "rspec": 214,
+    "vitest": 962,
+    "e2e": 201
   },
   "axe": {
     "violations": 0,
@@ -322,9 +322,11 @@
         ]
       }
     ],
-    "pending": ["WebGL assembly swap render path (v1.5 — deferred)"],
+    "pending": [
+      "WebGL assembly swap render path (v1.5 — deferred)"
+    ],
     "overallVerdict": "PASS"
   },
   "ci": "https://github.com/galentidesign/portfolio/actions",
-  "generatedAt": "2026-07-06T21:42:19.000Z"
+  "generatedAt": "2026-07-08T01:50:15.000Z"
 }

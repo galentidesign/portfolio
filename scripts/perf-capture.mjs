@@ -422,10 +422,13 @@ async function main() {
     }
   }
 
-  // Deferred surfaces (spec §13): nothing in v1 remains uncaptured.
-  const pending = ['WebGL assembly swap render path (v1.5 — deferred)']
-  console.log('\n  Pending (deferred surfaces):')
-  for (const p of pending) console.log(`    • ${p}`)
+  // Deferred surfaces: none — the WebGL assembly field shipped with the
+  // Kilnlight redesign and is captured by the assembly scroll target above.
+  const pending = []
+  if (pending.length > 0) {
+    console.log('\n  Pending (deferred surfaces):')
+    for (const p of pending) console.log(`    • ${p}`)
+  }
 
   const overallVerdict = results.some((r) => r.verdict === 'FAIL') ? 'FAIL' : 'PASS'
   console.log(`\n  Overall verdict: ${overallVerdict}\n`)
