@@ -87,10 +87,36 @@ identity stays and gets powered up; dark is a story beat, not a theme.
   Draggable for pointer events + a soft matter constraint, both to hold
   budget without losing feel.
 
-## Still open (R7 tail)
+## Round 2 — J's live review (same day)
 
+J reviewed on a local dev server and art-directed three rounds of changes,
+built by three more agents:
+
+- **Hero pacing** — pin stretched to +=520% with a trailing hold after
+  every beat; the Physics2D chip rain and the decorative in-assembly skip
+  facsimile removed. The story spec's fraction table followed the retime
+  and gained hold probes — the one sanctioned edit to a pinned spec.
+- **Every era wears its own skin** — J's call: rails-only felt lackluster.
+  New `react-era` skin (bold flat 2018 material, Roboto stack, AA-corrected
+  blue) and new `agentic` skin (the kiln as identity). The retheme
+  generalized to per-era treatments: CRT / "webpack: compiling…" skeleton
+  shimmer / terminal boot lines. Every skin gained a `day` zone; agentic's
+  day is galenti's cream. Fourteen new e2e contracts pin the new crossings.
+- **The kiln trusts its skin** — the chapter dropped its night-zone wrapper
+  and harsh mid-page boundary (J: "too much contrast, not a refined
+  design decision"). The resolve moved to the outro: a rebuilt dawn
+  crossing ramping ~56vh through six oklab color-mix stops with ember
+  warmth in the mid-tones, into a day-zone plate where the brand returns.
+  Boundary triggers now render the finished state when landed past —
+  never a pop.
+
+Session end state: **962 unit / 201 e2e / 214 rspec**, budgets green
+(night 42.9/45, retheme 28.5/35 with three treatments, assembly 59.76/60
+sans Physics2D), leakcheck clean. Twelve commits on `kilnlight`.
+
+## Still open
+
+- Push `kilnlight` → CI → merge decision (merge auto-deploys jgalenti.com).
 - Staging/production Lighthouse capture + `rake craft:capture` refresh
-  (post-merge, production only).
+  (post-merge, production only) + README/screenshot refresh.
 - The 90-second cold-reviewer test on the redesigned site — J books it.
-- J design checkpoints: hero field/chip-rain intensity and the R4 crossing
-  are one-knob tunable if the money shots should hit harder.
