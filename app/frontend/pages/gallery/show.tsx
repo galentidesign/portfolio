@@ -15,7 +15,10 @@ interface Props {
 export default function GalleryShow({ project, siblings }: Props) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
-  const paragraphs = project.overview.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
+  const paragraphs = project.overview
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean)
   const externalLinks = [
     project.links.live !== null ? { label: 'Visit site', href: project.links.live } : null,
     project.links.external !== null ? { label: 'External', href: project.links.external } : null,
@@ -49,7 +52,13 @@ export default function GalleryShow({ project, siblings }: Props) {
             {externalLinks.length > 0 && (
               <div className={styles.links}>
                 {externalLinks.map((l) => (
-                  <a key={l.href} href={l.href} className={styles.link} rel="noreferrer" target="_blank">
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    className={styles.link}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     {l.label}
                   </a>
                 ))}
@@ -124,7 +133,11 @@ export default function GalleryShow({ project, siblings }: Props) {
           {(siblings.prev !== null || siblings.next !== null) && (
             <nav aria-label="More projects" className={styles.siblings}>
               {siblings.prev !== null ? (
-                <Link href={`/gallery/${siblings.prev.slug}`} className={styles.sibling} data-dir="prev">
+                <Link
+                  href={`/gallery/${siblings.prev.slug}`}
+                  className={styles.sibling}
+                  data-dir="prev"
+                >
                   <span className={styles['sibling-dir']}>← Previous</span>
                   <span className={styles['sibling-title']}>{siblings.prev.title}</span>
                 </Link>
@@ -132,7 +145,11 @@ export default function GalleryShow({ project, siblings }: Props) {
                 <span />
               )}
               {siblings.next !== null && (
-                <Link href={`/gallery/${siblings.next.slug}`} className={styles.sibling} data-dir="next">
+                <Link
+                  href={`/gallery/${siblings.next.slug}`}
+                  className={styles.sibling}
+                  data-dir="next"
+                >
                   <span className={styles['sibling-dir']}>Next →</span>
                   <span className={styles['sibling-title']}>{siblings.next.title}</span>
                 </Link>

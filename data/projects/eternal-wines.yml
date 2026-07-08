@@ -24,9 +24,17 @@ highlights:
   - Built label + packaging systems within WSLCB regulatory guidelines.
   - Partnered directly with executive staff on brand direction.
 shots:
-  - { src: eternal-wines/shot-01.png, alt: Wine-label system, caption: Label system across the SKU range. }
+  - {
+      src: eternal-wines/shot-01.png,
+      alt: Wine-label system,
+      caption: Label system across the SKU range.,
+    }
   - { src: eternal-wines/shot-02.png, alt: Brand identity, caption: Brand identity & marks. }
-  - { src: eternal-wines/shot-03.png, alt: Print collateral, caption: Print-ready production collateral. }
+  - {
+      src: eternal-wines/shot-03.png,
+      alt: Print collateral,
+      caption: Print-ready production collateral.,
+    }
 links:
   live: null
   external: null
