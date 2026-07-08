@@ -62,7 +62,7 @@ export default function Show({ nav, entry }: ShowProps) {
                   Figma
                 </a>
               ) : (
-                <span className={styles['link-muted']}>Figma — library port lands at M7</span>
+                <span className={styles['link-muted']}>Figma — library port pending</span>
               )}
             </div>
           </header>
@@ -79,7 +79,7 @@ export default function Show({ nav, entry }: ShowProps) {
             </section>
           )}
 
-          {/* 3. Playground — hero tier only ───────────────────────────── */}
+          {/* 3. Playground — renders when the component ships a host ───── */}
           {host !== undefined && (
             <section aria-labelledby="section-playground" className={styles.section}>
               <h2 id="section-playground" className={styles['section-heading']}>

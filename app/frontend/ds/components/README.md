@@ -107,7 +107,7 @@ value and the states worth seeing (invalid, busy, empty…), and be axe-clean
 under both skins — the manifest-driven doc pages (`/system/components/:slug`)
 glob these files and embed them as the page's live-variants section.
 
-## playground.tsx (hero tier only)
+## playground.tsx
 
 ```tsx
 import type { PlaygroundHostProps } from '../playground'
@@ -124,8 +124,10 @@ export function snippet(attrs: string) {
 }
 ```
 
-Hero components ship a playground host next to `gallery.tsx`; doc pages glob
-these too. The page generates the controls from the manifest
+Components ship a playground host next to `gallery.tsx` when their props
+support generated controls; doc pages glob these too. Content-driven
+components (prose, skin-switcher, tabs) omit one. The page generates the
+controls from the manifest
 (`data/manifest/README.md` — enum → segmented control, boolean → switch,
 string → text input) and hands the host only the values to apply. Hosts stay
 dumb: spread `values`, provide self-contained demo content (a trigger for

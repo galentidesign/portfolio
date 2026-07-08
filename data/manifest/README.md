@@ -85,9 +85,10 @@ file reads as what it means. Same for prose list items containing `: ` (e.g.
 `- Roving focus: one item…`, `pointer-events: none`) — unquoted, YAML parses
 them as single-key hashes, and boot validation rejects them.
 
-## Playground (hero tier)
+## Playground
 
-The props playground on hero doc pages generates its controls from `props`:
+The props playground on doc pages of components that ship a playground.tsx
+generates its controls from `props`:
 
 - union-of-string-literals type → segmented control
 - `boolean` → switch

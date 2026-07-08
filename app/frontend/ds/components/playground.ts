@@ -1,7 +1,8 @@
-// Playground host contract (M3). Hero components ship a playground.tsx next
-// to gallery.tsx; the doc page at /system/components/:slug generates prop
-// controls from the manifest (data/manifest/<slug>.yml) and renders the host
-// with the live values. Gallery-tier components have no playground.
+// Playground host contract (M3). Components ship a playground.tsx next to
+// gallery.tsx when their props support generated controls; the doc page at
+// /system/components/:slug generates prop controls from the manifest
+// (data/manifest/<slug>.yml) and renders the host with the live values.
+// Content-driven components (prose, skin-switcher, tabs) omit playground.tsx.
 
 import type { ComponentType } from 'react'
 

@@ -5,11 +5,11 @@ const modules = import.meta.glob<PlaygroundModule>('../ds/components/*/playgroun
 })
 
 /**
- * Map from manifest slug → hero playground host module.
+ * Map from manifest slug → playground host module.
  *
- * Undefined when a component has no playground.tsx (gallery tier, or a hero
- * whose host hasn't landed yet). Gallery-tier doc pages skip the Playground
- * section when the slug is absent from this map.
+ * Undefined when a component ships no playground.tsx — a few content-driven
+ * components (prose, skin-switcher, tabs) omit one. The doc page skips the
+ * Playground section when the slug is absent from this map.
  *
  * Seam: `vi.mock('@/system/playgroundHosts')` in unit tests.
  */

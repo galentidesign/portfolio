@@ -170,7 +170,7 @@ describe('Show — hero entry', () => {
 
   it('renders Figma placeholder text when figma is null', () => {
     render(<Show nav={NAV} entry={HERO_ENTRY} />)
-    expect(screen.getByText('Figma — library port lands at M7')).toBeInTheDocument()
+    expect(screen.getByText('Figma — library port pending')).toBeInTheDocument()
     // Must never be a link (dead link rule)
     expect(screen.queryByRole('link', { name: /Figma/i })).not.toBeInTheDocument()
   })
