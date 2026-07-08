@@ -1,0 +1,81 @@
+/* ── Lightbox — figure inside the DS Dialog ────────────────────────────────── */
+
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+}
+
+.caption {
+  font-family: var(--type-small-family);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  line-height: var(--type-small-line);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* ── Footer nav ────────────────────────────────────────────────────────────── */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.counter {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-small-size);
+  letter-spacing: var(--type-small-tracking);
+  color: var(--color-ink-muted);
+}
+
+/* ── Pending (asset not yet on disk) ───────────────────────────────────────── */
+
+.pending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 16rem;
+  padding: var(--space-6);
+  text-align: center;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  color: var(--color-ink-muted);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    color-mix(in srgb, var(--color-line) 45%, transparent) 0,
+    color-mix(in srgb, var(--color-line) 45%, transparent) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+}
+
+.pending-mark {
+  font-size: var(--type-display-size);
+  line-height: 1;
+  color: var(--color-line-strong);
+}
+
+.pending-note {
+  font-family: var(--type-mono-family);
+  font-size: var(--type-small-size);
+  letter-spacing: var(--type-small-tracking);
+  text-transform: uppercase;
+  color: var(--color-line-strong);
+}

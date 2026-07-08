@@ -39,6 +39,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   const navItems = [
     { label: 'Work', href: '/work', current: currentPath.startsWith('/work') },
+    { label: 'Gallery', href: '/gallery', current: currentPath.startsWith('/gallery') },
     { label: 'System', href: '/system', current: currentPath.startsWith('/system') },
     { label: 'Résumé', href: '/resume', current: currentPath.startsWith('/resume') },
   ]
