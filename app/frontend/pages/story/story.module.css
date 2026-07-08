@@ -73,6 +73,13 @@
   margin: 0 0 var(--space-2);
 }
 
+/* Agentic (Ch3): the day-zone plate closes the chapter flush — its own
+   padding replaces the chapter's bottom breathing room, so no base surface
+   shows between the resolve and the site footer hairline. */
+.chapter-resolve {
+  padding-bottom: 0;
+}
+
 /* ── Chapter footer (handoff) ───────────────────────────────────────────────── */
 
 .chapter-footer {

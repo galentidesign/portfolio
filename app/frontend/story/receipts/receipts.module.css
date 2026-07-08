@@ -1,12 +1,13 @@
 /* ── Agent receipts (Ch3 §6.7) ──────────────────────────────────────────────
- * The build-session timeline as a terminal feed for the night zone:
+ * The build-session timeline as a terminal feed for the kiln-dark chapter:
  * timestamp gutter (mono, faint), session cards on the raised surface with
  * a soft glow, milestone ids as mono badges, and the totals strip as glowing
- * stat tiles. Semantic tokens only — inside [data-zone='night'] they resolve
- * to the skin's night palette; outside it the same rules read in daylight.
+ * stat tiles. Semantic tokens only — on the agentic skin they resolve to the
+ * kiln palette; under any other skin the same rules read in that skin's own
+ * light.
  *
- * Contrast discipline on night surfaces: ink-faint only ever sits on the
- * zone surface (the gutter); everything small inside a raised card uses
+ * Contrast discipline on dark surfaces: ink-faint only ever sits on the
+ * page surface (the gutter); everything small inside a raised card uses
  * ink-muted. The base render is the complete design — the motion layer only
  * replays card entrances; reduced motion ships this file and nothing else.
  * ───────────────────────────────────────────────────────────────────────── */

@@ -28,10 +28,26 @@ describe('NightBoundary', () => {
     expect(boundary).toHaveAttribute('data-direction', 'enter')
   })
 
-  it('binds the gradient bridge to the night zone', () => {
+  it('binds the enter bridge to the night zone by default', () => {
     const { container } = renderBoundary('enter')
     const bridge = container.querySelector('[data-zone="night"]')
     expect(bridge).not.toBeNull()
+  })
+
+  it('binds the exit (dawn) bridge to the day zone by default', () => {
+    const { container } = renderBoundary('exit')
+    const bridge = container.querySelector('[data-zone="day"]')
+    expect(bridge).not.toBeNull()
+    expect(container.querySelector('[data-zone="night"]')).toBeNull()
+  })
+
+  it('accepts an explicit zone override for any zone pair', () => {
+    const { container } = render(
+      <MotionPrefProvider>
+        <NightBoundary direction="enter" zone="day" />
+      </MotionPrefProvider>,
+    )
+    expect(container.querySelector('[data-zone="day"]')).not.toBeNull()
   })
 
   it('pre-draws the ember horizon in the base render (reduced-motion parity)', () => {

@@ -4,26 +4,36 @@ import type { NightMotionHandle } from './motion'
 import styles from './night.module.css'
 
 export interface NightBoundaryProps {
-  /** 'enter' descends into the night zone below; 'exit' resolves back to the outer surface. */
+  /** 'enter' descends into the dark zone below; 'exit' is the dawn rise into the light zone below. */
   direction: 'enter' | 'exit'
+  /**
+   * The zone the crossing resolves INTO (the content directly below the
+   * band). Defaults by direction: 'enter' → 'night', 'exit' → 'day'.
+   */
+  zone?: 'night' | 'day'
 }
 
 /**
- * Shared light↔dark crossing — a full-width horizon band whose surface
- * luminance ramps between the outer zone and the night zone. The band root
- * paints the OUTER surface; the bridge child binds to the skin's `night`
- * zone (data-zone) and ramps to the night surface with a same-hue alpha
- * gradient, so the crossing is token-true under every skin.
+ * Shared zone crossing — a full-width dusk/dawn band whose surface luminance
+ * ramps from the ambient surface above it to the zone surface below it. The
+ * band root captures the AMBIENT --color-surface into a custom property
+ * before the bridge child re-tokens; the bridge binds to the target zone
+ * (data-zone) and paints a long sigmoid ramp of color-mix() steps between
+ * the two surfaces — one continuous material for ANY zone pair under ANY
+ * skin, never a seam. The horizon line takes its palette from the zone's
+ * own tokens (ember for night, sienna for day).
  *
  * Purely decorative (aria-hidden, no focusables): it changes nothing about
  * heading hierarchy or keyboard order. Generic by design — reusable by any
- * section that crosses into a night zone; no chapter copy lives here.
+ * section that crosses into a night or day zone; no chapter copy lives here.
  *
- * Motion (dynamic import, THE MOTION GATE): the ember horizon line draws
- * itself once on scroll-enter (DrawSVG). Reduced motion never downloads the
- * chunk — the bridge renders fully ramped and the line pre-drawn.
+ * Motion (dynamic import, THE MOTION GATE): the horizon line draws itself
+ * once when the band genuinely scrolls into view; a band already within or
+ * above the viewport at mount keeps this base render — the fully drawn
+ * final state. Reduced motion never downloads the chunk — the bridge
+ * renders fully ramped and the line pre-drawn.
  */
-export function NightBoundary({ direction }: NightBoundaryProps) {
+export function NightBoundary({ direction, zone }: NightBoundaryProps) {
   const { reduced } = useMotionPref()
   const rootRef = useRef<HTMLDivElement | null>(null)
 
@@ -57,7 +67,7 @@ export function NightBoundary({ direction }: NightBoundaryProps) {
       data-direction={direction}
       className={styles.boundary}
     >
-      <div className={styles.bridge} data-zone="night">
+      <div className={styles.bridge} data-zone={zone ?? (direction === 'enter' ? 'night' : 'day')}>
         <svg
           className={styles.horizon}
           viewBox="0 0 1200 48"

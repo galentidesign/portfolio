@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Head, Link } from '@inertiajs/react'
 import { ScrollProgress } from '@/shell/story/ScrollProgress'
+import { EraRetheme } from '@/story/retheme'
 import { Prose } from '@/ds/components/Prose/Prose'
 import { Receipts } from '@/story/receipts/Receipts'
 import { NightBoundary } from '@/story/night/NightBoundary'
@@ -10,6 +11,15 @@ import { CONTACT_EMAIL, LINKEDIN_URL } from '@/shell/contact'
 import styles from './story.module.css'
 import noteStyles from './era-note.module.css'
 import nightStyles from '@/story/night/night.module.css'
+
+const ERA_FONTS = ['Hanken Grotesk', 'JetBrains Mono'] as const
+
+// Terminal-boot caption — streamed line by line inside the crossing band.
+const KILN_BOOT = [
+  '$ session start — kiln',
+  '▸ agents: fleet ready',
+  '▸ receipts: streaming',
+] as const
 
 export default function Agentic() {
   const outroRef = useRef<HTMLElement>(null)
@@ -37,28 +47,34 @@ export default function Agentic() {
   return (
     <>
       <Head title="The agentic era — J Galenti" />
-      <main id="main" className={styles.chapter}>
-        <ScrollProgress />
+      <main id="main" className={[styles.chapter, styles['chapter-resolve']].join(' ')}>
+        <EraRetheme skin="agentic" treatment="terminal" caption={KILN_BOOT} warmFonts={ERA_FONTS}>
+          <ScrollProgress />
 
-        <header className={styles['chapter-header']}>
-          <p className={styles['chapter-label']}>Chapter 3 · 2023–now</p>
-          <h1 className={styles['chapter-title']}>The agentic era</h1>
-        </header>
+          {/* Settle cascade groups (era-crossing): chrome → type → bare.
+              The chapter body keeps its own motion (receipts, map, dawn
+              boundary) — only the chapter frame joins the settle. */}
 
-        <aside className={noteStyles.note} aria-label="Skin engine note">
-          <p className={noteStyles['note-text']}>
-            This chapter stays own-brand by design, forever — the era it describes is the one that
-            built the engine itself. <Link href="/system/skins">See the skin engine →</Link>
-          </p>
-        </aside>
+          <header className={styles['chapter-header']} data-retheme-stagger="type">
+            <p className={styles['chapter-label']}>Chapter 3 · 2023–now</p>
+            <h1 className={styles['chapter-title']}>The agentic era</h1>
+          </header>
 
-        {/* The kiln descent: the chapter body crosses into the skin's night
-            zone — receipts + playbook re-token to the ember palette — and
-            resolves back to the outer surface before the outro. The
-            boundaries are decorative; headings and tab order are untouched. */}
-        <NightBoundary direction="enter" />
+          <aside
+            className={noteStyles.note}
+            aria-label="Skin engine note"
+            data-retheme-stagger="chrome"
+          >
+            <p className={noteStyles['note-text']}>
+              This chapter wears the era&rsquo;s own skin by design — the era it describes is the
+              one that built the engine itself — and the brand returns at the close.{' '}
+              <Link href="/system/skins">See the skin engine →</Link>
+            </p>
+          </aside>
 
-        <div className={nightStyles.zone} data-zone="night" data-testid="night-zone">
+          {/* The chapter body renders directly on the agentic skin — the
+              entry crossing (EraRetheme) is the descent into the kiln; no
+              interim zone wrapper doubles it. */}
           <section aria-labelledby="agentic-receipts" className={styles.section}>
             <h2 id="agentic-receipts" className={styles['section-heading']}>
               Agent receipts
@@ -101,28 +117,39 @@ export default function Agentic() {
             </Prose>
             <OrchestrationMap />
           </section>
-        </div>
 
-        <NightBoundary direction="exit" />
+          {/* The resolve-to-brand beat: a dawn crossing rises out of the kiln
+              into the skin's day zone — galenti's cream returns for the
+              outro. The boundary is decorative; headings and tab order are
+              untouched. */}
+          <NightBoundary direction="exit" />
 
-        <footer ref={outroRef} className={styles['chapter-footer']} data-testid="story-outro">
-          <div className={styles['outro-links']}>
-            <a href={`mailto:${CONTACT_EMAIL}`} className={styles['handoff-link']}>
-              {CONTACT_EMAIL}
-            </a>
-            <a
-              href={LINKEDIN_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles['handoff-link']}
+          <div className={nightStyles.resolve} data-zone="day" data-testid="day-zone">
+            <footer
+              ref={outroRef}
+              className={styles['chapter-footer']}
+              data-testid="story-outro"
+              data-retheme-stagger
             >
-              LinkedIn →
-            </a>
-            <Link href="/work" className={styles['handoff-link']}>
-              See the work →
-            </Link>
+              <div className={styles['outro-links']}>
+                <a href={`mailto:${CONTACT_EMAIL}`} className={styles['handoff-link']}>
+                  {CONTACT_EMAIL}
+                </a>
+                <a
+                  href={LINKEDIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles['handoff-link']}
+                >
+                  LinkedIn →
+                </a>
+                <Link href="/work" className={styles['handoff-link']}>
+                  See the work →
+                </Link>
+              </div>
+            </footer>
           </div>
-        </footer>
+        </EraRetheme>
       </main>
     </>
   )

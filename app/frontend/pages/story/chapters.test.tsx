@@ -113,39 +113,14 @@ describe('RailsEra page', () => {
 // ---------------------------------------------------------------------------
 
 describe('ReactEra page', () => {
-  it('renders the chapter h1', () => {
-    render(<ReactEra />)
-    expect(screen.getByRole('heading', { level: 1, name: 'The React era' })).toBeInTheDocument()
-  })
-
-  it('has a handoff link to the agentic era chapter', () => {
-    render(<ReactEra />)
-    const link = screen.getByRole('link', { name: /next: the agentic era/i })
-    expect(link).toHaveAttribute('href', '/story/agentic')
-  })
-
-  it('labels the token engine section with aria-labelledby pointing to an h2', () => {
-    render(<ReactEra />)
-    const heading = screen.getByRole('heading', { level: 2, name: 'The token engine' })
-    expect(heading).toBeInTheDocument()
-    expect(heading).toHaveAttribute('id', 'react-era-engine')
-    const section = heading.closest('section')
-    expect(section).toHaveAttribute('aria-labelledby', 'react-era-engine')
-  })
-})
-
-// ---------------------------------------------------------------------------
-// Chapter 3 — The agentic era
-// ---------------------------------------------------------------------------
-
-describe('Agentic page', () => {
-  // The chapter now hosts THE MOTION GATE (night boundaries, receipts feed,
-  // orchestration map), so renders need the provider; reduced motion keeps
-  // jsdom on the static path — no dynamic GSAP imports.
+  // The chapter now mounts EraRetheme; reduced motion keeps jsdom on the
+  // instant (synchronous) swap path — no GSAP, no async dynamic import.
   function renderPage() {
     return render(
       <MotionPrefProvider>
-        <Agentic />
+        <SkinProvider>
+          <ReactEra />
+        </SkinProvider>
       </MotionPrefProvider>,
     )
   }
@@ -156,11 +131,87 @@ describe('Agentic page', () => {
 
   afterEach(() => {
     delete document.documentElement.dataset.motion
+    delete document.documentElement.dataset.skin
+    localStorage.clear()
+  })
+
+  it('renders the chapter h1', () => {
+    renderPage()
+    expect(screen.getByRole('heading', { level: 1, name: 'The React era' })).toBeInTheDocument()
+  })
+
+  it('has a handoff link to the agentic era chapter', () => {
+    renderPage()
+    const link = screen.getByRole('link', { name: /next: the agentic era/i })
+    expect(link).toHaveAttribute('href', '/story/agentic')
+  })
+
+  it('labels the token engine section with aria-labelledby pointing to an h2', () => {
+    renderPage()
+    const heading = screen.getByRole('heading', { level: 2, name: 'The token engine' })
+    expect(heading).toBeInTheDocument()
+    expect(heading).toHaveAttribute('id', 'react-era-engine')
+    const section = heading.closest('section')
+    expect(section).toHaveAttribute('aria-labelledby', 'react-era-engine')
+  })
+
+  it('mounts the era-retheme boundary with the react-era skin and webpack treatment', () => {
+    const { container } = renderPage()
+    expect(screen.getByTestId('era-retheme')).toHaveAttribute('data-era-skin', 'react-era')
+    const band = container.querySelector('[data-retheme-band]')
+    expect(band).toHaveAttribute('data-retheme-treatment', 'webpack')
+  })
+
+  it('flips the site skin to react-era under reduced motion', () => {
+    renderPage()
+    expect(document.documentElement.dataset.skin).toBe('react-era')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Chapter 3 — The agentic era
+// ---------------------------------------------------------------------------
+
+describe('Agentic page', () => {
+  // The chapter hosts THE MOTION GATE (dawn boundary, receipts feed,
+  // orchestration map) and the EraRetheme boundary, so renders need both
+  // providers; reduced motion keeps jsdom on the static path — no dynamic
+  // GSAP imports.
+  function renderPage() {
+    return render(
+      <MotionPrefProvider>
+        <SkinProvider>
+          <Agentic />
+        </SkinProvider>
+      </MotionPrefProvider>,
+    )
+  }
+
+  beforeEach(() => {
+    document.documentElement.dataset.motion = 'reduced'
+  })
+
+  afterEach(() => {
+    delete document.documentElement.dataset.motion
+    delete document.documentElement.dataset.skin
+    localStorage.clear()
   })
 
   it('renders the chapter h1', () => {
     renderPage()
     expect(screen.getByRole('heading', { level: 1, name: 'The agentic era' })).toBeInTheDocument()
+  })
+
+  it('mounts the era-retheme boundary with the agentic skin and terminal treatment', () => {
+    const { container } = renderPage()
+    expect(screen.getByTestId('era-retheme')).toHaveAttribute('data-era-skin', 'agentic')
+    const band = container.querySelector('[data-retheme-band]')
+    expect(band).toHaveAttribute('data-retheme-treatment', 'terminal')
+  })
+
+  it('flips the site skin to agentic under reduced motion', () => {
+    renderPage()
+    expect(document.documentElement.dataset.skin).toBe('agentic')
   })
 
   it('has a handoff link to /work — the end of the story arc', () => {
@@ -178,20 +229,31 @@ describe('Agentic page', () => {
     expect(section).toHaveAttribute('aria-labelledby', 'agentic-receipts')
   })
 
-  it('wraps the chapter body in the night zone with boundaries on both sides', () => {
+  it('renders the chapter body directly on the era skin — no interim night wrapper', () => {
     renderPage()
-    const zone = screen.getByTestId('night-zone')
-    expect(zone).toHaveAttribute('data-zone', 'night')
-    // Receipts and playbook live INSIDE the zone; the outro stays outside.
-    expect(zone.contains(screen.getByRole('heading', { level: 2, name: 'Agent receipts' }))).toBe(
-      true,
-    )
+    // R9: the entry crossing (EraRetheme) is the only descent — the old
+    // double-dark night zone and its enter boundary are gone.
+    expect(screen.queryByTestId('night-zone')).toBeNull()
+    expect(screen.queryByTestId('night-boundary-enter')).toBeNull()
+    expect(screen.getByRole('heading', { level: 2, name: 'Agent receipts' })).toBeInTheDocument()
     expect(
-      zone.contains(screen.getByRole('heading', { level: 2, name: 'The agentic playbook' })),
-    ).toBe(true)
-    expect(zone.contains(screen.getByTestId('story-outro'))).toBe(false)
-    expect(screen.getByTestId('night-boundary-enter')).toBeInTheDocument()
-    expect(screen.getByTestId('night-boundary-exit')).toBeInTheDocument()
+      screen.getByRole('heading', { level: 2, name: 'The agentic playbook' }),
+    ).toBeInTheDocument()
+  })
+
+  it('resolves to the day zone at the outro, behind the dawn crossing', () => {
+    renderPage()
+    const day = screen.getByTestId('day-zone')
+    expect(day).toHaveAttribute('data-zone', 'day')
+    // The outro lives INSIDE the day zone; the chapter body stays outside.
+    expect(day.contains(screen.getByTestId('story-outro'))).toBe(true)
+    expect(day.contains(screen.getByRole('heading', { level: 2, name: 'Agent receipts' }))).toBe(
+      false,
+    )
+    // The dawn boundary precedes the day zone in document order.
+    const dawn = screen.getByTestId('night-boundary-exit')
+    expect(dawn).toBeInTheDocument()
+    expect(dawn.compareDocumentPosition(day) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('renders the story outro with data-testid="story-outro"', () => {

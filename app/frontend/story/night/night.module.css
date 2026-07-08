@@ -1,72 +1,119 @@
 /* ── Night kit (Ch3 kilnlight) ───────────────────────────────────────────────
- * The light↔dark crossing (NightBoundary), the re-tokened night-zone wrapper,
- * and the compact orchestration map. The boundary is generic — no chapter
- * copy lives here. Reduced motion: this base render IS the design (bridge
- * fully ramped, horizon pre-drawn, map static); the motion layer only ever
- * re-plays it. Semantic tokens only. Every texture is STATIC (WCAG 2.3.1) —
- * the glow never animates; DrawSVG makes exactly one pass, on scroll-enter.
+ * The zone crossing (NightBoundary), the day-zone outro plate, and the
+ * compact orchestration map. The boundary is generic — no chapter copy lives
+ * here. Reduced motion: this base render IS the design (bridge fully ramped,
+ * horizon pre-drawn, map static); the motion layer only ever re-plays it.
+ * Semantic tokens only. Every texture is STATIC (WCAG 2.3.1) — the glow
+ * never animates; DrawSVG makes exactly one pass, on scroll-enter.
  * ───────────────────────────────────────────────────────────────────────── */
 
-/* Re-tokened subtree: inside [data-zone='night'] this same token resolves to
-   the skin's night surface, so the wrapper needs nothing but the variable. */
-.zone {
-  background-color: var(--color-surface);
-}
-
 /* ── Boundary band ──────────────────────────────────────────────────────────
- * Full-width horizon band. The root paints the OUTER zone's surface; the
- * bridge child (data-zone='night') ramps to the night surface with a
- * same-hue alpha gradient — ~36vh of scroll travel, never a hard cut. */
+ * Full-width dusk/dawn band between the ambient surface above and a zone
+ * surface below. The root sits OUTSIDE the zone, so --color-surface here is
+ * still the ambient value — captured into --boundary-from before the bridge
+ * child re-tokens it. */
 
 .boundary {
+  --boundary-from: var(--color-surface);
+  --horizon-pos: 64%;
+
   position: relative;
-  height: clamp(14rem, 36vh, 22rem);
+  height: clamp(24rem, 56vh, 38rem);
   background-color: var(--color-surface);
 }
 
+/* The bridge binds the target zone (data-zone), so --color-surface and
+   --color-glow-ink inside it resolve to the ZONE's tokens while
+   --boundary-from keeps the ambient surface. Two painted layers:
+   1. a feathered horizon haze — the zone's glow ink breathed into the ramp
+      around the line, so the horizon sits IN the material, not on it;
+   2. the luminance ramp itself — a sigmoid ladder of oklab color-mix stops
+      (slow leave, long dusk middle, gentle landing) between the two
+      surfaces. Each mid stop carries a few percent of the zone's glow ink,
+      peaking mid-ramp: oklab midpoints between a warm dark and a warm
+      light desaturate toward grey, and the glow keeps the dusk warm.
+      Browsers interpolate linearly between stops, so the ladder
+      approximates one continuous eased ramp — never a two-stop seam. */
 .bridge {
+  --ramp-mid: color-mix(in oklab, var(--color-surface) 50%, var(--boundary-from));
+
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--color-surface) 0%, transparent),
-    var(--color-surface)
-  );
+  background-image:
+    linear-gradient(
+      to bottom,
+      transparent calc(var(--horizon-pos) - 20%),
+      color-mix(in oklab, var(--color-glow-ink) 10%, transparent) var(--horizon-pos),
+      transparent calc(var(--horizon-pos) + 20%)
+    ),
+    linear-gradient(
+      to bottom,
+      var(--boundary-from) 0%,
+      color-mix(
+          in oklab,
+          var(--color-glow-ink) 2%,
+          color-mix(in oklab, var(--color-surface) 8%, var(--boundary-from))
+        )
+        18%,
+      color-mix(
+          in oklab,
+          var(--color-glow-ink) 5%,
+          color-mix(in oklab, var(--color-surface) 28%, var(--boundary-from))
+        )
+        36%,
+      color-mix(in oklab, var(--color-glow-ink) 7%, var(--ramp-mid)) 52%,
+      color-mix(
+          in oklab,
+          var(--color-glow-ink) 5%,
+          color-mix(in oklab, var(--color-surface) 72%, var(--boundary-from))
+        )
+        68%,
+      color-mix(
+          in oklab,
+          var(--color-glow-ink) 2%,
+          color-mix(in oklab, var(--color-surface) 92%, var(--boundary-from))
+        )
+        84%,
+      var(--color-surface) 100%
+    );
 }
 
-.boundary[data-direction='exit'] .bridge {
-  background-image: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--color-surface) 0%, transparent),
-    var(--color-surface)
-  );
-}
-
-/* Ember horizon — one glowing line across the crossing, sitting in the dark
-   reach of the ramp, bowing toward the light side. The glow is a static
-   drop-shadow of the night zone's glow ink; only the draw is ever animated. */
+/* Horizon — one glowing line across the crossing, sitting in the zone's
+   reach of the ramp. Palette is the zone's own glow ink (ember for night,
+   sienna for day); the feathered edge is two static drop-shadows (tight
+   core + wide falloff). Only the draw is ever animated. */
 .horizon {
   position: absolute;
   inset-inline: 0;
-  top: 58%;
+  top: var(--horizon-pos);
   width: 100%;
   height: clamp(2rem, 5vh, 3rem);
   overflow: visible;
 }
 
+/* Dawn bows toward the light below; night bows toward the light above. */
 .boundary[data-direction='exit'] .horizon {
-  top: auto;
-  bottom: 58%;
   transform: scaleY(-1);
 }
 
 .horizon-line {
   fill: none;
   stroke: var(--color-glow-ink);
-  stroke-width: 2;
+  stroke-width: 1.5;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 6px var(--color-glow-ink));
+  filter: drop-shadow(0 0 3px color-mix(in oklab, var(--color-glow-ink) 70%, transparent))
+    drop-shadow(0 0 14px color-mix(in oklab, var(--color-glow-ink) 45%, transparent));
+}
+
+/* ── Day plate ───────────────────────────────────────────────────────────────
+ * The resolve-to-brand zone that closes the chapter: bound to data-zone='day'
+ * by the page, it paints the zone surface and carries the chapter's final
+ * breathing room so the plate runs flush to the site footer hairline. */
+
+.resolve {
+  background-color: var(--color-surface);
+  padding-block-end: var(--space-10);
 }
 
 /* ── Orchestration map ──────────────────────────────────────────────────────

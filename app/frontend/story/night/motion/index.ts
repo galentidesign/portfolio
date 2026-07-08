@@ -2,8 +2,10 @@
  * Night motion layer — the kilnlight choreography for Ch3's dark act.
  *
  * One lazy chunk for every GSAP moment inside the night zone:
- *   - NightBoundary: the ember horizon draws itself once as the band
- *     scrolls in (DrawSVG, from the centre outward — ignition, not a wipe)
+ *   - NightBoundary: the horizon draws itself once as the band genuinely
+ *     scrolls in (DrawSVG, from the centre outward — ignition, not a wipe);
+ *     a band already within or above the viewport at mount keeps the base
+ *     render (the final drawn state) — never a pop, never a mid-draw freeze
  *   - Receipts feed: session cards rise in per scroll-enter batch; each
  *     card's title decodes once with ScrambleText. Content parity is
  *     absolute: the real title IS the DOM text — the tween scrambles toward
@@ -66,6 +68,13 @@ function offScreen(el: Element): boolean {
   return rect.top >= window.innerHeight || rect.bottom <= 0
 }
 
+/** True only when the element is strictly BELOW the fold — an element within
+ * or above the viewport at mount must keep its final base render, so a draw
+ * animation is only ever armed for content real scrolling will reach. */
+function belowViewport(el: Element): boolean {
+  return el.getBoundingClientRect().top >= window.innerHeight
+}
+
 /** Observe once: fire `enter` on first intersection, then disconnect. */
 function onEnterOnce(el: Element, rootMargin: string, enter: () => void): () => void {
   const io = new IntersectionObserver(
@@ -80,11 +89,20 @@ function onEnterOnce(el: Element, rootMargin: string, enter: () => void): () => 
   return () => io.disconnect()
 }
 
-// ── NightBoundary: ember horizon draw ────────────────────────────────────────
+// ── NightBoundary: horizon draw ──────────────────────────────────────────────
 
 export function mountBoundaryMotion(root: HTMLElement): NightMotionHandle {
   const line = root.querySelector<SVGPathElement>('[data-night-horizon]')
-  if (line === null || typeof IntersectionObserver === 'undefined' || !offScreen(root)) {
+  const horizon = line?.ownerSVGElement ?? null
+  // Arm only when the horizon itself is genuinely below the fold at mount —
+  // a band already within (or scrolled past above) the viewport keeps the
+  // base render, which IS the final drawn state.
+  if (
+    line === null ||
+    horizon === null ||
+    typeof IntersectionObserver === 'undefined' ||
+    !belowViewport(horizon)
+  ) {
     return inertHandle()
   }
   registerTokenEases()
@@ -93,7 +111,19 @@ export function mountBoundaryMotion(root: HTMLElement): NightMotionHandle {
   gsap.set(line, { drawSVG: '50% 50%' })
 
   let tween: gsap.core.Tween | null = null
-  const disconnect = onEnterOnce(root, '0px 0px -18% 0px', () => {
+  const disconnect = onEnterOnce(horizon, '0px 0px -15% 0px', () => {
+    // The observer fires as the horizon crosses ~85% viewport height. A
+    // watched approach lands within a frame of that trigger line; a teleport
+    // (scroll restoration, anchor jump, violent flick) lands deep inside —
+    // or past — the viewport in a single tick. Only the watched approach
+    // earns the draw; teleports snap straight to the drawn base state,
+    // never a pop.
+    const rect = horizon.getBoundingClientRect()
+    const triggerLine = window.innerHeight * 0.85 // mirrors the -15% rootMargin
+    if (rect.bottom <= 0 || rect.top < triggerLine - 100) {
+      gsap.set(line, { clearProps: 'all' })
+      return
+    }
     tween = gsap.to(line, {
       drawSVG: '0% 100%',
       duration: tokenDuration('xl') || 0.65,

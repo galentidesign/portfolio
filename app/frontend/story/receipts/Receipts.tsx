@@ -15,8 +15,8 @@ function crewLabel(agents: readonly AgentGroup[]): string {
 /**
  * Ch3 centerpiece (§6.7): the agent-build receipts, assembled from
  * docs/receipts/ — one entry per build session, captured in the moment and
- * never reconstructed. Rendered as a terminal feed for the night zone:
- * timestamp gutter, raised session cards, glowing stat tiles.
+ * never reconstructed. Rendered as a terminal feed for the kiln-dark
+ * chapter: timestamp gutter, raised session cards, glowing stat tiles.
  *
  * Motion (dynamic import, THE MOTION GATE): on scroll-enter each card rises
  * in once and its title decodes with ScrambleText — the real title is the
