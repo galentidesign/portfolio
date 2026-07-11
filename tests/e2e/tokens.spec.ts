@@ -11,11 +11,11 @@ async function mainBg(page: Page) {
 
 // ── Basic routing ─────────────────────────────────────────────────────────────
 
-test('tokens page: galenti skin — surface is rgb(250, 246, 238)', async ({ page }) => {
+test('tokens page: galenti skin — surface is rgb(252, 249, 243)', async ({ page }) => {
   await page.goto('/system/tokens')
   await expect(page.getByRole('heading', { name: 'Tokens' })).toBeVisible()
 
-  expect(await mainBg(page)).toBe('rgb(250, 246, 238)')
+  expect(await mainBg(page)).toBe('rgb(252, 249, 243)')
   await expect(page.locator('html')).toHaveAttribute('data-skin', 'galenti')
 })
 

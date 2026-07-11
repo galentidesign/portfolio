@@ -6,7 +6,7 @@
     "colorScheme": "light",
     "default": true,
     "hidden": false,
-    "description": "Warm precision light — the own-brand default. Cream paper, warm ink, terracotta accent, exact hairlines.",
+    "description": "Bone & air — the own-brand default. Warm bone ground, huge Hanken settings, terracotta micro-accent, dark islands.",
     "fonts": [
       {
         "family": "Hanken Grotesk",
@@ -28,18 +28,18 @@
   },
   "raw": {
     "color": {
-      "cream-50": "#fffefb",
-      "cream-75": "#fffdf8",
-      "cream-100": "#faf6ee",
-      "cream-200": "#f2ecdf",
-      "sand-200": "#e5ddcb",
+      "bone-50": "#fffefc",
+      "bone-75": "#fefcf7",
+      "bone-100": "#fcf9f3",
+      "bone-200": "#f4efe4",
+      "sand-200": "#e7e0d1",
       "sand-300": "#b5a88f",
       "sand-400": "#93825f",
       "umber-500": "#746a57",
       "umber-700": "#5c5547",
       "umber-900": "#221e17",
       "sienna-50": "#fff6ef",
-      "sienna-100": "#f6e7dc",
+      "sienna-100": "#f5eae0",
       "sienna-600": "#a64621",
       "cobalt-600": "#2f55d4",
       "moss-100": "#ecf2e2",
@@ -48,7 +48,7 @@
       "amber-700": "#85620e",
       "rust-100": "#f8e2dd",
       "rust-600": "#b0372a",
-      "night-950": "#100d0b",
+      "night-950": "#0d0a08",
       "night-900": "#171310",
       "night-800": "#211c16",
       "night-700": "#2d261d",
@@ -70,10 +70,10 @@
   },
   "semantic": {
     "color": {
-      "surface": "{raw.color.cream-100}",
-      "surface-raised": "{raw.color.cream-75}",
-      "surface-sunken": "{raw.color.cream-200}",
-      "surface-overlay": "{raw.color.cream-50}",
+      "surface": "{raw.color.bone-100}",
+      "surface-raised": "{raw.color.bone-75}",
+      "surface-sunken": "{raw.color.bone-200}",
+      "surface-overlay": "{raw.color.bone-50}",
       "ink": "{raw.color.umber-900}",
       "ink-muted": "{raw.color.umber-700}",
       "ink-faint": "{raw.color.umber-500}",
@@ -98,24 +98,24 @@
     },
     "type": {
       "hero-family": "{raw.font.sans}",
-      "hero-size": "clamp(3.25rem, 1.8rem + 8.5vw, 9.5rem)",
-      "hero-weight": "740",
-      "hero-line": "0.98",
-      "hero-tracking": "-0.028em",
+      "hero-size": "clamp(3.75rem, 1.5rem + 11vw, 13rem)",
+      "hero-weight": "720",
+      "hero-line": "0.94",
+      "hero-tracking": "-0.034em",
       "numeral-family": "{raw.font.sans}",
-      "numeral-size": "clamp(4.5rem, 3rem + 9vw, 12rem)",
+      "numeral-size": "clamp(5rem, 3.25rem + 10vw, 13.5rem)",
       "numeral-weight": "760",
       "numeral-line": "1",
       "numeral-tracking": "-0.03em",
       "display-family": "{raw.font.sans}",
-      "display-size": "clamp(2.75rem, 2.1rem + 3.2vw, 4.5rem)",
+      "display-size": "clamp(3rem, 2.1rem + 4.4vw, 5.75rem)",
       "display-weight": "640",
-      "display-line": "1.04",
-      "display-tracking": "-0.022em",
+      "display-line": "1.02",
+      "display-tracking": "-0.026em",
       "heading-family": "{raw.font.sans}",
-      "heading-size": "clamp(1.75rem, 1.5rem + 1.25vw, 2.375rem)",
+      "heading-size": "clamp(1.875rem, 1.55rem + 1.6vw, 2.625rem)",
       "heading-weight": "620",
-      "heading-line": "1.12",
+      "heading-line": "1.1",
       "heading-tracking": "-0.014em",
       "title-family": "{raw.font.sans}",
       "title-size": "clamp(1.1875rem, 1.125rem + 0.3vw, 1.375rem)",
@@ -125,7 +125,7 @@
       "body-family": "{raw.font.sans}",
       "body-size": "1.0625rem",
       "body-weight": "440",
-      "body-line": "1.6",
+      "body-line": "1.65",
       "body-tracking": "0em",
       "small-family": "{raw.font.sans}",
       "small-size": "0.875rem",
@@ -161,7 +161,7 @@
     "shadow": {
       "raised": "0 1px 2px rgb(34 30 23 / 6%), 0 2px 8px rgb(34 30 23 / 5%)",
       "overlay": "0 4px 12px rgb(34 30 23 / 8%), 0 16px 48px rgb(34 30 23 / 14%)",
-      "glow-accent": "0 0 24px rgb(166 70 33 / 22%), 0 0 64px rgb(166 70 33 / 12%)",
+      "glow-accent": "0 0 20px rgb(166 70 33 / 14%), 0 0 56px rgb(166 70 33 / 8%)",
       "glow-soft": "0 0 20px rgb(34 30 23 / 10%)"
     }
   },
@@ -174,7 +174,7 @@
           "surface-raised": "{raw.color.night-800}",
           "surface-sunken": "{raw.color.night-950}",
           "surface-overlay": "{raw.color.night-700}",
-          "ink": "{raw.color.cream-100}",
+          "ink": "{raw.color.bone-100}",
           "ink-muted": "{raw.color.sand-300}",
           "ink-faint": "{raw.color.sand-400}",
           "accent": "{raw.color.ember-500}",
@@ -194,7 +194,7 @@
         "shadow": {
           "raised": "0 1px 2px rgb(0 0 0 / 40%), 0 2px 8px rgb(0 0 0 / 30%)",
           "overlay": "0 4px 12px rgb(0 0 0 / 50%), 0 16px 48px rgb(0 0 0 / 40%)",
-          "glow-accent": "0 0 32px rgb(255 138 74 / 30%), 0 0 80px rgb(255 138 74 / 14%)",
+          "glow-accent": "0 0 40px rgb(255 138 74 / 32%), 0 0 96px rgb(255 138 74 / 16%)",
           "glow-soft": "0 0 24px rgb(255 192 154 / 12%)"
         }
       }
@@ -203,10 +203,10 @@
       "colorScheme": "light",
       "tokens": {
         "color": {
-          "surface": "{raw.color.cream-100}",
-          "surface-raised": "{raw.color.cream-75}",
-          "surface-sunken": "{raw.color.cream-200}",
-          "surface-overlay": "{raw.color.cream-50}",
+          "surface": "{raw.color.bone-100}",
+          "surface-raised": "{raw.color.bone-75}",
+          "surface-sunken": "{raw.color.bone-200}",
+          "surface-overlay": "{raw.color.bone-50}",
           "ink": "{raw.color.umber-900}",
           "ink-muted": "{raw.color.umber-700}",
           "ink-faint": "{raw.color.umber-500}",
@@ -227,7 +227,7 @@
         "shadow": {
           "raised": "0 1px 2px rgb(34 30 23 / 6%), 0 2px 8px rgb(34 30 23 / 5%)",
           "overlay": "0 4px 12px rgb(34 30 23 / 8%), 0 16px 48px rgb(34 30 23 / 14%)",
-          "glow-accent": "0 0 24px rgb(166 70 33 / 22%), 0 0 64px rgb(166 70 33 / 12%)",
+          "glow-accent": "0 0 20px rgb(166 70 33 / 14%), 0 0 56px rgb(166 70 33 / 8%)",
           "glow-soft": "0 0 20px rgb(34 30 23 / 10%)"
         }
       }

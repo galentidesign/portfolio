@@ -39,12 +39,12 @@ change, the schema is the bug.
   },
   "raw": {
     // primitive layer — literals only
-    "color": { "cream-100": "#faf6ee" },
+    "color": { "bone-100": "#fcf9f3" },
     "font": { "sans": "'Hanken Grotesk', system-ui, sans-serif" },
   },
   "semantic": {
     // the only layer components may consume
-    "color": { "surface": "{raw.color.cream-100}" },
+    "color": { "surface": "{raw.color.bone-100}" },
     "radius": { "control": "4px" },
     "type": { "body-size": "1.0625rem" },
     "density": { "gap": "var(--space-4)" },
