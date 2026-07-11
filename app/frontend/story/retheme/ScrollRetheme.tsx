@@ -27,11 +27,12 @@ export interface ScrollRethemeProps {
 
 /**
  * A scroll-story boundary marker — zero-height in flow, placed between two
- * beats inside a <ScrollRethemeStory>. Crossing it downward rethemes the
- * page to `skin` through the era-crossing band; scrubbing back up returns
- * instantly. The beat section that follows this marker in the DOM is the
- * crossing's settle root (its [data-retheme-stagger] members ride the
- * cascade). Must not sit inside a transformed ancestor — the band is
+ * beats inside a <ScrollRethemeStory>. Crossing it rethemes the page to
+ * `skin` on the crossing frame, in either direction; in motion mode the era
+ * veil scrubs across the viewport with the boundary's own travel, covering
+ * the swap. The beat section that follows this marker in the DOM is the
+ * downward crossing's settle root (its [data-retheme-stagger] members ride
+ * the cascade). Must not sit inside a transformed ancestor — the band is
  * position: fixed.
  */
 export function ScrollRetheme({

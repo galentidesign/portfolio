@@ -162,15 +162,42 @@ Semantics, relative to EraRetheme (contracts in `ScrollRetheme.test.tsx`):
   base (the sweep-home boundary grounds on it) and later boundaries still
   retheme — each crossing is a fresh story moment, exactly like entering a
   chapter after an explicit pick.
-- **Downward crossings** play the era-crossing band (`playRethemeCrossing`,
-  same motion chunk; the settle root is the boundary's next DOM sibling —
-  the beat being entered). **Upward scrubs swap instantly** — scrubbing back
-  is navigation, not narrative. Reduced motion: every crossing is instant,
-  and the chunk is never downloaded (prefetch is gated on the live pref).
+- **The swap is geometric, never clocked.** `setSkin` fires on the frame the
+  segment changes — every mode, every direction, chunk resident or not. The
+  motion layer is ornament and can neither delay nor lose a swap (the
+  previous model deferred the flip to a timeline's mid-travel beat, which
+  lagged the skin behind fast scrolls).
+- **Crossings carry a post-swap guard** (`resolveSegment` + `CrossingGuard`):
+  a re-token shifts era type metrics (measured ±135px of marker drift), which
+  moves the very markers the ladder reads — unguarded, a swap pushes its own
+  boundary back across the line and the skin thrashes at frame rate. Every
+  boundary crosses at the reference line (the veil covers that frame), but
+  the boundary the last swap moved must clear its post-re-token landed
+  position — its viewport top read synchronously on the swap frame — by
+  `CROSSING_MARGIN` of real scrolling before it can cross back in either
+  direction.
+- **The era veil scrubs with the scroll** (`createRethemeVeil`, same motion
+  chunk). Each boundary's travel zone is the viewport itself: as the marker's
+  top runs bottom-edge → top-edge, progress runs 0 → 1 linearly and the band
+  translates from above the viewport to below it, geometrically covering the
+  reference line at p = 0.5 — the exact frame the swap fires. The HUD caption
+  types out (and un-types on reversal) from the same progress; the mapping is
+  a pure function of scroll, so scrubbing back plays the crossing in reverse
+  and no scroll speed can desync it. Direct per-frame style writes
+  (transform/opacity only), one layout read per handle; the engine rebuilds
+  the handle on window resize.
+- **The entered beat settles on time, not on scroll** (`playRethemeSettle` —
+  downward crossings only): the beat's `[data-retheme-stagger]` members dip
+  and rise into the incoming era on the shared cascade, STAGGER_LEAD off the
+  swap frame. Content presence is not scrubbable — interrupting a settle
+  jumps it to its end state, never a rewind or a snap.
 - **Prefetch on approach**: the motion chunk loads when the first marker
   comes within 1.5 viewports — never at page mount, so the LCP route pays
   zero motion bytes up front. A crossing that beats the chunk (or a chunk
-  error) swaps instantly — the moment is never blocked on network.
+  error) swaps instantly and un-dressed — the skin is never blocked on
+  network; the veil joins mid-zone at the correct progress once its band
+  mounts. Reduced motion: no veil, no settle, and the chunk is never
+  downloaded (prefetch is gated on the live pref).
 - The sweep-home boundary (`skin` omitted) binds its band interior to the
   story's live base skin and takes no era treatment.
 - Markers must sit at the top level of the scroll flow (bands are

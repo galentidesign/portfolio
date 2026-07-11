@@ -1,11 +1,9 @@
 /**
- * Retheme motion layer — R4 "era-crossing" choreography.
+ * Retheme motion layer — R4 "era-crossing" choreography, two consumers:
  *
- * Mount-triggered GSAP timeline (no ScrollTrigger — gsap core only).
- * See story/retheme/README.md for the pinned interface contract and the
- * choreography spec.
- *
- * Timing is token-true (the pre-swap skin's tokens; galenti ⇒ ~1.1s travel):
+ * EraRetheme (chapter routes) — mount-triggered GSAP timeline (no
+ * ScrollTrigger — gsap core only), token-true (the pre-swap skin's tokens;
+ * galenti ⇒ ~1.1s travel):
  *   0ms      band fades in (~100ms) and starts its viewport top→bottom travel
  *            (--motion-duration-2xl, token-drama ease); the CRT interior and
  *            HUD caption ride inside it
@@ -19,7 +17,14 @@
  *            are re-registered first so the settle rides the ERA's curves
  *   ~100% t  band exits below the viewport and fades out
  *
- * The interface below is the pinned contract — do not change it.
+ * ScrollRethemeStory (home) — the same band, scrubbed instead of clocked:
+ * createRethemeVeil writes the band's frame as a pure function of the
+ * boundary's scroll progress (reversible; the engine owns the skin swap and
+ * never waits on the veil), and playRethemeSettle runs the post-swap settle
+ * cascade on the entered beat.
+ *
+ * See story/retheme/README.md for the pinned interface contract and the
+ * choreography spec.
  */
 import { gsap } from 'gsap'
 import { registerTokenEases, tokenDuration } from '@/ds/motion/gsapPlugins'
@@ -63,6 +68,17 @@ function easeFn(name: string, fallback: string): gsap.EaseFunction {
   return typeof parsed === 'function' ? parsed : (gsap.parseEase(fallback) as gsap.EaseFunction)
 }
 
+/** The settle cascade itself — shared by both consumers' settles. */
+function settleCascade(settleOrder: HTMLElement[]): gsap.core.Tween {
+  return gsap.to(settleOrder, {
+    y: 0,
+    opacity: 1,
+    duration: tokenDuration('lg') || SETTLE_FALLBACK,
+    stagger: INTERVAL,
+    ease: easeFn('token-enter', 'power1.out'),
+  })
+}
+
 /**
  * Invert a monotonic ease: smallest p with ease(p) ≈ target (bisection).
  * Used to schedule onSwap at the exact moment the band's eased travel puts
@@ -80,17 +96,6 @@ function invertEase(ease: gsap.EaseFunction, target: number): number {
   return (lo + hi) / 2
 }
 
-export interface RethemeCrossingOptions {
-  /** Called exactly once, as the band's centre crosses the viewport centre. */
-  onSwap: () => void
-  /**
-   * Root whose [data-retheme-stagger] members ride the post-swap settle.
-   * ScrollRethemeStory passes the beat section entered by the crossing;
-   * omit for a settle-free crossing.
-   */
-  settleRoot?: Element | null
-}
-
 export function mountRethemeMotion(
   container: HTMLElement,
   { onSwap }: RethemeMotionOptions,
@@ -105,21 +110,130 @@ export function mountRethemeMotion(
   return buildCrossing(band, captionChars, staggerTargets, onSwap)
 }
 
+export interface RethemeVeilHandle {
+  /**
+   * Write the veil's frame for scroll progress p ∈ [0, 1]. Direct style
+   * writes only (band transform/opacity, per-char caption opacity) —
+   * deterministic and reversible: the same p always renders the same pixels.
+   */
+  frame(p: number): void
+  /** Clear the veil's inline styles (band returns to its CSS rest). Idempotent. */
+  destroy(): void
+}
+
+// Veil shape as a function of progress. The fade windows keep the band from
+// popping at the zone edges; the caption types across the mid-travel so the
+// last character lands before the exit fade.
+const VEIL_FADE = 0.08
+const VEIL_CAPTION_START = 0.12
+const VEIL_CAPTION_END = 0.85
+
 /**
- * Scroll-boundary variant (ScrollRethemeStory): drives one boundary's own
- * band through the identical era-crossing choreography. The caption chars
- * live inside the band; settle targets come from the entered beat section.
- * Same handle contract as mountRethemeMotion — destroy() never calls onSwap.
+ * Scroll-boundary veil (ScrollRethemeStory): the era-crossing band as a pure
+ * function of the boundary's travel progress — translated from above the
+ * viewport (p=0) to below it (p=1), geometrically centred on the reference
+ * line at p=0.5, the frame the engine swaps the skin under it. The veil is
+ * ornament only: it never swaps skins and the engine never waits for it.
+ * One layout read at creation — the engine recreates the handle on resize.
  */
-export function playRethemeCrossing(
-  band: HTMLElement,
-  { onSwap, settleRoot }: RethemeCrossingOptions,
-): RethemeMotionHandle {
+export function createRethemeVeil(band: HTMLElement): RethemeVeilHandle {
   const captionChars = Array.from(band.querySelectorAll<HTMLElement>('[data-retheme-caption-char]'))
-  const staggerTargets = settleRoot
-    ? Array.from(settleRoot.querySelectorAll<HTMLElement>('[data-retheme-stagger]'))
-    : []
-  return buildCrossing(band, captionChars, staggerTargets, onSwap)
+  const bandHeight = band.offsetHeight // single layout read, pre-scrub
+  const viewportHeight = window.innerHeight
+
+  // Promote the band to its own compositor layer for the scrub's lifetime —
+  // GSAP did this implicitly for the old timeline; without it every frame
+  // re-rasterises the full-width textured band (a measured ~100ms burst per
+  // crossing at 4× throttle).
+  band.style.willChange = 'transform, opacity'
+
+  // Caption chars hide before the band can show — frame() only touches the
+  // chars whose revealed state changed.
+  for (const char of captionChars) char.style.opacity = '0'
+  let revealed = 0
+  let destroyed = false
+
+  return {
+    frame(p: number): void {
+      if (destroyed) return
+      const y = -bandHeight + p * (viewportHeight + bandHeight)
+      band.style.transform = `translateY(${y}px)`
+      band.style.opacity =
+        p <= 0 || p >= 1 ? '0' : String(Math.min(p / VEIL_FADE, (1 - p) / VEIL_FADE, 1))
+
+      const captionProgress = Math.min(
+        Math.max((p - VEIL_CAPTION_START) / (VEIL_CAPTION_END - VEIL_CAPTION_START), 0),
+        1,
+      )
+      const due = Math.floor(captionChars.length * captionProgress)
+      while (revealed < due) {
+        captionChars[revealed].style.opacity = '1'
+        revealed++
+      }
+      while (revealed > due) {
+        revealed--
+        captionChars[revealed].style.opacity = '0'
+      }
+    },
+    destroy(): void {
+      if (destroyed) return
+      destroyed = true
+      band.style.removeProperty('will-change')
+      band.style.removeProperty('transform')
+      band.style.removeProperty('opacity')
+      for (const char of captionChars) char.style.removeProperty('opacity')
+    },
+  }
+}
+
+export interface RethemeSettleHandle {
+  /**
+   * Finish, never rewind: if the cascade is mid-flight it jumps to its end
+   * state before releasing its inline styles. Idempotent.
+   */
+  destroy(): void
+}
+
+/**
+ * Post-swap settle for a scroll crossing: the entered beat's
+ * [data-retheme-stagger] members dip and rise into the incoming era, grouped
+ * chrome → type → surface. Starts STAGGER_LEAD after the call so the
+ * pre-state write and first tween stay off the swap frame's full-page style
+ * recalc. Time-based on purpose — content presence is not scrubbable; a
+ * visitor who parks mid-zone still gets a settled beat.
+ */
+export function playRethemeSettle(settleRoot: Element): RethemeSettleHandle {
+  const targets = Array.from(settleRoot.querySelectorAll<HTMLElement>('[data-retheme-stagger]'))
+  if (targets.length === 0) return { destroy: (): void => {} }
+
+  const settleOrder = [...targets].sort((a, b) => rankOf(a) - rankOf(b))
+  let settle: gsap.core.Tween | null = null
+
+  const start = (): void => {
+    // The skin flipped a frame ago — register so the settle rides the
+    // incoming era's own motion curves.
+    registerTokenEases()
+    gsap.set(settleOrder, { y: 8, opacity: 0.85 })
+    settle = settleCascade(settleOrder)
+  }
+  const lead = gsap.delayedCall(STAGGER_LEAD, start)
+
+  let destroyed = false
+
+  return {
+    destroy(): void {
+      if (destroyed) return
+      destroyed = true
+      lead.kill()
+      if (settle !== null) {
+        // Jump to the settled state, then hand the styles back to the CSS
+        // baseline (identical values) — an interrupted settle never leaves a
+        // beat half-dimmed and never snaps content backward.
+        settle.progress(1).kill()
+        gsap.set(settleOrder, { clearProps: 'all' })
+      }
+    },
+  }
 }
 
 function buildCrossing(
@@ -152,13 +266,7 @@ function buildCrossing(
     // name; doing it here also keeps this style read off the swap frame).
     registerTokenEases()
     if (settleOrder.length === 0) return
-    settle = gsap.to(settleOrder, {
-      y: 0,
-      opacity: 1,
-      duration: tokenDuration('lg') || SETTLE_FALLBACK,
-      stagger: INTERVAL,
-      ease: easeFn('token-enter', 'power1.out'),
-    })
+    settle = settleCascade(settleOrder)
   }
 
   const guardedSwap = (): void => {

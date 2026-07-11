@@ -1,6 +1,5 @@
 import { act, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { gsap } from 'gsap'
 import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
 import { SkinProvider } from '@/shell/skin/SkinProvider'
 import { SKIN_STORAGE_KEY, skins } from '@/ds/tokens/generated/skins'
@@ -212,6 +211,21 @@ describe('ScrollRethemeStory under reduced motion', () => {
     expect(screen.getByRole('status')).toHaveTextContent(`Theme: ${labelOf('galenti')}`)
   })
 
+  it('holds the segment while a post-swap layout shift wobbles the marker (thrash guard)', async () => {
+    renderStory()
+    await scrollTo(AT_BASE)
+    await scrollTo(AT_RAILS)
+    expect(skinAttr()).toBe('rails-era')
+    // A re-token shifts era type metrics and can push the just-crossed marker
+    // back below the reference line (384). Inside the crossing guard (landed
+    // at 200 in jsdom → retreat line max(200, 384) + 48) the ladder holds…
+    await scrollTo([420, 1220, 2020])
+    expect(skinAttr()).toBe('rails-era')
+    // …and only a real scroll past the retreat line restores the base.
+    await scrollTo([580, 1380, 2180])
+    expect(skinAttr()).toBe('galenti')
+  })
+
   it('no-ops silently when the target skin is already live (deep-link entry)', async () => {
     document.documentElement.dataset.skin = 'rails-era'
     renderStory()
@@ -265,45 +279,102 @@ describe('ScrollRetheme with motion allowed', () => {
     })
   })
 
-  it('defers the swap to the crossing choreography once the chunk is resident', async () => {
-    renderStory()
-    // Wait for the idle dress (bands resident) — the mount pass has also
-    // prefetched the motion chunk by then (jsdom rects sit at 0, inside the
-    // prefetch horizon).
+  /** Wait for the idle band dress AND the motion chunk to be resident. */
+  async function dressAndSettle() {
     await waitFor(() => expect(document.querySelector('[data-retheme-band]')).not.toBeNull())
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 50))
     })
+  }
+
+  const railsBand = () =>
+    screen.getAllByTestId('scroll-retheme')[0].querySelector<HTMLElement>('[data-retheme-band]')
+
+  const translateY = (el: HTMLElement | null) =>
+    Number.parseFloat(/translateY\(([-\d.]+)px\)/.exec(el?.style.transform ?? '')?.[1] ?? 'NaN')
+
+  const revealedCaptionChars = (marker: Element) =>
+    Array.from(marker.querySelectorAll<HTMLElement>('[data-retheme-caption-char]')).filter(
+      (c) => c.style.opacity === '1',
+    ).length
+
+  it('applies the skin on the geometric crossing frame even with the motion chunk resident', async () => {
+    renderStory()
+    await dressAndSettle()
     await scrollTo(AT_BASE)
     expect(skinAttr()).toBe('galenti')
-    // The band path defers the flip to the timeline's swap beat (~travel/2).
-    // Freeze the GSAP clock so that beat is unreachable no matter how long
-    // scrollTo's awaited rAF takes on a slow runner — a still-galenti skin
-    // here then proves the swap is genuinely deferred (a scrub would flip
-    // synchronously; see the sibling upward-scrub test) rather than racing
-    // wall-clock time, which flaked in CI (2026-07-11: read 'rails-era').
-    gsap.globalTimeline.pause()
-    try {
-      await scrollTo(AT_RAILS)
-      expect(skinAttr()).toBe('galenti')
-    } finally {
-      gsap.globalTimeline.resume()
-    }
-    // …which now lands mid-travel once the clock is running again.
-    await waitFor(() => expect(skinAttr()).toBe('rails-era'), { timeout: 3000 })
+    // The swap is synchronous with the geometry — the veil is ornament and
+    // never gates it (the deferred-swap model this replaces flaked whenever a
+    // crossing was cut before its timeline's swap beat).
+    await scrollTo(AT_RAILS)
+    expect(skinAttr()).toBe('rails-era')
     expect(localStorage.getItem(SKIN_STORAGE_KEY)).toBeNull()
   })
 
-  it('swaps instantly on upward scrubs — the band is a downward-only moment', async () => {
+  it('upward reversal restores the previous skin on the crossing frame, veil riding back', async () => {
     renderStory()
-    await waitFor(() => expect(document.querySelector('[data-retheme-band]')).not.toBeNull())
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50))
-    })
+    await dressAndSettle()
     await scrollTo(AT_BASE)
     await scrollTo(AT_RAILS)
-    await waitFor(() => expect(skinAttr()).toBe('rails-era'), { timeout: 3000 })
+    expect(skinAttr()).toBe('rails-era')
     await scrollTo(AT_BASE)
     expect(skinAttr()).toBe('galenti')
+    // The rails boundary sits at 600 — inside the zone from below, so the
+    // reversed veil dresses it below the reference line (p < 0.5).
+    expect(translateY(railsBand())).toBeCloseTo(768 * (1 - 600 / 768), 3)
+  })
+
+  it('never loses or delays a swap under a multi-segment jump', async () => {
+    renderStory()
+    await dressAndSettle()
+    await scrollTo(AT_BASE)
+    // One flick across two boundaries: the newest target applies this frame.
+    await scrollTo(AT_AGENTIC)
+    expect(skinAttr()).toBe('agentic')
+    await scrollTo(AT_SWEEP)
+    expect(skinAttr()).toBe('galenti')
+  })
+
+  it('covers the viewport centre with the veil on the swap frame', async () => {
+    renderStory()
+    await dressAndSettle()
+    await scrollTo(AT_BASE)
+    // Marker top exactly on the reference line (384 of 768): the crossing
+    // frame. p = 0.5 puts the band's centre on the same line the swap fires.
+    await scrollTo([384, 1200, 2000])
+    expect(skinAttr()).toBe('rails-era')
+    const band = railsBand()
+    expect(translateY(band)).toBeCloseTo(384, 3)
+    expect(band?.style.opacity).toBe('1')
+  })
+
+  it('renders the veil as a pure function of scroll — reversing recedes band and caption', async () => {
+    renderStory()
+    await dressAndSettle()
+    await scrollTo(AT_BASE)
+    // Deep into the zone (p ≈ 0.7): band well past centre, caption mostly out.
+    await scrollTo([231, 1050, 1850])
+    const marker = screen.getAllByTestId('scroll-retheme')[0]
+    const deepY = translateY(railsBand())
+    const deepChars = revealedCaptionChars(marker)
+    expect(deepChars).toBeGreaterThan(0)
+    // Back up the same zone (p ≈ 0.3): the same geometry renders further up,
+    // with fewer characters — the veil rewinds with the scroll.
+    await scrollTo([538, 1350, 2150])
+    expect(translateY(railsBand())).toBeLessThan(deepY)
+    expect(revealedCaptionChars(marker)).toBeLessThan(deepChars)
+  })
+
+  it('lets a band mounting mid-zone pick up at the current progress', async () => {
+    renderStory()
+    // Cross rails immediately — before the idle dress and the motion chunk:
+    // the swap must not wait for either.
+    await scrollTo(AT_RAILS)
+    expect(skinAttr()).toBe('rails-era')
+    // Once the dressing and chunk arrive, the next processed frame picks the
+    // band up at the boundary's current progress — mid-zone, correct place.
+    await dressAndSettle()
+    await scrollTo([200, 1000, 1800])
+    expect(translateY(railsBand())).toBeCloseTo(768 * (1 - 200 / 768), 3)
   })
 })

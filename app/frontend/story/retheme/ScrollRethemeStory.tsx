@@ -16,8 +16,8 @@ import {
   SKIN_STORAGE_KEY,
   type SkinName,
 } from '@/ds/tokens/generated/skins'
-import type { RethemeMotionHandle } from './motion'
-import { activeSegment, type ScrollBoundary } from './scrollStory'
+import type { RethemeSettleHandle, RethemeVeilHandle } from './motion'
+import { resolveSegment, veilBoundary, veilProgress, type ScrollBoundary } from './scrollStory'
 import styles from './retheme.module.css'
 
 /**
@@ -77,9 +77,14 @@ const labelOf = (skin: SkinName): string => skins.find((s) => s.name === skin)?.
  * Wraps the whole story; <ScrollRetheme> boundaries between beats register
  * here. One rAF-throttled scroll listener decides the active segment (the
  * last boundary whose marker sits above the viewport centre) and applies its
- * skin — via the era-crossing band going down, instantly going up (scrubbing
- * back is navigation, not narrative) and always instantly under reduced
- * motion. The contract carried over verbatim from EraRetheme:
+ * skin THE FRAME the segment changes — every mode, every direction; the swap
+ * is never gated on animation. In motion mode the crossing is dressed by the
+ * era veil, a pure function of scroll position (createRethemeVeil): the band
+ * rides the boundary's own travel through the viewport, covers the reference
+ * line exactly at the swap frame, and reverses when the visitor scrubs back —
+ * it can neither lose a swap nor lag one. The entered beat settles via a
+ * short time-based cascade (playRethemeSettle). The contract carried over
+ * verbatim from EraRetheme:
  *
  * - never writes localStorage; every swap is setSkin(..., { persist: false })
  * - an explicit visitor re-pick mid-story wins — the ladder adopts it as the
@@ -105,8 +110,19 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
   /** Last skin the ladder itself applied; null until the first application. */
   const appliedRef = useRef<SkinName | null>(null)
   const segmentRef = useRef<number>(-1)
+  /**
+   * Guards the last swap's boundary against re-crossing on its own layout
+   * shift: the marker's viewport top where the re-token landed it, frozen at
+   * the swap frame. Scrolling moves the live marker away from this value, so
+   * re-crossing costs real scroll distance — while the swap's own shift, by
+   * definition AT this value, can never re-cross.
+   */
+  const guardRef = useRef<{ boundary: number; top: number } | null>(null)
   const reducedRef = useRef(reduced)
-  const handleRef = useRef<RethemeMotionHandle | null>(null)
+  const veilRef = useRef<RethemeVeilHandle | null>(null)
+  /** Index of the boundary the live veil dresses; -1 when no veil is live. */
+  const veilBoundaryRef = useRef<number>(-1)
+  const settleRef = useRef<RethemeSettleHandle | null>(null)
   const motionModRef = useRef<typeof import('./motion') | null>(null)
   const prefetchRef = useRef<'idle' | 'started' | 'failed'>('idle')
 
@@ -136,9 +152,14 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
     storedAtMountRef.current = readStoredSkin()
     const referenceLine = () => window.innerHeight / 2
 
-    const destroyHandle = () => {
-      handleRef.current?.destroy()
-      handleRef.current = null
+    const destroyVeil = () => {
+      veilRef.current?.destroy()
+      veilRef.current = null
+      veilBoundaryRef.current = -1
+    }
+    const destroySettle = () => {
+      settleRef.current?.destroy()
+      settleRef.current = null
     }
 
     const applyInstant = (target: SkinName, message: string) => {
@@ -162,7 +183,11 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
       }
 
       const tops = boundaries.map((b) => b.el.getBoundingClientRect().top)
-      const segment = activeSegment(tops, referenceLine())
+
+      // Every boundary crosses at the reference line except the last swap's:
+      // a re-token's own layout shift must never re-cross the line it fired
+      // on (era type metrics move the markers the ladder reads).
+      const segment = resolveSegment(tops, referenceLine(), segmentRef.current, guardRef.current)
 
       // The approach signal fires in BOTH modes (boundaries warm era fonts on
       // it); the crossing-chunk prefetch stays motion-only (network-proof e2e).
@@ -175,45 +200,79 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
             motionModRef.current = mod
           })
           .catch(() => {
-            // The story is never lost to a chunk error: crossings fall back
-            // to instant swaps.
+            // The story is never lost to a chunk error: swaps are instant
+            // with or without the veil dressing.
             prefetchRef.current = 'failed'
           })
       }
 
-      if (segment === segmentRef.current) return
-      const goingDown = segment > segmentRef.current
-      segmentRef.current = segment
+      // 1 · Correctness — the skin matches the geometry THIS frame, every
+      // mode, every direction. Never gated on the veil, the chunk, or time.
+      if (segment !== segmentRef.current) {
+        const goingDown = segment > segmentRef.current
+        segmentRef.current = segment
 
-      const boundary = segment === -1 ? null : boundaries[segment]
-      const target = boundary?.skin ?? baseSkinRef.current
-      if (target === live) {
-        // Visual no-op (deep link already era-skinned, or the base segment in
-        // the visitor's own skin): nothing to choreograph, nothing to announce.
-        appliedRef.current = target
-        return
+        const boundary = segment === -1 ? null : boundaries[segment]
+        const target = boundary?.skin ?? baseSkinRef.current
+        if (target === live) {
+          // Visual no-op (deep link already era-skinned, or the base segment
+          // in the visitor's own skin): nothing to announce, settle, or
+          // guard — no re-token, no layout shift.
+          appliedRef.current = target
+        } else {
+          const message = goingDown && boundary ? boundary.announce : `Theme: ${labelOf(target)}`
+          applyInstant(target, message)
+
+          // Arm the crossing guard on the boundary nearest the line —
+          // advance: the one just crossed; retreat: the one just un-crossed.
+          // Reading its rect here, after the attribute flip, forces the
+          // post-re-token layout, so the guard freezes where the swap
+          // actually LANDED the marker at this scroll position.
+          const guarded = boundaries[goingDown ? segment : segment + 1]
+          if (guarded !== undefined) {
+            guardRef.current = {
+              boundary: goingDown ? segment : segment + 1,
+              top: guarded.el.getBoundingClientRect().top,
+            }
+          }
+
+          // 2 · Settle — cosmetic cascade into the entered beat, downward
+          // crossings in motion mode only. Interrupting one finishes it.
+          destroySettle()
+          const settleRoot = boundary?.el.nextElementSibling ?? null
+          if (goingDown && settleRoot !== null && !reducedRef.current) {
+            const mod = motionModRef.current
+            if (mod !== null) settleRef.current = mod.playRethemeSettle(settleRoot)
+          }
+        }
       }
 
-      const message = goingDown && boundary ? boundary.announce : `Theme: ${labelOf(target)}`
-
-      // A crossing arriving mid-flight cuts the previous band dead (destroy
-      // never fires onSwap) and resolves the newest target.
-      destroyHandle()
-
+      // 3 · Veil — ornament, a pure function of this frame's geometry. The
+      // boundary nearest the reference line wears the band at its scroll
+      // progress; reversing scroll reverses it. Skipped entirely (and cleared)
+      // under reduced motion or while the chunk isn't resident — the swap
+      // above already happened either way.
       const mod = motionModRef.current
-      const band =
-        goingDown && boundary ? boundary.el.querySelector<HTMLElement>('[data-retheme-band]') : null
-      if (reducedRef.current || !goingDown || mod === null || band === null) {
-        // Instant path: reduced motion, upward scrubs, or the chunk lost the
-        // race to a fast scroll — the moment is never blocked on network.
-        applyInstant(target, message)
+      if (reducedRef.current || mod === null) {
+        destroyVeil()
         return
       }
-
-      handleRef.current = mod.playRethemeCrossing(band, {
-        onSwap: () => applyInstant(target, message),
-        settleRoot: boundary?.el.nextElementSibling ?? null,
-      })
+      const dressed = veilBoundary(tops, window.innerHeight)
+      if (dressed === -1) {
+        destroyVeil()
+        return
+      }
+      if (dressed !== veilBoundaryRef.current || veilRef.current === null) {
+        destroyVeil()
+        const band = boundaries[dressed].el.querySelector<HTMLElement>('[data-retheme-band]')
+        // No band yet (the dressing render can trail the approach signal by a
+        // frame): nothing is lost — the veil joins mid-zone at the correct
+        // progress on the frame the band appears.
+        if (band === null) return
+        veilRef.current = mod.createRethemeVeil(band)
+        veilBoundaryRef.current = dressed
+      }
+      veilRef.current.frame(veilProgress(tops[dressed], window.innerHeight))
     }
 
     let ticking = false
@@ -225,10 +284,16 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
         process()
       })
     }
+    // A window resize invalidates the veil's cached geometry (band and
+    // viewport heights are read once per handle) — rebuild it at the new size.
+    const onResize = () => {
+      destroyVeil()
+      onScroll()
+    }
 
     process()
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
+    window.addEventListener('resize', onResize)
 
     // The ladder must survive geometry changes that arrive WITHOUT a scroll:
     // lazy islands and the assembly pin grow the page after load, which can
@@ -243,9 +308,10 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
 
     return () => {
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('resize', onResize)
       ro?.disconnect()
-      destroyHandle()
+      destroyVeil()
+      destroySettle()
 
       // Exit bookkeeping — EraRetheme's rules, ladder-shaped. Read the LIVE
       // attribute: context values are stale inside unmount cleanups.
@@ -259,12 +325,16 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  // A live flip to reduced motion mid-crossing must still complete the
-  // re-theme: cut the band and apply the current segment's skin instantly.
+  // A live flip to reduced motion clears the dressing (veil + settle) on the
+  // spot. The skin itself is already current — the swap never waits on
+  // motion — but reconcile defensively in case the attribute drifted.
   useEffect(() => {
     if (!reduced) return
-    handleRef.current?.destroy()
-    handleRef.current = null
+    veilRef.current?.destroy()
+    veilRef.current = null
+    veilBoundaryRef.current = -1
+    settleRef.current?.destroy()
+    settleRef.current = null
     const boundaries = boundariesRef.current
     const segment = segmentRef.current
     const target =
