@@ -1,5 +1,9 @@
 # Design Direction — Bone & Air / Home-as-Story
 
+> **Elevated by [The Living Specimen](design-direction-elevation.md)**
+> (direction accepted 2026-07-11). This document is preserved as the Bone &
+> Air record; the elevation contract governs current build work.
+
 **Status: accepted 2026-07-10.** This document is the execution contract for the
 site's taste pass — the deferred visual refinement layer over the v1/kilnlight
 foundation. The direction was accepted after a reference-anchored exploration
