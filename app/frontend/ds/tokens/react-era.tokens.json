@@ -7,7 +7,24 @@
     "default": false,
     "hidden": false,
     "description": "2018 product web — bold flat Material. Paper-white surfaces, saturated primary blue, dp-elevation shadows, Roboto everywhere, standard-curve motion.",
-    "fonts": []
+    "fonts": [
+      {
+        "family": "Roboto",
+        "file": "roboto-latin-wght.woff2",
+        "weight": "100 900",
+        "style": "normal",
+        "display": "swap",
+        "preload": true
+      },
+      {
+        "family": "Roboto Mono",
+        "file": "roboto-mono-latin-wght.woff2",
+        "weight": "100 700",
+        "style": "normal",
+        "display": "swap",
+        "preload": false
+      }
+    ]
   },
   "raw": {
     "color": {
