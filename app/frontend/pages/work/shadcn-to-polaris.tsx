@@ -4,6 +4,7 @@ import { Card } from '@/ds/components/Card/Card'
 import { Table } from '@/ds/components/Table/Table'
 import type { TableColumn } from '@/ds/components/Table/Table'
 import { Prose } from '@/ds/components/Prose/Prose'
+import { useFx } from '@/ds/motion/useFx'
 import { TOKENS } from '@/studies/shadcn-to-polaris/tokens-map'
 import { API_MAP } from '@/studies/shadcn-to-polaris/api-map'
 import { A11Y_MAP } from '@/studies/shadcn-to-polaris/a11y-map'
@@ -144,6 +145,12 @@ const A11Y_COLUMNS: readonly TableColumn<A11yRow>[] = [
 // ── Page component ────────────────────────────────────────────────────────────
 
 export default function ShadcnToPolaris() {
+  // Scroll-enter rise on the below-fold sections only — the heading (the LCP
+  // element) never carries a reveal target, per the /work placement rule.
+  const revealRef = useFx<HTMLDivElement>((fx, el) =>
+    fx.mountReveal(el, { selector: '[data-reveal]' }),
+  )
+
   return (
     <>
       <Head title="shadcn → Polaris — J Galenti">
@@ -153,7 +160,7 @@ export default function ShadcnToPolaris() {
         />
       </Head>
       <main id="main" className={styles.page}>
-        <div className={styles.container}>
+        <div ref={revealRef} className={styles.container}>
           <Link href="/work" className={styles['back-link']}>
             ← Back to the work
           </Link>
@@ -164,7 +171,7 @@ export default function ShadcnToPolaris() {
           </p>
 
           {/* ── 1. Philosophy gap framing ─────────────────────────────────────── */}
-          <section className={styles.section} aria-labelledby="framing-heading">
+          <section className={styles.section} data-reveal aria-labelledby="framing-heading">
             <h2 id="framing-heading" className={styles['section-heading']}>
               Philosophy gap
             </h2>
@@ -201,7 +208,7 @@ export default function ShadcnToPolaris() {
           </section>
 
           {/* ── 2. Token translation table ───────────────────────────────────── */}
-          <section className={styles.section} aria-labelledby="tokens-heading">
+          <section className={styles.section} data-reveal aria-labelledby="tokens-heading">
             <h2 id="tokens-heading" className={styles['section-heading']}>
               Token translation
             </h2>
@@ -217,7 +224,7 @@ export default function ShadcnToPolaris() {
           </section>
 
           {/* ── 3. Component API mapping ─────────────────────────────────────── */}
-          <section className={styles.section} aria-labelledby="api-heading">
+          <section className={styles.section} data-reveal aria-labelledby="api-heading">
             <h2 id="api-heading" className={styles['section-heading']}>
               Component API mapping
             </h2>
@@ -233,7 +240,7 @@ export default function ShadcnToPolaris() {
           </section>
 
           {/* ── 4. Governance narrative ──────────────────────────────────────── */}
-          <section className={styles.section} aria-labelledby="governance-heading">
+          <section className={styles.section} data-reveal aria-labelledby="governance-heading">
             <h2 id="governance-heading" className={styles['section-heading']}>
               Governance model
             </h2>
@@ -270,7 +277,7 @@ export default function ShadcnToPolaris() {
           </section>
 
           {/* ── 5. A11y layer ───────────────────────────────────────────────── */}
-          <section className={styles.section} aria-labelledby="a11y-heading">
+          <section className={styles.section} data-reveal aria-labelledby="a11y-heading">
             <h2 id="a11y-heading" className={styles['section-heading']}>
               Accessibility layer
             </h2>
@@ -305,7 +312,7 @@ export default function ShadcnToPolaris() {
           </section>
 
           {/* ── 6. Framework-agnostic close ─────────────────────────────────── */}
-          <section className={styles.section} aria-labelledby="close-heading">
+          <section className={styles.section} data-reveal aria-labelledby="close-heading">
             <h2 id="close-heading" className={styles['section-heading']}>
               Framework-agnostic close
             </h2>
@@ -329,7 +336,7 @@ export default function ShadcnToPolaris() {
           </section>
 
           {/* ── 7. Live demo entry ──────────────────────────────────────────── */}
-          <section className={styles['demo-section']} aria-labelledby="demo-heading">
+          <section className={styles['demo-section']} data-reveal aria-labelledby="demo-heading">
             <h2 id="demo-heading" className={styles['section-heading']}>
               Live demo
             </h2>

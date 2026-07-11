@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react'
 import { Prose } from '@/ds/components/Prose/Prose'
+import { useFx } from '@/ds/motion/useFx'
 import { OrchestrationDiagram } from '@/studies/agentic-design-ops/OrchestrationDiagram'
 import { PatternGallery } from '@/studies/agentic-design-ops/PatternGallery'
 import { RippleDiagram } from '@/studies/agentic-design-ops/RippleDiagram'
@@ -11,6 +12,12 @@ import styles from './agentic-design-ops.module.css'
  * points resolved by J); diagrams render neutral data by design.
  */
 export default function AgenticDesignOps() {
+  // Scroll-enter rise on the below-fold sections only — the header (the LCP
+  // element) never carries a reveal target, per the /work placement rule.
+  const revealRef = useFx<HTMLDivElement>((fx, el) =>
+    fx.mountReveal(el, { selector: '[data-reveal]' }),
+  )
+
   return (
     <>
       <Head title="Agentic design-ops — J Galenti">
@@ -20,7 +27,7 @@ export default function AgenticDesignOps() {
         />
       </Head>
       <main id="main" className={styles.page}>
-        <div className={styles.container}>
+        <div ref={revealRef} className={styles.container}>
           {/* ── Page header ── */}
           <div className={styles.header}>
             <h1 className={styles.heading}>Agentic design-ops</h1>
@@ -51,7 +58,7 @@ export default function AgenticDesignOps() {
           </div>
 
           {/* ── Decision ── */}
-          <section aria-labelledby="decision-heading" className={styles.section}>
+          <section aria-labelledby="decision-heading" className={styles.section} data-reveal>
             <h2 id="decision-heading" className={styles['section-heading']}>
               Decision
             </h2>
@@ -84,11 +91,15 @@ export default function AgenticDesignOps() {
                 deliverables that falls out the other side.
               </p>
             </Prose>
-            <OrchestrationDiagram />
+            {/* The study's identity moment: the orchestration diagram sits in
+                a kiln-dark island — same semantic tokens, night values. */}
+            <div className={styles.island} data-zone="night">
+              <OrchestrationDiagram />
+            </div>
           </section>
 
           {/* ── Build ── */}
-          <section aria-labelledby="build-heading" className={styles.section}>
+          <section aria-labelledby="build-heading" className={styles.section} data-reveal>
             <h2 id="build-heading" className={styles['section-heading']}>
               Build
             </h2>
@@ -125,7 +136,7 @@ export default function AgenticDesignOps() {
           </section>
 
           {/* ── Ripple ── */}
-          <section aria-labelledby="ripple-heading" className={styles.section}>
+          <section aria-labelledby="ripple-heading" className={styles.section} data-reveal>
             <h2 id="ripple-heading" className={styles['section-heading']}>
               Ripple
             </h2>
@@ -150,7 +161,7 @@ export default function AgenticDesignOps() {
           </section>
 
           {/* ── Connect to targets ── */}
-          <section aria-labelledby="close-heading" className={styles.section}>
+          <section aria-labelledby="close-heading" className={styles.section} data-reveal>
             <h2 id="close-heading" className={styles['section-heading']}>
               Connect to targets
             </h2>

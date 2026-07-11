@@ -46,6 +46,15 @@
   margin: 0;
 }
 
+/* Night island — the orchestration diagram's kiln-dark card. The zone
+   attribute re-tokens the subtree; this rule only shapes the vessel. */
+.island {
+  padding: clamp(1.25rem, 0.75rem + 2.5vw, 2.75rem);
+  border-radius: var(--radius-surface);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-raised);
+}
+
 .link-row {
   display: flex;
   flex-wrap: wrap;
