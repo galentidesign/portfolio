@@ -116,23 +116,34 @@ test.describe('§1 — Beacons from a real browse', () => {
 // ── §2 — mode_switch via hatch ────────────────────────────────────────────────
 
 test.describe('§2 — mode_switch via hatch', () => {
-  test('hatch click fires mode_switch{to:skim,via:hatch} then skim_entry{via:hatch}', async ({
+  test('hatch fires mode_switch{to:skim,via:hatch}; skim_entry rides the next /work arrival', async ({
     page,
   }) => {
     await installBeaconSpy(page)
     await page.goto('/')
     await expect(page.getByTestId('escape-hatch')).toBeVisible()
 
+    // On the nine-beat home the hatch is an in-page jump to beat 07 — the
+    // mode intent fires, the URL stays home.
     await page.getByTestId('escape-hatch').click()
-    await expect(page).toHaveURL(/\/work$/)
+    await expect(page.locator('#the-work')).toBeFocused()
+    await expect(page).not.toHaveURL(/\/work/)
 
     await expect(async () => {
       const beacons = await getBeacons(page)
       const ms = beacons.find((b) => b.kind === 'mode_switch')
-      const se = beacons.find((b) => b.kind === 'skim_entry')
       expect(ms).toBeDefined()
       expect(ms!.payload.to).toBe('skim')
       expect(ms!.payload.via).toBe('hatch')
+      expect(beacons.find((b) => b.kind === 'skim_entry')).toBeUndefined()
+    }).toPass({ timeout: 10_000 })
+
+    // The stashed via rides the next /work arrival (markSkimVia contract).
+    await page.locator('[data-testid="nav-header"]').getByRole('link', { name: 'Work' }).click()
+    await expect(page).toHaveURL(/\/work$/)
+    await expect(async () => {
+      const beacons = await getBeacons(page)
+      const se = beacons.find((b) => b.kind === 'skim_entry')
       expect(se).toBeDefined()
       expect(se!.payload.via).toBe('hatch')
     }).toPass({ timeout: 10_000 })

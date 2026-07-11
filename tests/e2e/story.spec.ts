@@ -428,10 +428,22 @@ test('axe: / — reduced motion, full scroll, debug skin, zero violations', asyn
 
 // ── §9.1 — Skip control visible from frame one, not obscured by site bar ──────
 
-test('skip-intro: visible from frame one, top ≥ nav bar bottom, fully inside viewport', async ({
+test('skip-intro: visible with the assembly beat, top ≥ nav bar bottom, fully inside viewport', async ({
   page,
 }) => {
   await page.goto('/')
+
+  // Beat 00 (liftoff) owns frame one; the skip control belongs to the
+  // assembly beat — bring it on stage the way a scrolling visitor would.
+  // Wait for the motion layer first: pinned geometry is what a motion-mode
+  // visitor actually sees (the static base is the reduced-motion layout).
+  await page
+    .locator('[data-testid="assembly-opening"][data-motion="on"]')
+    .waitFor({ timeout: 12_000 })
+  await page.evaluate(() => {
+    document.querySelector('[data-testid="assembly-opening"]')?.scrollIntoView()
+  })
+  await page.waitForTimeout(300)
 
   const viewport = page.viewportSize()!
   const skipBox = (await page.getByTestId('skip-intro').boundingBox())!

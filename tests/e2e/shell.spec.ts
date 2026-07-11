@@ -26,7 +26,7 @@ async function openPalette(page: Page) {
 
 // ── The milestone journey — keyboard only, no pointer ──────────────────────
 
-test('keyboard-only: land on /, reach /work via the hatch, ⌘K, switch skin debug → galenti', async ({
+test('keyboard-only: land on /, jump to the work via the hatch, ⌘K, switch skin debug → galenti', async ({
   page,
 }) => {
   // Enter on the hidden debug skin via URL param so the palette performs a
@@ -52,8 +52,11 @@ test('keyboard-only: land on /, reach /work via the hatch, ⌘K, switch skin deb
   expect(reached).toBe(true)
 
   await page.keyboard.press('Enter')
-  await expect(page).toHaveURL(/\/work$/)
-  await expect(page.getByRole('heading', { name: /Design technologist/ })).toBeVisible()
+  // The home hatch is an in-page skim jump — no navigation; focus lands on
+  // beat 07 with the proof heading on stage.
+  await expect(page.locator('#the-work')).toBeFocused()
+  await expect(page).not.toHaveURL(/\/work/)
+  await expect(page.getByRole('heading', { name: 'The work' })).toBeVisible()
 
   // Open the palette with the keyboard and switch the skin.
   await openPalette(page)
@@ -158,7 +161,7 @@ test('reduced motion: scroll progress still tracks position on a chapter page', 
 
 // ── Scroll progress rail ────────────────────────────────────────────────────
 
-test('scroll progress: grows with reading position, decorative, chapter pages only', async ({
+test('scroll progress: grows with reading position, decorative, story pages only', async ({
   page,
 }) => {
   await page.goto('/story/rails-era')
@@ -175,9 +178,10 @@ test('scroll progress: grows with reading position, decorative, chapter pages on
     .poll(async () => fill.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a))
     .toBeGreaterThan(0.9)
 
-  // Not part of the shell on non-chapter routes.
+  // The nine-beat home is a story page — it carries the rail too.
   await page.goto('/')
-  await expect(page.getByTestId('scroll-progress')).toHaveCount(0)
+  await expect(page.getByTestId('scroll-progress')).toHaveCount(1)
+  // Skim surfaces stay rail-free.
   await page.goto('/work')
   await expect(page.getByTestId('scroll-progress')).toHaveCount(0)
 })
@@ -296,6 +300,19 @@ test('axe: shell toast open state has zero violations', async ({ page }) => {
   await page.keyboard.type('email')
   await page.keyboard.press('Enter')
   await expect(page.getByTestId('shell-toast').getByRole('status')).toBeVisible()
+
+  // Scan the SETTLED state (gotcha bb): the reveal fx transitions in-view
+  // tiles; axe must never sample an alpha-blended transient frame.
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        Array.from(document.querySelectorAll('[data-reveal]')).every((el) => {
+          const opacity = Number(getComputedStyle(el).opacity)
+          return opacity === 0 || opacity === 1
+        }),
+      ),
+    )
+    .toBe(true)
 
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])

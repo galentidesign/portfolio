@@ -331,6 +331,72 @@ async function captureDemoStates(page) {
   return analyseFrames(timestamps, label)
 }
 
+async function captureStoryRethemes(page) {
+  const label = 'Home story journey (3 crossings + sweep)'
+  await page.goto(BASE_URL + '/', { waitUntil: 'networkidle' })
+
+  // Hydration signal — same gate as the assembly target.
+  try {
+    await page
+      .locator('[data-testid="assembly-opening"][data-motion="on"]')
+      .waitFor({ timeout: 12_000 })
+  } catch {
+    return { label, verdict: 'SKIP', reason: 'motion layer did not mount' }
+  }
+
+  // Start just above the prologue (below the assembly pin) and ride through
+  // all four scroll-retheme crossings to the close beat. Lazy islands mount
+  // ahead of the scroll (IslandMount rootMargin 100%), so an extra viewport
+  // of overshoot absorbs the growth from placeholder heights to real ones.
+  const { startY, distance } = await page.evaluate(() => {
+    const gateway = document.getElementById('gateway')
+    const startY = gateway.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.25
+    const endY = document.documentElement.scrollHeight - window.innerHeight
+    return { startY, distance: endY - startY + window.innerHeight }
+  })
+
+  await page.evaluate(() => window.__perfStart())
+  await smoothScroll(page, startY, distance, 14_000)
+  await page.waitForTimeout(600) // trailing settle of the sweep-home crossing
+  await page.evaluate(() => window.__perfStop())
+
+  const timestamps = await page.evaluate(() => window.__perfFrames())
+  return analyseFrames(timestamps, label)
+}
+
+async function captureKilnIsland(page) {
+  const label = 'Kiln island beat 05 (drift + tick hold)'
+  await page.goto(BASE_URL + '/', { waitUntil: 'networkidle' })
+
+  try {
+    await page
+      .locator('[data-testid="assembly-opening"][data-motion="on"]')
+      .waitFor({ timeout: 12_000 })
+  } catch {
+    return { label, verdict: 'SKIP', reason: 'motion layer did not mount' }
+  }
+
+  // Jump straight to the island (an instant multi-segment jump swaps without
+  // a band — this target measures the resident cost: ember drift ticking,
+  // typewriter lines re-typing, starfield static).
+  await page.evaluate(() => {
+    document.getElementById('era-agentic')?.scrollIntoView({ block: 'center' })
+  })
+  try {
+    await page.locator('[data-testid="kiln-interior"]').waitFor({ timeout: 10_000 })
+  } catch {
+    return { label, verdict: 'SKIP', reason: 'kiln interior never mounted' }
+  }
+  await page.waitForTimeout(500) // let the skin swap + island settle
+
+  await page.evaluate(() => window.__perfStart())
+  await page.waitForTimeout(4_000) // hold — drift + tick are the load
+  await page.evaluate(() => window.__perfStop())
+
+  const timestamps = await page.evaluate(() => window.__perfFrames())
+  return analyseFrames(timestamps, label)
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -364,6 +430,8 @@ async function main() {
     () => capturePalette(page),
     () => captureRetheme(page),
     () => captureDemoStates(page),
+    () => captureStoryRethemes(page),
+    () => captureKilnIsland(page),
   ]
 
   // Median-of-3 per target: the protocol is "repeatable" — a real sustained
