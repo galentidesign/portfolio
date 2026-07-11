@@ -121,4 +121,39 @@ dependencies beyond the Playfair woff2s (matter-js already ships).
 
 ## Stage 1 record — the serif voice + display retune
 
-_Filled at the Stage 1 landing._
+Landed 2026-07-11 (receipt:
+[2026-07-11-elevation-stage1.md](receipts/2026-07-11-elevation-stage1.md)).
+Token JSON + font assets only — zero component edits; nothing consumes the
+new voice until Stage 2.
+
+**Playfair Display self-hosted** — fontsource 5.2.8 latin variable woff2s,
+normal + italic faces (400–900), OFL alongside. `preload: false` on both:
+Playfair is the statements voice, not the LCP voice, and an unconsumed
+`@font-face` fetches nothing — Stage 1 is network-neutral by construction.
+
+**Serif voice tokens** (new, full cross-skin parity):
+
+| skin              | `raw.font.serif`                     |
+| ----------------- | ------------------------------------ |
+| galenti · agentic | `'Playfair Display', Georgia, serif` |
+| rails-era         | `Georgia, 'Times New Roman', serif`  |
+| react-era         | `Georgia, serif`                     |
+| debug             | the skin's mono stack (torture)      |
+
+Two new type roles, sized from the accepted serif comp (values @1440):
+`statement` — `clamp(2rem, 1.4rem + 2.1vw, 3.25rem)` (52px), weight 400,
+line 1.2; `intertitle` — `clamp(1.5rem, 1.2rem + 0.75vw, 1.9375rem)`
+(31px), weight 400, line 1.35. font-style stays untokenized — italic is a
+consuming-site decision.
+
+**Galenti display-voice retune** (value-only; sizes untouched; era skins
+keep period settings):
+
+| role    | was            | now            |
+| ------- | -------------- | -------------- |
+| hero    | 720 / −0.034em | 680 / −0.045em |
+| numeral | 760 / −0.03em  | 750 / −0.045em |
+| display | 640 / −0.026em | 700 / −0.04em  |
+
+**WCAG**: no color deltas in Stage 1; the Bone & Air 38/38 numeric record
+stands unchanged.
