@@ -1,5 +1,6 @@
 import { act, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { gsap } from 'gsap'
 import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
 import { SkinProvider } from '@/shell/skin/SkinProvider'
 import { SKIN_STORAGE_KEY, skins } from '@/ds/tokens/generated/skins'
@@ -275,10 +276,20 @@ describe('ScrollRetheme with motion allowed', () => {
     })
     await scrollTo(AT_BASE)
     expect(skinAttr()).toBe('galenti')
-    await scrollTo(AT_RAILS)
-    // The band path defers the flip to the timeline's swap beat…
-    expect(skinAttr()).toBe('galenti')
-    // …which lands mid-travel (~0.55s on jsdom's fallback tokens).
+    // The band path defers the flip to the timeline's swap beat (~travel/2).
+    // Freeze the GSAP clock so that beat is unreachable no matter how long
+    // scrollTo's awaited rAF takes on a slow runner — a still-galenti skin
+    // here then proves the swap is genuinely deferred (a scrub would flip
+    // synchronously; see the sibling upward-scrub test) rather than racing
+    // wall-clock time, which flaked in CI (2026-07-11: read 'rails-era').
+    gsap.globalTimeline.pause()
+    try {
+      await scrollTo(AT_RAILS)
+      expect(skinAttr()).toBe('galenti')
+    } finally {
+      gsap.globalTimeline.resume()
+    }
+    // …which now lands mid-travel once the clock is running again.
     await waitFor(() => expect(skinAttr()).toBe('rails-era'), { timeout: 3000 })
     expect(localStorage.getItem(SKIN_STORAGE_KEY)).toBeNull()
   })
