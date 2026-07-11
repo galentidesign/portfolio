@@ -138,6 +138,100 @@ test('motion: the sweep-home boundary returns the bone ground before the wordmar
   await expectSkin(page, 'galenti')
 })
 
+// ── The veil — scroll-scrubbed crossing (pure function of position) ─────────
+
+/**
+ * Park the viewport so `markerSkin`'s boundary sits at veil progress
+ * `fraction` (marker top at (1 − fraction) · innerHeight), then let the
+ * rAF-throttled handler paint the frame. Iterates scroll-then-remeasure:
+ * a single absolute jump can land off-target when late layout work (the
+ * assembly pin's refresh, an island mount) shifts the geometry between the
+ * measure and the scroll.
+ */
+async function parkMarkerAt(page: Page, markerSkin: string, fraction: number) {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const delta = await page.evaluate(
+      ([skin, f]) => {
+        const marker = document.querySelector(
+          `[data-testid="scroll-retheme"][data-era-skin="${skin}"]`,
+        )
+        if (!marker) throw new Error(`no boundary marker for ${skin}`)
+        const wanted = (1 - Number(f)) * window.innerHeight
+        const offBy = marker.getBoundingClientRect().top - wanted
+        if (Math.abs(offBy) > 1) window.scrollBy(0, offBy)
+        return offBy
+      },
+      [markerSkin, fraction] as const,
+    )
+    await page.waitForTimeout(200)
+    if (Math.abs(delta) <= 1) break
+  }
+}
+
+const railsBand = (page: Page) => page.locator('[data-era-skin="rails-era"] [data-retheme-band]')
+
+async function approachStory(page: Page) {
+  await page.goto('/')
+  await storySettled(page, { motion: true })
+  await scrollToBeat(page, '#gateway')
+  await page.waitForTimeout(400) // prefetch horizon — let the motion chunk land
+}
+
+test('motion: the veil covers the viewport centre on the swap frame', async ({ page }) => {
+  await approachStory(page)
+
+  // Boundary a hair past the reference line: the swap has just fired…
+  await parkMarkerAt(page, 'rails-era', 0.51)
+  await expectSkin(page, 'rails-era')
+
+  // …and the band straddles that exact line, hiding the re-token.
+  const box = await railsBand(page).boundingBox()
+  const viewportHeight = await page.evaluate(() => window.innerHeight)
+  expect(box).not.toBeNull()
+  expect(box!.y).toBeLessThan(viewportHeight / 2)
+  expect(box!.y + box!.height).toBeGreaterThan(viewportHeight / 2)
+  expect(await railsBand(page).evaluate((el) => getComputedStyle(el).opacity)).toBe('1')
+})
+
+test('motion: a flick past two boundaries lands era-correct with no stale window', async ({
+  page,
+}) => {
+  await approachStory(page)
+
+  // One jump across the rails AND react boundaries: the newest target must
+  // apply on the crossing frame — no band-travel grace, no lagging skin.
+  await scrollToBeat(page, '#era-agentic')
+  await expect(page.locator('html')).toHaveAttribute('data-skin', 'agentic', { timeout: 1_500 })
+})
+
+test('motion: scrolling back up reverses the veil and restores the skin', async ({ page }) => {
+  await approachStory(page)
+
+  await parkMarkerAt(page, 'rails-era', 0.7)
+  await expectSkin(page, 'rails-era')
+
+  // Back up through the same zone, well past the crossing guard's retreat
+  // line: the skin restores and the veil rides the reversed travel, still
+  // dressing the boundary.
+  await parkMarkerAt(page, 'rails-era', 0.15)
+  await expectSkin(page, 'galenti')
+  expect(await railsBand(page).evaluate((el) => getComputedStyle(el).opacity)).toBe('1')
+  expect(await railsBand(page).evaluate((el) => el.style.transform)).toContain('translateY')
+})
+
+test('motion: parking mid-zone holds the veil still — scrub, not clock', async ({ page }) => {
+  await approachStory(page)
+
+  await parkMarkerAt(page, 'rails-era', 0.6)
+  const before = await railsBand(page).evaluate((el) => el.style.transform)
+  expect(before).toContain('translateY')
+
+  // A clock-driven band would keep travelling; the veil is position-derived
+  // and must not move a pixel while the scroll is parked.
+  await page.waitForTimeout(700)
+  expect(await railsBand(page).evaluate((el) => el.style.transform)).toBe(before)
+})
+
 // ── Network proof — the reduced story downloads zero motion bytes ───────────
 
 test('network: a full reduced-motion scroll of the story requests no motion chunk', async ({
