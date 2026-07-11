@@ -52,20 +52,6 @@
   max-width: 24ch;
 }
 
-/* Typewriter caret — a static block riding the last revealed character.
-   Out of flow (absolute off the char's right edge): an in-flow caret would
-   reflow everything after it on each advance — a real CLS bill. */
-.thesis [data-caret]::after {
-  content: '';
-  position: absolute;
-  left: 100%;
-  bottom: 0.08em;
-  width: 0.45em;
-  height: 0.85em;
-  margin-left: 0.05em;
-  background-color: var(--color-accent);
-}
-
 .liftoff-cue {
   position: relative;
   margin: var(--space-7) 0 0;

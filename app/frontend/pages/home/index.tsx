@@ -43,7 +43,7 @@ interface HomeProps {
  * routes survive as deep-dives; the escape hatch jumps straight to beat 07.
  */
 export default function Home({ galleryBand }: HomeProps) {
-  // Beat 00 — the atmosphere (drift + thesis write-in) arrives after
+  // Beat 00 — the atmosphere (drift + thesis focus cascade) arrives after
   // load + idle AND the visitor's first gesture. The full statement is the
   // LCP paint, and LCP only stops observing at first input — mounting
   // animated content into the LCP viewport (or replaying its largest
@@ -64,9 +64,7 @@ export default function Home({ galleryBand }: HomeProps) {
       handles.push(fx.mountDrift(el, { preset: 'bone' }))
       const thesis = el.querySelector<HTMLElement>('[data-thesis]')
       if (thesis !== null) {
-        handles.push(
-          fx.mountTypewriter(thesis, { charInterval: 0.11, maxDuration: 2.6, granularity: 'word' }),
-        )
+        handles.push(fx.mountFocusCascade(thesis, { stagger: 0.09, maxDuration: 2.4 }))
       }
     }
     const onInput = () => {
@@ -102,7 +100,7 @@ export default function Home({ galleryBand }: HomeProps) {
       <main id="main" className={styles.page}>
         <ScrollProgress />
         <ScrollRethemeStory>
-          {/* ── 00 · Liftoff — the thesis writes itself on bone ─────────── */}
+          {/* ── 00 · Liftoff — the thesis sharpens into focus on bone ───── */}
           <section
             ref={liftoffRef}
             className={styles.liftoff}
