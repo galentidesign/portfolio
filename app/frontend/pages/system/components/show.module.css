@@ -12,11 +12,11 @@
 
 .title {
   margin: 0 0 var(--space-3);
-  font-family: var(--type-heading-family);
-  font-size: var(--type-heading-size);
-  font-weight: var(--type-heading-weight);
-  line-height: var(--type-heading-line);
-  letter-spacing: var(--type-heading-tracking);
+  font-family: var(--type-display-family);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
   color: var(--color-ink);
 }
 
@@ -81,11 +81,11 @@
 
 .section-heading {
   margin: 0 0 var(--space-4);
-  font-family: var(--type-title-family);
-  font-size: var(--type-title-size);
-  font-weight: var(--type-title-weight);
-  line-height: var(--type-title-line);
-  letter-spacing: var(--type-title-tracking);
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
   color: var(--color-ink);
 }
 
