@@ -35,6 +35,12 @@
   margin-bottom: var(--space-4);
 }
 
+/* The thesis is one h1 (the full sentence stays its accessible name) set as a
+   staggered composition: the hero lead spans the full width, the rest drops
+   into the offset right column at heading scale — the Stage-2 editorial
+   stagger. At display scale × 28ch the rest ran ~5–6 lines (~500px) and
+   pushed the block past one viewport; heading scale in the offset column
+   keeps thesis → marquee → tiles inside the first screen. */
 .thesis {
   font-family: var(--type-hero-family);
   font-weight: var(--type-hero-weight);
@@ -54,13 +60,32 @@
 
 .thesis-rest {
   display: block;
-  font-size: var(--type-display-size);
-  font-weight: var(--type-display-weight);
-  line-height: var(--type-display-line);
-  letter-spacing: var(--type-display-tracking);
-  max-width: 28ch;
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  letter-spacing: var(--type-heading-tracking);
+  max-width: 34ch;
   margin-top: var(--space-5);
-  text-wrap: balance;
+
+  /* pretty, not balance — Chromium's balancer caps at 6 lines and this
+     sentence sits right on the edge; pretty only guards the last line. */
+  text-wrap: pretty;
+}
+
+@media (--bp-lg) {
+  .thesis {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--space-6);
+  }
+
+  .thesis-lead {
+    grid-column: 1 / -1;
+  }
+
+  .thesis-rest {
+    grid-column: 2;
+  }
 }
 
 /* ── Marquee strip ─────────────────────────────────────────────────────────── */
