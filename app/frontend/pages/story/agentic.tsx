@@ -46,7 +46,12 @@ export default function Agentic() {
 
   return (
     <>
-      <Head title="The agentic era — J Galenti" />
+      <Head title="The agentic era — J Galenti">
+        <meta
+          name="description"
+          content="Chapter three, 2023–now: an agent fleet builds the work and the receipts prove it — the kiln, the orchestration map, and the playbook."
+        />
+      </Head>
       <main id="main" className={[styles.chapter, styles['chapter-resolve']].join(' ')}>
         <EraRetheme skin="agentic" treatment="terminal" caption={KILN_BOOT} warmFonts={ERA_FONTS}>
           <ScrollProgress />

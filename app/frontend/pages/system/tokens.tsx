@@ -87,7 +87,12 @@ export default function TokensPage({ nav }: Props) {
 
   return (
     <>
-      <Head title="Tokens — J Galenti" />
+      <Head title="Tokens — J Galenti">
+        <meta
+          name="description"
+          content="The token architecture: one JSON per skin, semantic roles only — color, type, space, motion, and zones, with live specimens."
+        />
+      </Head>
       <DocShell nav={nav}>
         <div className={styles.container}>
           {/* ── Header ── */}

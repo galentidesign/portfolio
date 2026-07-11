@@ -13,7 +13,12 @@ const ERA_STACK = ['Rails 4.x', 'ERB', 'jQuery', 'Bootstrap 3', 'Capistrano', 'M
 export default function RailsEra() {
   return (
     <>
-      <Head title="The Rails era — J Galenti" />
+      <Head title="The Rails era — J Galenti">
+        <meta
+          name="description"
+          content="Chapter one, 2014–2019: shipping product on Rails — the era artifact rebuilt from this site's own design system, wearing its period skin."
+        />
+      </Head>
       <main id="main" className={styles.chapter}>
         <EraRetheme skin="rails-era" warmFonts={ERA_FONTS} caption="loading 2014…">
           <ScrollProgress />

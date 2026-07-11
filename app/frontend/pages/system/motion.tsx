@@ -43,7 +43,12 @@ export default function MotionPage({ nav }: Props) {
 
   return (
     <>
-      <Head title="Motion — J Galenti" />
+      <Head title="Motion — J Galenti">
+        <meta
+          name="description"
+          content="The motion vocabulary: token-driven durations and eases, a two-layer reduced-motion gate, and the fx devices that ride it."
+        />
+      </Head>
       <DocShell nav={nav}>
         <div className={styles.content}>
           <h1 className={styles.heading}>Motion</h1>

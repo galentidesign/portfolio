@@ -8,7 +8,12 @@ import noteStyles from './era-note.module.css'
 export default function ReactEra() {
   return (
     <>
-      <Head title="The React era — J Galenti" />
+      <Head title="The React era — J Galenti">
+        <meta
+          name="description"
+          content="Chapter two, 2019–2023: component thinking arrives — flat material, a Storybook-era component sheet, and the systems habit that never left."
+        />
+      </Head>
       <main id="main" className={styles.chapter}>
         <EraRetheme
           skin="react-era"

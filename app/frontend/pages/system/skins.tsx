@@ -36,7 +36,12 @@ export default function SkinsPage({ nav }: Props) {
 
   return (
     <>
-      <Head title="Skins — J Galenti" />
+      <Head title="Skins — J Galenti">
+        <meta
+          name="description"
+          content="Every skin is one JSON file — the additive-skin rule, the era palettes, and the registry that re-themes the whole site."
+        />
+      </Head>
       <DocShell nav={nav}>
         <div className={styles.content}>
           <h1 className={styles.heading}>Skins</h1>
