@@ -16,24 +16,35 @@ export function ReactArtifact() {
         <span>components / Button / all-states</span>
         <span>storybook 4.1</span>
       </div>
-      <div
-        inert
-        className={styles['sheet-body']}
-        data-testid="react-artifact"
-        data-retheme-stagger="surface"
-      >
-        <div className={styles['sheet-row']}>
-          <Button>Primary</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button disabled>Disabled</Button>
+      <div className={styles['sheet-split']}>
+        {/* Story-tree rail — the Storybook-4 anatomy that named the sheet.
+            Decorative fiction, same rules as the chrome bar. */}
+        <div className={styles['sheet-nav']} aria-hidden="true" data-retheme-stagger="chrome">
+          <span className={styles['sheet-nav-item']} data-active="true">
+            Button
+          </span>
+          <span className={styles['sheet-nav-item']}>Badge</span>
+          <span className={styles['sheet-nav-item']}>Form Field</span>
         </div>
-        <div className={styles['sheet-row']}>
-          <Badge tone="positive">Passing</Badge>
-          <Badge tone="caution">In review</Badge>
-          <Badge tone="neutral">Draft</Badge>
-        </div>
-        <div className={styles['sheet-row']}>
-          <FormField label="Prop: label" placeholder="Type to filter stories…" />
+        <div
+          inert
+          className={styles['sheet-body']}
+          data-testid="react-artifact"
+          data-retheme-stagger="surface"
+        >
+          <div className={styles['sheet-row']}>
+            <Button>Primary</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Button disabled>Disabled</Button>
+          </div>
+          <div className={styles['sheet-row']}>
+            <Badge tone="positive">Passing</Badge>
+            <Badge tone="caution">In review</Badge>
+            <Badge tone="neutral">Draft</Badge>
+          </div>
+          <div className={styles['sheet-row']}>
+            <FormField label="Prop: label" placeholder="Type to filter stories…" />
+          </div>
         </div>
       </div>
     </div>

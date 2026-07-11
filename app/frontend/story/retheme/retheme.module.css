@@ -120,6 +120,19 @@
   text-shadow: 0 0 12px color-mix(in srgb, var(--color-glow-ink) 45%, transparent);
 }
 
+/* Terminal session dressing — a prompt glyph opens every line and a STATIC
+   cursor block closes the last one (never blinks: the band header's WCAG
+   2.3.1 static-only rule binds). The `/ ''` alt keeps both silent to AT. */
+.band[data-retheme-treatment='terminal'] .band-caption::before {
+  content: '❯ ' / '';
+  color: var(--color-accent);
+}
+
+.band[data-retheme-treatment='terminal'] .band-caption:last-child::after {
+  content: '▌' / '';
+  color: var(--color-accent);
+}
+
 /* Visually hidden live region — announces the theme change politely. */
 .sr-announce {
   position: absolute;

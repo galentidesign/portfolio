@@ -28,6 +28,48 @@
   color: var(--color-ink-muted);
 }
 
+/* Story-tree rail beside the canvas — collapses under the canvas on narrow
+   viewports so the sheet never squeezes the live components. */
+.sheet-split {
+  display: grid;
+}
+
+@media (--bp-md) {
+  .sheet-split {
+    grid-template-columns: 9rem minmax(0, 1fr);
+  }
+}
+
+.sheet-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-line);
+  font-family: var(--type-mono-family);
+  font-size: var(--type-small-size);
+  color: var(--color-ink-muted);
+  background-color: var(--color-surface);
+}
+
+@media (--bp-md) {
+  .sheet-nav {
+    border-bottom: none;
+    border-right: 1px solid var(--color-line);
+  }
+}
+
+.sheet-nav-item {
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+  border-radius: var(--radius-control);
+}
+
+.sheet-nav-item[data-active] {
+  background-color: var(--color-accent-muted);
+  color: var(--color-ink);
+}
+
 .sheet-body {
   padding: var(--space-4);
   display: flex;

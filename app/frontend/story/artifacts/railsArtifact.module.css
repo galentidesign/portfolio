@@ -20,6 +20,14 @@
   padding-block: var(--space-2);
   padding-inline: var(--space-4);
   background-color: var(--color-surface);
+
+  /* 2014 chrome wore a faint vertical sheen — a static one-stop gradient
+     toward the sunken surface, the era's glossy-toolbar idiom. */
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--color-surface-sunken) 65%, transparent) 100%
+  );
   border-bottom: 1px solid var(--color-line);
 }
 
@@ -35,6 +43,21 @@
   height: 0.75rem;
   border-radius: var(--radius-pill);
   background-color: var(--color-line);
+}
+
+/* Traffic lights — the window dots wear the semantic status trio (decorative,
+   inside an aria-hidden bar; each skin's own status colors keep the period
+   voice: muted flat trio in rails-era, material tones in react-era). */
+.chrome-dot:nth-child(1) {
+  background-color: var(--color-critical);
+}
+
+.chrome-dot:nth-child(2) {
+  background-color: var(--color-caution);
+}
+
+.chrome-dot:nth-child(3) {
+  background-color: var(--color-positive);
 }
 
 .chrome-address {
