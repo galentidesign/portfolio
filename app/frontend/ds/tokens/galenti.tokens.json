@@ -23,6 +23,22 @@
         "style": "normal",
         "display": "swap",
         "preload": false
+      },
+      {
+        "family": "Playfair Display",
+        "file": "playfair-display-latin-wght.woff2",
+        "weight": "400 900",
+        "style": "normal",
+        "display": "swap",
+        "preload": false
+      },
+      {
+        "family": "Playfair Display",
+        "file": "playfair-display-latin-wght-italic.woff2",
+        "weight": "400 900",
+        "style": "italic",
+        "display": "swap",
+        "preload": false
       }
     ]
   },
