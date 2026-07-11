@@ -166,6 +166,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
+  /* Structural micro-values for the × glyph — optical size/weight, not type
+     ramp members (matches Dialog's close-icon convention). */
   font-size: 1.5rem;
   line-height: 1;
   font-weight: 600;

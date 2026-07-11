@@ -55,6 +55,7 @@
   letter-spacing: var(--type-small-tracking);
   color: var(--color-ink-muted);
   padding-inline: var(--space-3);
+  padding-block: var(--space-2);
   text-align: start;
   white-space: nowrap;
 
@@ -139,6 +140,10 @@
   letter-spacing: var(--type-body-tracking);
   color: var(--color-ink);
   padding-inline: var(--space-3);
+
+  /* Row height carries single-line rhythm (--density-row); the block pad
+     only matters when a cell wraps — wrapped rows stop touching the rules. */
+  padding-block: var(--space-2);
   text-align: start;
 }
 

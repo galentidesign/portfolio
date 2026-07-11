@@ -78,7 +78,13 @@
   line-height: var(--type-mono-line);
   letter-spacing: var(--type-mono-tracking);
   color: var(--color-ink);
-  outline: none;
+}
+
+/* The pre is a focusable scroll region (tabIndex=0) — it owes the focus
+   recipe like every focusable; :focus-visible keeps click focus quiet. */
+.pre:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 /* ── Visually Hidden Live Region ──────────────────────────────────────────── */

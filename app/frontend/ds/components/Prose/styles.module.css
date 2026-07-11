@@ -41,6 +41,8 @@
   font-family: var(--type-body-family);
   font-size: var(--type-body-size);
   font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  letter-spacing: var(--type-title-tracking);
   margin-block: var(--space-5) var(--space-2);
 }
 

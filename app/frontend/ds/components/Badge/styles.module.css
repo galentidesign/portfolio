@@ -26,7 +26,10 @@
 
 .badge[data-size='sm'] {
   padding-inline: var(--space-2);
-  padding-block: 0;
+
+  /* 2px structural — optical pill inset between space-0 and space-1; zero
+     left sm badges riding bare line-height against the pill edge. */
+  padding-block: 2px;
 }
 
 /* ── Tone: neutral ────────────────────────────────────────────────────────── */

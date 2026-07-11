@@ -21,7 +21,6 @@
   align-items: center;
   justify-content: center;
   color: var(--color-ink-faint);
-  margin-bottom: var(--space-2);
 }
 
 /* ── Title (styled as paragraph, not a heading) ───────────────────────────── */
