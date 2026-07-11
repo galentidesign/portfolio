@@ -10,7 +10,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-9);
   margin-inline: auto;
   max-width: 56rem;
   padding-inline: var(--density-pad);
@@ -23,11 +23,11 @@
 }
 
 .heading {
-  font-family: var(--type-heading-family);
-  font-size: var(--type-heading-size);
-  font-weight: var(--type-heading-weight);
-  letter-spacing: var(--type-heading-tracking);
-  line-height: var(--type-heading-line);
+  font-family: var(--type-display-family);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  letter-spacing: var(--type-display-tracking);
+  line-height: var(--type-display-line);
   margin: 0;
 }
 
@@ -38,11 +38,11 @@
 }
 
 .section-heading {
-  font-family: var(--type-title-family);
-  font-size: var(--type-title-size);
-  font-weight: var(--type-title-weight);
-  letter-spacing: var(--type-title-tracking);
-  line-height: var(--type-title-line);
+  font-family: var(--type-heading-family);
+  font-size: var(--type-heading-size);
+  font-weight: var(--type-heading-weight);
+  letter-spacing: var(--type-heading-tracking);
+  line-height: var(--type-heading-line);
   margin: 0;
 }
 
