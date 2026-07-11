@@ -79,7 +79,16 @@ done < <(git ls-files -co --exclude-standard -- '*.pdf' '*.PDF')
 # Identity scan: every author/committer in history must be the public identity.
 ALLOWED_EMAIL="299908360+galentidesign@users.noreply.github.com"
 ALLOWED_NAME="J Galenti"
-if git rev-parse --verify HEAD >/dev/null 2>&1 && bad=$(git log --format='%an <%ae>%n%cn <%ce>' | sort -u | grep -v -F "$ALLOWED_NAME <$ALLOWED_EMAIL>"); then
+# On a pull_request, actions/checkout leaves HEAD at the merge commit GitHub
+# synthesizes — authored with the actor's account email, committed by GitHub —
+# which never lands in the repo (PRs merge fast-forward). Scan its real head
+# (HEAD^2) so those ephemeral identities don't trip the gate; pushes and local
+# runs scan HEAD unchanged.
+SCAN_REF=HEAD
+if [[ "${GITHUB_EVENT_NAME:-}" == "pull_request" ]] && git rev-parse -q --verify HEAD^2 >/dev/null; then
+  SCAN_REF=HEAD^2
+fi
+if git rev-parse --verify HEAD >/dev/null 2>&1 && bad=$(git log --format='%an <%ae>%n%cn <%ce>' "$SCAN_REF" | sort -u | grep -v -F "$ALLOWED_NAME <$ALLOWED_EMAIL>"); then
   echo "LEAK: non-public git identity in history:"
   echo "$bad"
   STATUS=1
