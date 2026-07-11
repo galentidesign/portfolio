@@ -59,7 +59,8 @@
     },
     "font": {
       "sans": "'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-      "mono": "'Source Code Pro', Consolas, Monaco, 'Andale Mono', monospace"
+      "mono": "'Source Code Pro', Consolas, Monaco, 'Andale Mono', monospace",
+      "serif": "Georgia, 'Times New Roman', serif"
     }
   },
   "semantic": {
@@ -130,7 +131,17 @@
       "mono-size": "0.8125rem",
       "mono-weight": "400",
       "mono-line": "1.5",
-      "mono-tracking": "0em"
+      "mono-tracking": "0em",
+      "statement-family": "{raw.font.serif}",
+      "statement-size": "clamp(2rem, 1.4rem + 2.1vw, 3.25rem)",
+      "statement-weight": "400",
+      "statement-line": "1.2",
+      "statement-tracking": "0em",
+      "intertitle-family": "{raw.font.serif}",
+      "intertitle-size": "clamp(1.5rem, 1.2rem + 0.75vw, 1.9375rem)",
+      "intertitle-weight": "400",
+      "intertitle-line": "1.35",
+      "intertitle-tracking": "0em"
     },
     "density": {
       "row": "2.25rem",

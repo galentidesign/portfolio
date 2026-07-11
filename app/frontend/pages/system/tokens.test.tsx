@@ -59,11 +59,11 @@ describe('TokensPage', () => {
     expect(cards).toHaveLength(semanticTokens.color.length)
   })
 
-  it('renders eight type specimens', () => {
+  it('renders ten type specimens', () => {
     renderPage()
     const typeList = screen.getByRole('list', { name: 'Type role specimens' })
     const rows = within(typeList).getAllByRole('listitem')
-    expect(rows).toHaveLength(8)
+    expect(rows).toHaveLength(10)
   })
 
   it('renders the night zone specimen inside a data-zone wrapper', () => {

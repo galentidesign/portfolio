@@ -82,7 +82,8 @@
     },
     "font": {
       "sans": "'Hanken Grotesk', system-ui, -apple-system, sans-serif",
-      "mono": "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace"
+      "mono": "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace",
+      "serif": "'Playfair Display', Georgia, serif"
     }
   },
   "semantic": {
@@ -153,7 +154,17 @@
       "mono-size": "0.875rem",
       "mono-weight": "420",
       "mono-line": "1.55",
-      "mono-tracking": "0em"
+      "mono-tracking": "0em",
+      "statement-family": "{raw.font.serif}",
+      "statement-size": "clamp(2rem, 1.4rem + 2.1vw, 3.25rem)",
+      "statement-weight": "400",
+      "statement-line": "1.2",
+      "statement-tracking": "0em",
+      "intertitle-family": "{raw.font.serif}",
+      "intertitle-size": "clamp(1.5rem, 1.2rem + 0.75vw, 1.9375rem)",
+      "intertitle-weight": "400",
+      "intertitle-line": "1.35",
+      "intertitle-tracking": "0em"
     },
     "density": {
       "row": "2.75rem",
