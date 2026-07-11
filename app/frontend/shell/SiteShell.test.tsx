@@ -117,8 +117,13 @@ describe('SiteShell — escape hatch visibility', () => {
     expect(screen.queryByTestId('escape-hatch')).not.toBeInTheDocument()
   })
 
-  it('hatch links to "/work"', () => {
+  it('hatch on the home story jumps in-page to beat 07 (#the-work)', () => {
     renderShell('/')
+    expect(screen.getByTestId('escape-hatch')).toHaveAttribute('href', '#the-work')
+  })
+
+  it('hatch on a chapter route still navigates to "/work"', () => {
+    renderShell('/story/rails-era')
     expect(screen.getByTestId('escape-hatch')).toHaveAttribute('href', '/work')
   })
 })

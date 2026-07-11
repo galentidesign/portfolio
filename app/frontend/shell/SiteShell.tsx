@@ -65,17 +65,40 @@ export function SiteShell({ children }: { children: ReactNode }) {
           labeled nav wrapper keeps the link inside a landmark (axe: region). */}
       {isStoryRoute && (
         <nav aria-label="Escape hatch" className={styles['hatch-nav']}>
-          <Link
-            href="/work"
-            className={styles.hatch}
-            data-testid="escape-hatch"
-            onClick={() => {
-              markSkimVia('hatch')
-              track('mode_switch', { to: 'skim', via: 'hatch' })
-            }}
-          >
-            {hatchLabel}
-          </Link>
+          {currentPath === '/' ? (
+            // On the nine-beat home the proof lives on the page itself — the
+            // hatch is an in-page jump to beat 07 (thesis → proof in one
+            // action, no route change). Chapter routes keep navigating.
+            <a
+              href="#the-work"
+              className={styles.hatch}
+              data-testid="escape-hatch"
+              onClick={(e) => {
+                e.preventDefault()
+                markSkimVia('hatch')
+                track('mode_switch', { to: 'skim', via: 'hatch' })
+                const target = document.getElementById('the-work')
+                if (target !== null) {
+                  target.focus({ preventScroll: true })
+                  target.scrollIntoView()
+                }
+              }}
+            >
+              {hatchLabel}
+            </a>
+          ) : (
+            <Link
+              href="/work"
+              className={styles.hatch}
+              data-testid="escape-hatch"
+              onClick={() => {
+                markSkimVia('hatch')
+                track('mode_switch', { to: 'skim', via: 'hatch' })
+              }}
+            >
+              {hatchLabel}
+            </Link>
+          )}
         </nav>
       )}
 

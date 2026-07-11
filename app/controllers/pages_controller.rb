@@ -2,7 +2,10 @@
 
 class PagesController < InertiaController
   def home
-    render inertia: "home/index"
+    # Beat 07's gallery band — cards are featured-first already; the beat
+    # renders placeholder-aware covers (and a quiet link when the band is
+    # empty), so this stays correct before any real asset lands.
+    render inertia: "home/index", props: { galleryBand: ProjectGallery.cards.first(3) }
   end
 
   def resume
