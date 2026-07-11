@@ -64,6 +64,7 @@ tokens:
   - --color-line
   - --color-surface
   - --color-surface-overlay
+  - --color-surface-sunken
   - --density-control
   - --density-pad
   - --density-row
@@ -142,8 +143,9 @@ a11y:
       The first option is auto-highlighted on palette open and re-highlighted after every query change,
       enabling the "type-then-Enter" gesture without arrow presses.
   contrast: >-
-    Nav uses ink-on-surface and muted-ink-on-surface; the current item's accent underline pairs ink with accent.
-    Palette uses surface-overlay background with ink and muted-ink text; active options highlight with accent-muted background.
+    Nav uses ink-on-surface and muted-ink-on-surface; links hover to full ink; the current item's accent underline pairs ink with accent.
+    Palette uses surface-overlay background with ink and muted-ink text; pointer hover repaints options surface-sunken while the roving
+    active option keeps accent-muted, so keyboard and pointer position stay distinct.
     All color pairs pass WCAG contrast in every shipped skin.
 
 usage:

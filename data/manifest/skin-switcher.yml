@@ -22,6 +22,7 @@ tokens:
   - --color-ink-muted
   - --color-line-strong
   - --color-surface
+  - --color-surface-sunken
   - --density-control-sm
   - --motion-duration-xs
   - --motion-ease-move
@@ -59,10 +60,12 @@ a11y:
       data-checked attribute for visual indication without requiring aria-checked
       override.
   contrast: >-
-    Unchecked text uses --color-ink-muted on --color-surface; checked text uses
-    --color-ink on --color-accent-muted (a pair documented in the design token
-    registry). Focus indication uses --color-focus (a dedicated semantic outline
-    color guaranteed WCAG-compliant in every shipped skin).
+    Unchecked text uses --color-ink-muted on --color-surface; hover repaints an
+    unchecked item --color-ink on --color-surface-sunken (both documented
+    pairings); checked text uses --color-ink on --color-accent-muted (a pair
+    documented in the design token registry). Focus indication uses
+    --color-focus (a dedicated semantic outline color guaranteed
+    WCAG-compliant in every shipped skin).
 
 usage:
   do:

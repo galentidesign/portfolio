@@ -8,7 +8,9 @@
   box-shadow: var(--shadow-raised);
   padding: var(--density-pad);
   text-decoration: none;
-  transition: transform var(--motion-duration-xs) var(--motion-ease-move);
+  transition:
+    transform var(--motion-duration-xs) var(--motion-ease-move),
+    box-shadow var(--motion-duration-sm) var(--motion-ease-enter);
 }
 
 /* ── Flush: removes inner padding ──────────────────────────────────────────── */
@@ -19,8 +21,16 @@
 
 /* ── Interactive: applies hover effect ─────────────────────────────────────── */
 
-.card[data-interactive]:hover {
+/* The lift answers keyboard focus exactly as it answers hover — pointer
+   users aren't the only ones owed the affordance. */
+.card[data-interactive]:hover,
+.card[data-interactive]:focus-visible {
   transform: translateY(-1px);
+  box-shadow: var(--shadow-overlay);
+}
+
+.card[data-interactive]:active {
+  transform: translateY(0);
 }
 
 /* ── Focus ─────────────────────────────────────────────────────────────────── */

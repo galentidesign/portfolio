@@ -48,17 +48,22 @@
   transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
 }
 
-.copy-button:hover {
-  background-color: var(--color-surface-sunken);
-}
-
-.copy-button:active {
-  transform: translateY(1px);
-}
-
 .copy-button:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+.copy-button:disabled {
+  color: var(--color-ink-faint);
+  cursor: not-allowed;
+}
+
+.copy-button:hover:not(:disabled) {
+  background-color: var(--color-surface-sunken);
+}
+
+.copy-button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 /* ── Pre / Code ───────────────────────────────────────────────────────────── */

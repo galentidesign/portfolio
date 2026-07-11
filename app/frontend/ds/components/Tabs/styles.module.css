@@ -43,6 +43,10 @@
   color: var(--color-ink);
 }
 
+.tab:active {
+  transform: translateY(1px);
+}
+
 .tab[aria-selected='true'] {
   color: var(--color-ink);
   border-bottom-color: var(--color-accent);

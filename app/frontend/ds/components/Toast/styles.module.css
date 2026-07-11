@@ -142,6 +142,17 @@
 
   /* Focus recipe */
   border-radius: var(--radius-control);
+  transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+/* currentColor wash — tone-agnostic hover that works on all four tone
+   surfaces without inventing a color pairing per tone. */
+.dismiss-button:hover {
+  background-color: color-mix(in srgb, currentcolor 10%, transparent);
+}
+
+.dismiss-button:active {
+  transform: translateY(1px);
 }
 
 .dismiss-button:focus-visible {

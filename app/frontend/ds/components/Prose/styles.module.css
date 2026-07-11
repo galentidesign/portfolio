@@ -74,6 +74,11 @@
   color: var(--color-accent);
   text-decoration: underline;
   border-radius: var(--radius-control);
+  transition: color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+.prose a:hover {
+  color: var(--color-ink);
 }
 
 .prose a:focus-visible {

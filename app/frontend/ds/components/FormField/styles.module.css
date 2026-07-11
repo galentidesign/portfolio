@@ -83,6 +83,12 @@
   border-color: var(--color-critical);
 }
 
+/* The critical border survives focus — the focus ring (outline) already
+   carries the focus signal, so focus must not repaint the invalid cue. */
+.field[data-invalid] .control:focus-visible {
+  border-color: var(--color-critical);
+}
+
 /* ── Hint text ─────────────────────────────────────────────────────── */
 
 .hint {

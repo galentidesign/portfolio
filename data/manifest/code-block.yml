@@ -24,6 +24,7 @@ props:
 tokens:
   - --color-focus
   - --color-ink
+  - --color-ink-faint
   - --color-ink-muted
   - --color-line
   - --color-line-strong
@@ -69,7 +70,8 @@ a11y:
   contrast: >-
     Uses the documented ink-on-surface (code text), ink-muted-on-surface-sunken
     (label text), and focus-on-surface (button focus ring) semantic token
-    pairings.
+    pairings. The disabled copy button uses ink-faint — a non-interactive
+    state exempt from the 4.5:1 text requirement by WCAG 1.4.3.
 
 usage:
   do:

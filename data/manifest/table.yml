@@ -51,6 +51,7 @@ tokens:
   - --color-ink-muted
   - --color-line
   - --color-line-strong
+  - --color-surface-sunken
   - --density-control-sm
   - --density-row
   - --motion-duration-xs
@@ -96,9 +97,10 @@ a11y:
       one cell spanning all columns.
   contrast: >-
     Headers and captions use --color-ink-muted on --color-surface (per the
-    default skin). Body cells use --color-ink on --color-surface. Focus
-    indicators use --color-focus. Borders use --color-line and
-    --color-line-strong for visual hierarchy.
+    default skin). Body cells use --color-ink on --color-surface. Row hover
+    repaints the row --color-surface-sunken — ink and muted-ink on sunken are
+    documented pairings. Focus indicators use --color-focus. Borders use
+    --color-line and --color-line-strong for visual hierarchy.
 
 usage:
   do:

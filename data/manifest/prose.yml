@@ -26,6 +26,8 @@ tokens:
   - --color-line
   - --color-line-strong
   - --color-surface-sunken
+  - --motion-duration-xs
+  - --motion-ease-move
   - --radius-control
   - --radius-surface
   - --space-1
@@ -64,9 +66,10 @@ a11y:
       to an accessible secondary color; code snippets invert onto a surface
       token.
   contrast: >-
-    Body text uses ink-on-surface, links use accent-on-surface with underline,
-    list markers fade to ink-faint, blockquotes use ink-muted with a strong
-    border — all documented token pairings.
+    Body text uses ink-on-surface, links use accent-on-surface with underline
+    (hover promotes to ink-on-surface, keeping the underline), list markers
+    fade to ink-faint, blockquotes use ink-muted with a strong border — all
+    documented token pairings.
 
 usage:
   do:

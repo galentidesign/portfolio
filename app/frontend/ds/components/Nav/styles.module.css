@@ -105,6 +105,10 @@
   text-decoration: none;
 }
 
+.nav-link:hover {
+  color: var(--color-ink);
+}
+
 .nav-link[aria-current='page'],
 .nav-link[data-current] {
   color: var(--color-ink);
@@ -280,6 +284,13 @@
   color: var(--color-ink-muted);
   cursor: pointer;
   transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+/* Pointer hover reads sunken; the roving [data-active] cursor keeps its own
+   accent-muted voice, so keyboard position and mouse position stay legible
+   as two different things. */
+.palette-option:hover {
+  background-color: var(--color-surface-sunken);
 }
 
 .palette-option[data-active] {

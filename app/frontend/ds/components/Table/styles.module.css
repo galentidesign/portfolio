@@ -120,6 +120,13 @@
 
   /* 1px hairline row separator */
   border-bottom: 1px solid var(--color-line);
+  transition: background-color var(--motion-duration-xs) var(--motion-ease-move);
+}
+
+/* Scanning aid — data rows answer the pointer even though they're not
+   interactive; sunken keeps text pairings on documented surfaces. */
+.tr:hover {
+  background-color: var(--color-surface-sunken);
 }
 
 /* ── Body cells ────────────────────────────────────────────────────────────── */

@@ -48,6 +48,13 @@
   outline-offset: 2px;
 }
 
+/* Unchecked segments answer the pointer; the checked segment keeps its
+   accent-muted voice untouched. */
+.item:hover:not([data-checked]) {
+  background-color: var(--color-surface-sunken);
+  color: var(--color-ink);
+}
+
 /* ── Input: visually hidden ────────────────────────────────────────────────── */
 
 .item input {

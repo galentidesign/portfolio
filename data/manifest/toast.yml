@@ -61,7 +61,9 @@ tokens:
   - --color-surface-raised
   - --density-control-sm
   - --motion-duration-sm
+  - --motion-duration-xs
   - --motion-ease-enter
+  - --motion-ease-move
   - --radius-control
   - --radius-surface
   - --shadow-overlay
@@ -101,7 +103,9 @@ a11y:
     Neutral and line-bordered toasts use ink-on-surface pairs; positive, caution,
     and critical use their respective semantic surface and ink token pairs
     (positive-surface + positive, caution-surface + caution, critical-surface +
-    critical), all verified WCAG-passing in every shipped skin.
+    critical), all verified WCAG-passing in every shipped skin. The dismiss
+    hover is a 10% currentcolor wash — it deepens each tone's own pairing
+    rather than introducing a new one.
 
 usage:
   do:

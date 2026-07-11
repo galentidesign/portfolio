@@ -35,9 +35,12 @@ tokens:
   - --color-line
   - --color-surface-raised
   - --density-pad
+  - --motion-duration-sm
   - --motion-duration-xs
+  - --motion-ease-enter
   - --motion-ease-move
   - --radius-surface
+  - --shadow-overlay
   - --shadow-raised
   - --space-3
   - --space-4
