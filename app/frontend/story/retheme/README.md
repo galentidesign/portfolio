@@ -132,3 +132,47 @@ const ERA_FONTS = ['Source Sans 3', 'Source Code Pro'] as const // module-level
   (default: the skin's registry label) — narrative parity for SR users.
 - The boundary must not sit inside a transformed ancestor (the sweep is
   `position: fixed`).
+
+## ScrollRetheme — the ladder variant (Home-as-Story)
+
+`ScrollRethemeStory` + `ScrollRetheme` promote the same mechanism to a single
+continuous page (the nine-beat home). Boundaries are zero-height markers
+placed between beats; one rAF-throttled scroll listener picks the active
+segment (last marker above the viewport centre) and applies its skin:
+
+```tsx
+<ScrollRethemeStory>
+  …beats 00–02 (base skin)…
+  <ScrollRetheme skin="rails-era" treatment="crt" caption="loading 2014…" warmFonts={…} />
+  …beat 03…
+  <ScrollRetheme skin="react-era" treatment="webpack" caption="webpack: compiling…" />
+  …beat 04…
+  <ScrollRetheme skin="agentic" treatment="terminal" caption={KILN_BOOT} />
+  …beat 05…
+  <ScrollRetheme /> {/* sweep home — returns to the story's base skin */}
+  …beats 06–08 (base skin)…
+</ScrollRethemeStory>
+```
+
+Semantics, relative to EraRetheme (contracts in `ScrollRetheme.test.tsx`):
+
+- **Same persistence contract** — never writes localStorage; unmount restores
+  the entry skin unless storage changed mid-story or the live skin is no
+  longer ladder-applied; a mid-story explicit re-pick is ADOPTED as the new
+  base (the sweep-home boundary grounds on it) and later boundaries still
+  retheme — each crossing is a fresh story moment, exactly like entering a
+  chapter after an explicit pick.
+- **Downward crossings** play the era-crossing band (`playRethemeCrossing`,
+  same motion chunk; the settle root is the boundary's next DOM sibling —
+  the beat being entered). **Upward scrubs swap instantly** — scrubbing back
+  is navigation, not narrative. Reduced motion: every crossing is instant,
+  and the chunk is never downloaded (prefetch is gated on the live pref).
+- **Prefetch on approach**: the motion chunk loads when the first marker
+  comes within 1.5 viewports — never at page mount, so the LCP route pays
+  zero motion bytes up front. A crossing that beats the chunk (or a chunk
+  error) swaps instantly — the moment is never blocked on network.
+- The sweep-home boundary (`skin` omitted) binds its band interior to the
+  story's live base skin and takes no era treatment.
+- Markers must sit at the top level of the scroll flow (bands are
+  `position: fixed` — no transformed ancestors), each directly before the
+  beat section it re-themes.

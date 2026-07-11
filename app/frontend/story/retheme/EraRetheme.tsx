@@ -9,15 +9,10 @@ import {
   type SkinName,
 } from '@/ds/tokens/generated/skins'
 import type { RethemeMotionHandle } from './motion'
+import { RethemeBand, type RethemeTreatment } from './RethemeBand'
 import styles from './retheme.module.css'
 
-/**
- * Visual dressing of the era-crossing band (all static CSS — WCAG 2.3.1):
- * - 'crt'      — scanlines, vignette, chromatic caption (the 2014 tube).
- * - 'webpack'  — skeleton-shimmer stripes, build-log caption (the 2018 bundler).
- * - 'terminal' — kiln-glow floor, ember hairlines, streaming mono lines.
- */
-export type RethemeTreatment = 'crt' | 'webpack' | 'terminal'
+export type { RethemeTreatment } from './RethemeBand'
 
 export interface EraRethemeProps {
   /** The era skin this story boundary applies while mounted. */
@@ -165,32 +160,7 @@ export function EraRetheme({
 
   return (
     <div ref={containerRef} data-testid="era-retheme" data-era-skin={skin}>
-      {/* Era-crossing band: inert at rest (opacity 0, pointer-events none) —
-          only the motion layer ever shows or moves it. The interior binds to
-          the ERA skin's night zone (data-skin + data-zone on one element), so
-          the crossing frame renders in the destination era's dark palette
-          (CRT phosphor, material dark, deep kiln — per treatment) even while
-          the page around it still wears the outgoing skin. */}
-      <div
-        aria-hidden="true"
-        data-retheme-band
-        data-retheme-treatment={treatment}
-        className={styles.band}
-      >
-        <div className={styles['band-interior']} data-skin={skin} data-zone="night">
-          <div className={styles['band-captions']}>
-            {captionLines.map((line, lineIndex) => (
-              <p key={lineIndex} className={styles['band-caption']}>
-                {Array.from(line).map((char, i) => (
-                  <span key={i} data-retheme-caption-char>
-                    {char}
-                  </span>
-                ))}
-              </p>
-            ))}
-          </div>
-        </div>
-      </div>
+      <RethemeBand skin={skin} treatment={treatment} captionLines={captionLines} />
       <div role="status" className={styles['sr-announce']}>
         {announced}
       </div>

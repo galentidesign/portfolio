@@ -80,14 +80,21 @@ function invertEase(ease: gsap.EaseFunction, target: number): number {
   return (lo + hi) / 2
 }
 
+export interface RethemeCrossingOptions {
+  /** Called exactly once, as the band's centre crosses the viewport centre. */
+  onSwap: () => void
+  /**
+   * Root whose [data-retheme-stagger] members ride the post-swap settle.
+   * ScrollRethemeStory passes the beat section entered by the crossing;
+   * omit for a settle-free crossing.
+   */
+  settleRoot?: Element | null
+}
+
 export function mountRethemeMotion(
   container: HTMLElement,
   { onSwap }: RethemeMotionOptions,
 ): RethemeMotionHandle {
-  // Register token eases from the CURRENT (pre-swap) skin — the band travels
-  // on the outgoing era's drama curve.
-  registerTokenEases()
-
   const band = container.querySelector<HTMLElement>('[data-retheme-band]')
   const captionChars = Array.from(
     container.querySelectorAll<HTMLElement>('[data-retheme-caption-char]'),
@@ -95,6 +102,36 @@ export function mountRethemeMotion(
   const staggerTargets = Array.from(
     container.querySelectorAll<HTMLElement>('[data-retheme-stagger]'),
   )
+  return buildCrossing(band, captionChars, staggerTargets, onSwap)
+}
+
+/**
+ * Scroll-boundary variant (ScrollRethemeStory): drives one boundary's own
+ * band through the identical era-crossing choreography. The caption chars
+ * live inside the band; settle targets come from the entered beat section.
+ * Same handle contract as mountRethemeMotion — destroy() never calls onSwap.
+ */
+export function playRethemeCrossing(
+  band: HTMLElement,
+  { onSwap, settleRoot }: RethemeCrossingOptions,
+): RethemeMotionHandle {
+  const captionChars = Array.from(band.querySelectorAll<HTMLElement>('[data-retheme-caption-char]'))
+  const staggerTargets = settleRoot
+    ? Array.from(settleRoot.querySelectorAll<HTMLElement>('[data-retheme-stagger]'))
+    : []
+  return buildCrossing(band, captionChars, staggerTargets, onSwap)
+}
+
+function buildCrossing(
+  band: HTMLElement | null,
+  captionChars: HTMLElement[],
+  staggerTargets: HTMLElement[],
+  onSwap: () => void,
+): RethemeMotionHandle {
+  // Register token eases from the CURRENT (pre-swap) skin — the band travels
+  // on the outgoing era's drama curve.
+  registerTokenEases()
+
   // Stable sort: token-family group rank first, DOM order within a group.
   const settleOrder = [...staggerTargets].sort((a, b) => rankOf(a) - rankOf(b))
 
