@@ -6,7 +6,13 @@ import { AssemblyOpening } from '@/story/assembly/AssemblyOpening'
 import { PrologueBeat } from '@/story/prologue/PrologueBeat'
 import { ScrollRetheme, ScrollRethemeStory } from '@/story/retheme'
 import { ScrollProgress } from '@/shell/story/ScrollProgress'
-import { RailsBeat, ReactBeat, AgenticBeat, WordmarkBeat, WorkBeat, CloseBeat } from '@/story/beats'
+import { RailsBeat } from '@/story/beats/RailsBeat'
+import { ReactBeat } from '@/story/beats/ReactBeat'
+import { AgenticBeat } from '@/story/beats/AgenticBeat'
+import { WordmarkBeat } from '@/story/beats/WordmarkBeat'
+import { WorkBeat } from '@/story/beats/WorkBeat'
+import { CloseBeat } from '@/story/beats/CloseBeat'
+import { IslandMount } from '@/story/beats/IslandMount'
 import type { ProjectCard } from '@/gallery/types'
 import styles from './styles.module.css'
 
@@ -37,20 +43,49 @@ interface HomeProps {
  * routes survive as deep-dives; the escape hatch jumps straight to beat 07.
  */
 export default function Home({ galleryBand }: HomeProps) {
-  // Beat 00 — the drift atmosphere and the thesis write-in arrive after
-  // load + idle: the full statement is the LCP paint, the motion replays it.
+  // Beat 00 — the atmosphere (drift + thesis write-in) arrives after
+  // load + idle AND the visitor's first gesture. The full statement is the
+  // LCP paint, and LCP only stops observing at first input — mounting
+  // animated content into the LCP viewport (or replaying its largest
+  // element) before then re-times the metric to the end of the animation.
+  // A real visitor's first scroll/touch arrives almost immediately; an
+  // input-less session simply keeps the finished, still statement.
   const liftoffRef = useFx<HTMLElement>((fx, el) => {
     const handles: FxHandle[] = []
-    const cancelIdle = whenIdle(() => {
+    let idleReady = false
+    let inputSeen = false
+    let played = false
+
+    const INPUT_EVENTS = ['pointerdown', 'pointermove', 'wheel', 'touchstart', 'keydown', 'scroll']
+    const playWhenReady = () => {
+      if (played || !idleReady || !inputSeen) return
+      played = true
+      for (const type of INPUT_EVENTS) window.removeEventListener(type, onInput)
       handles.push(fx.mountDrift(el, { preset: 'bone' }))
       const thesis = el.querySelector<HTMLElement>('[data-thesis]')
       if (thesis !== null) {
-        handles.push(fx.mountTypewriter(thesis, { charInterval: 0.022, maxDuration: 2.6 }))
+        handles.push(
+          fx.mountTypewriter(thesis, { charInterval: 0.11, maxDuration: 2.6, granularity: 'word' }),
+        )
       }
+    }
+    const onInput = () => {
+      inputSeen = true
+      playWhenReady()
+    }
+    for (const type of INPUT_EVENTS) {
+      window.addEventListener(type, onInput, { passive: true })
+    }
+
+    const cancelIdle = whenIdle(() => {
+      idleReady = true
+      playWhenReady()
     })
+
     return {
       destroy: () => {
         cancelIdle()
+        for (const type of INPUT_EVENTS) window.removeEventListener(type, onInput)
         for (const handle of handles) handle.destroy()
       },
     }
@@ -98,14 +133,18 @@ export default function Home({ galleryBand }: HomeProps) {
             caption="loading 2014…"
             warmFonts={RAILS_FONTS}
           />
-          <RailsBeat />
+          <IslandMount placeholderHeight="72rem">
+            <RailsBeat />
+          </IslandMount>
 
           <ScrollRetheme
             skin="react-era"
             treatment="webpack"
             caption="webpack: compiling… ⚡ built in 2.4s"
           />
-          <ReactBeat />
+          <IslandMount placeholderHeight="64rem">
+            <ReactBeat />
+          </IslandMount>
 
           <ScrollRetheme
             skin="agentic"
@@ -113,17 +152,25 @@ export default function Home({ galleryBand }: HomeProps) {
             caption={KILN_BOOT}
             warmFonts={AGENTIC_FONTS}
           />
-          <AgenticBeat />
+          <IslandMount placeholderHeight="64rem">
+            <AgenticBeat />
+          </IslandMount>
 
           {/* ── 06 · Resolution — sweep home to bone, the wordmark moment ── */}
           <ScrollRetheme caption="— present day" />
-          <WordmarkBeat />
+          <IslandMount placeholderHeight="36rem">
+            <WordmarkBeat />
+          </IslandMount>
 
-          {/* ── 07 · The work — the skim destination (hatch lands here) ──── */}
+          {/* ── 07 · The work — the skim destination. Eager on purpose: the
+              hatch's #the-work target must exist from the first click, and
+              the 90-second gate rides this beat. ─────────────────────────── */}
           <WorkBeat galleryBand={galleryBand} />
 
           {/* ── 08 · System · résumé · close ──────────────────────────────── */}
-          <CloseBeat />
+          <IslandMount placeholderHeight="40rem">
+            <CloseBeat />
+          </IslandMount>
         </ScrollRethemeStory>
       </main>
     </>

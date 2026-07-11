@@ -1,7 +1,7 @@
 import { Button } from '@/ds/components/Button/Button'
 import { Badge } from '@/ds/components/Badge/Badge'
 import { FormField } from '@/ds/components/FormField/FormField'
-import styles from './beats.module.css'
+import styles from './islands.module.css'
 
 /**
  * The 2018 flat-material component sheet — a storybook-page pastiche, inert.

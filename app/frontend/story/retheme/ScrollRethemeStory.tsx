@@ -32,6 +32,13 @@ interface ScrollRethemeContextValue {
   register: (boundary: ScrollBoundary) => () => void
   /** The story's ground skin — the visitor's own, adopted live on explicit re-picks. */
   baseSkin: SkinName
+  /**
+   * True once the viewport has come within the prefetch horizon of the first
+   * boundary. Boundaries dress their bands and warm era fonts on this signal
+   * — never at load, so the LCP viewport pays nothing for crossings that sit
+   * viewports below the fold.
+   */
+  approached: boolean
 }
 
 const ScrollRethemeContext = createContext<ScrollRethemeContextValue | null>(null)
@@ -87,6 +94,7 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
   const { setSkin } = useSkin()
   const { reduced } = useMotionPref()
   const [announced, setAnnounced] = useState('')
+  const [approached, setApproached] = useState(false)
   // Ground skin as state so sweep-home bands re-render on adoption; mirrored
   // into a ref for the scroll handler.
   const [baseSkin, setBaseSkin] = useState<SkinName>(() => currentSkinAttr())
@@ -156,13 +164,11 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
       const tops = boundaries.map((b) => b.el.getBoundingClientRect().top)
       const segment = activeSegment(tops, referenceLine())
 
-      // Prefetch the crossing chunk when the story approaches its first
-      // boundary — never under reduced motion (network-proof e2e).
-      if (
-        prefetchRef.current === 'idle' &&
-        !reducedRef.current &&
-        tops.some((top) => top <= window.innerHeight * PREFETCH_VIEWPORTS)
-      ) {
+      // The approach signal fires in BOTH modes (boundaries warm era fonts on
+      // it); the crossing-chunk prefetch stays motion-only (network-proof e2e).
+      const near = tops.some((top) => top <= window.innerHeight * PREFETCH_VIEWPORTS)
+      if (near) setApproached(true)
+      if (prefetchRef.current === 'idle' && near && !reducedRef.current) {
         prefetchRef.current = 'started'
         void import('./motion')
           .then((mod) => {
@@ -224,9 +230,21 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
 
+    // The ladder must survive geometry changes that arrive WITHOUT a scroll:
+    // lazy islands and the assembly pin grow the page after load, which can
+    // move a boundary across the reference line under a stationary viewport
+    // (anchor jumps land, then content above mounts). Re-evaluate whenever
+    // the document's size changes so the skin always matches the position.
+    let ro: ResizeObserver | null = null
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(onScroll)
+      ro.observe(document.documentElement)
+    }
+
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
+      ro?.disconnect()
       destroyHandle()
 
       // Exit bookkeeping — EraRetheme's rules, ladder-shaped. Read the LIVE
@@ -259,7 +277,7 @@ export function ScrollRethemeStory({ children }: { children: ReactNode }) {
   }, [reduced])
 
   return (
-    <ScrollRethemeContext.Provider value={{ register, baseSkin }}>
+    <ScrollRethemeContext.Provider value={{ register, baseSkin, approached }}>
       {children}
       <div role="status" className={styles['sr-announce']}>
         {announced}

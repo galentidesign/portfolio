@@ -1,35 +1,13 @@
 /**
  * Unit tests for the drift fx module (mount/destroy contract).
  *
- * jsdom has no layout (host rect 0×0) — the tick guards on that, so these
- * tests pin the DOM contract (holder, motes, deterministic inline styles)
- * and the ticker lifecycle via the IntersectionObserver stub, like marquee.
+ * Compositor-only design: the mount owns a scoped <style> of
+ * transform/opacity keyframes and per-mote animation inline styles — no
+ * ticker, no observers, zero main-thread work per frame. jsdom asserts the
+ * DOM contract and the deterministic per-index styling.
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { gsap } from 'gsap'
+import { afterEach, describe, expect, it } from 'vitest'
 import { mountDrift } from './drift'
-
-// ── IntersectionObserver stub ────────────────────────────────────────────────
-
-let ioCallback: IntersectionObserverCallback | null = null
-const ioObserve = vi.fn()
-const ioDisconnect = vi.fn()
-
-class MockIntersectionObserver {
-  constructor(cb: IntersectionObserverCallback) {
-    ioCallback = cb
-  }
-  observe = ioObserve
-  unobserve = vi.fn()
-  disconnect = ioDisconnect
-}
-
-function intersect(isIntersecting: boolean): void {
-  ioCallback?.(
-    [{ isIntersecting } as IntersectionObserverEntry],
-    {} as unknown as IntersectionObserver,
-  )
-}
 
 function makeHost(): HTMLElement {
   const host = document.createElement('div')
@@ -37,17 +15,8 @@ function makeHost(): HTMLElement {
   return host
 }
 
-beforeEach(() => {
-  vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
-})
-
 afterEach(() => {
   document.body.innerHTML = ''
-  ioCallback = null
-  ioObserve.mockClear()
-  ioDisconnect.mockClear()
-  vi.unstubAllGlobals()
-  vi.restoreAllMocks()
 })
 
 describe('mountDrift', () => {
@@ -72,6 +41,19 @@ describe('mountDrift', () => {
     expect(host.querySelectorAll('[data-drift-mote]').length).toBe(5)
   })
 
+  it('animates on the compositor — scoped keyframes, per-mote animations, no ticker', () => {
+    const host = makeHost()
+
+    mountDrift(host)
+
+    const style = host.querySelector('[data-fx-drift] style')
+    expect(style).not.toBeNull()
+    expect(style?.textContent).toContain('-sway')
+    expect(style?.textContent).toContain('@keyframes')
+    const motes = Array.from(host.querySelectorAll<HTMLElement>('[data-drift-mote]'))
+    motes.forEach((m) => expect(m.style.animation).toContain('-sway'))
+  })
+
   it('styles motes inline off semantic tokens — deterministic per index', () => {
     const host = makeHost()
 
@@ -80,46 +62,35 @@ describe('mountDrift', () => {
     const motes = Array.from(host.querySelectorAll<HTMLElement>('[data-drift-mote]'))
     expect(motes[0].style.backgroundColor).toContain('var(--color-line-strong)')
     expect(motes[1].style.backgroundColor).toContain('var(--color-accent-muted)')
-    expect(motes[0].style.pointerEvents).toBe('')
     const holder = host.querySelector<HTMLElement>('[data-fx-drift]')!
     expect(holder.style.pointerEvents).toBe('none')
-    // Re-mounting yields identical assignments (index math, no randomness).
+    // Re-mounting yields identical assignments (index math, no randomness)
+    // apart from the mount-scoped keyframe prefix.
     const secondHost = makeHost()
     mountDrift(secondHost)
     const again = Array.from(secondHost.querySelectorAll<HTMLElement>('[data-drift-mote]'))
-    motes.forEach((m, i) => expect(again[i].style.cssText).toBe(m.style.cssText))
+    const normalize = (el: HTMLElement) => el.style.cssText.replace(/fx-drift-\d+/g, 'fx-drift-N')
+    motes.forEach((m, i) => expect(normalize(again[i])).toBe(normalize(m)))
   })
 
-  it('runs the ticker only while on screen', () => {
-    const tickerAdd = vi.spyOn(gsap.ticker, 'add')
-    const tickerRemove = vi.spyOn(gsap.ticker, 'remove')
+  it('rises embers with an opacity envelope', () => {
     const host = makeHost()
 
-    mountDrift(host)
-    expect(tickerAdd).not.toHaveBeenCalled()
+    mountDrift(host, { preset: 'ember' })
 
-    intersect(true)
-    expect(tickerAdd).toHaveBeenCalledTimes(1)
-
-    intersect(false)
-    expect(tickerRemove).toHaveBeenCalledWith(tickerAdd.mock.calls[0][0])
+    const style = host.querySelector('[data-fx-drift] style')
+    expect(style?.textContent).toContain('-rise')
+    const outer = host.querySelector<HTMLElement>('[data-fx-drift] > span')
+    expect(outer?.style.animation).toContain('-rise')
   })
 
-  it('destroy() removes the holder, observer, listeners, and ticker', () => {
-    const removeSpy = vi.spyOn(document, 'removeEventListener')
-    const tickerRemove = vi.spyOn(gsap.ticker, 'remove')
+  it('destroy() removes the holder (keyframes ride along) and is idempotent', () => {
     const host = makeHost()
 
     const handle = mountDrift(host)
-    intersect(true)
-
     handle.destroy()
 
     expect(host.querySelector('[data-fx-drift]')).toBeNull()
-    expect(removeSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
-    expect(ioDisconnect).toHaveBeenCalled()
-    expect(tickerRemove).toHaveBeenCalled()
-
     expect(() => handle.destroy()).not.toThrow()
   })
 })

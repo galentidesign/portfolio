@@ -17,6 +17,12 @@ export interface TypewriterOptions {
   maxDuration?: number
   /** Seconds to hold before the first character (default 0.15). */
   delay?: number
+  /**
+   * Reveal unit. 'word' costs ~6× less style work per second — the right
+   * setting for long statements idling in the LCP viewport; 'char' (default)
+   * is the terminal idiom for short lines.
+   */
+  granularity?: 'char' | 'word'
   onComplete?: () => void
 }
 
@@ -48,12 +54,20 @@ export function mountTypewriter(el: HTMLElement, options: TypewriterOptions = {}
   const anim = document.createElement('span')
   anim.setAttribute('aria-hidden', 'true')
   anim.dataset.typewriter = ''
+  const units =
+    (options.granularity ?? 'char') === 'word'
+      ? (text.match(/\S+\s*/g) ?? [text])
+      : Array.from(text)
   const chars: HTMLElement[] = []
-  for (const char of Array.from(text)) {
+  for (const unit of units) {
     const span = document.createElement('span')
     span.dataset.typewriterChar = ''
-    span.textContent = char
+    span.textContent = unit
     span.style.opacity = '0'
+    // Positioning context for the consumer's caret pseudo — the caret must
+    // render out-of-flow (absolute, off this span's right edge) or its width
+    // reflows every character after it on each advance (a real CLS bill).
+    span.style.position = 'relative'
     anim.appendChild(span)
     chars.push(span)
   }

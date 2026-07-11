@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { SkinProvider } from '@/shell/skin/SkinProvider'
 import type { ProjectCard } from '@/gallery/types'
@@ -68,8 +68,9 @@ describe('Home liftoff and hero', () => {
 // ---------------------------------------------------------------------------
 
 describe('Home nine-beat structure', () => {
-  it('renders the beats in storyboard order', () => {
+  it('renders the beats in storyboard order (below-fold beats land at idle)', async () => {
     const { container } = renderHome()
+    await waitFor(() => expect(container.querySelector('#era-agentic')).not.toBeNull())
     const ids = [
       '[data-testid="liftoff"]',
       '[data-testid="assembly-opening"]',
@@ -112,11 +113,11 @@ describe('Home nine-beat structure', () => {
 // ---------------------------------------------------------------------------
 
 describe('Home chapter deep-dives', () => {
-  it('links each era beat to its chapter route — exactly three doors', () => {
+  it('links each era beat to its chapter route — exactly three doors', async () => {
     const { container } = renderHome()
     const hrefs = ['/story/rails-era', '/story/react-era', '/story/agentic']
     for (const href of hrefs) {
-      expect(container.querySelectorAll(`a[href="${href}"]`)).toHaveLength(1)
+      await waitFor(() => expect(container.querySelectorAll(`a[href="${href}"]`)).toHaveLength(1))
     }
   })
 })
@@ -182,11 +183,15 @@ describe('Home accessibility', () => {
     expect(container.querySelector('main#main')).toBeInTheDocument()
   })
 
-  it('labels every era beat section with its heading', () => {
+  it('labels every era beat section with its heading', async () => {
     const { container } = renderHome()
     for (const id of ['era-rails', 'era-react', 'era-agentic']) {
-      const section = container.querySelector(`#${id}`)
-      expect(section).toHaveAttribute('aria-labelledby', `${id}-heading`)
+      await waitFor(() =>
+        expect(container.querySelector(`#${id}`)).toHaveAttribute(
+          'aria-labelledby',
+          `${id}-heading`,
+        ),
+      )
     }
   })
 })

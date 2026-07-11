@@ -1,6 +1,6 @@
 import { useFx } from '@/ds/motion/useFx'
 import { receipts } from '@/story/receipts/data'
-import styles from './beats.module.css'
+import styles from './islands.module.css'
 
 // The tick derives from the real receipt data — the same source the agentic
 // chapter's full feed renders. Three most recent sessions + the totals line.

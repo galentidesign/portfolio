@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import styles from './scrollProgress.module.css'
 
 /**
- * Reading-progress rail for story chapter pages (not home).
+ * Reading-progress rail for story pages — the nine-beat home and the
+ * chapter deep-dives.
  *
  * Fixed top, full-width, 3px track; accent fill driven by scroll fraction via
  * transform: scaleX. rAF-throttled scroll + resize listeners.

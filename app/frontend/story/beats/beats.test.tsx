@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { ReactNode } from 'react'
 import { MotionPrefProvider } from '@/ds/motion/useMotionPref'
 import type { ProjectCard } from '@/gallery/types'
@@ -29,7 +29,7 @@ describe('RailsBeat (03)', () => {
     const { container } = renderBeat(<RailsBeat />)
     expect(screen.getByRole('heading', { level: 2, name: 'The Rails era' })).toBeInTheDocument()
     expect(container.querySelector('a[href="/story/rails-era"]')).not.toBeNull()
-    // Lazy island mounts immediately without IntersectionObserver (jsdom).
+    // Lazy island lands after IslandMount's idle slot.
     await waitFor(() => expect(screen.getByTestId('artifact-exhibit')).toBeInTheDocument())
     expect(screen.getByText(/re-tokened by one JSON file/)).toBeInTheDocument()
   })
@@ -128,50 +128,15 @@ describe('CloseBeat (08)', () => {
   })
 })
 
-// ── IntersectionObserver stub (module scope — marquee.test idiom) ───────────
-
-let ioCallback: IntersectionObserverCallback | null = null
-
-class MockIntersectionObserver {
-  constructor(cb: IntersectionObserverCallback) {
-    ioCallback = cb
-  }
-  observe = vi.fn()
-  unobserve = vi.fn()
-  disconnect = vi.fn()
-}
-
-function intersect(isIntersecting: boolean): void {
-  ioCallback?.(
-    [{ isIntersecting } as IntersectionObserverEntry],
-    {} as unknown as IntersectionObserver,
-  )
-}
-
 describe('IslandMount', () => {
-  afterEach(() => {
-    ioCallback = null
-    vi.unstubAllGlobals()
-  })
-
-  it('mounts children immediately where IntersectionObserver is unavailable', () => {
-    renderBeat(
-      <IslandMount>
-        <p>island content</p>
-      </IslandMount>,
-    )
-    expect(screen.getByText('island content')).toBeInTheDocument()
-  })
-
-  it('defers children until the island approaches the viewport', async () => {
-    vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
+  it('defers children to the load+idle slot, then mounts them', async () => {
     renderBeat(
       <IslandMount placeholderHeight="10rem">
         <p>island content</p>
       </IslandMount>,
     )
+    // Idle deferral (jsdom takes whenIdle's setTimeout fallback).
     expect(screen.queryByText('island content')).toBeNull()
-    intersect(true)
     await waitFor(() => expect(screen.getByText('island content')).toBeInTheDocument())
   })
 })

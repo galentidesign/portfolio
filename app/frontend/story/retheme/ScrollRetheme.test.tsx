@@ -230,40 +230,46 @@ describe('ScrollRetheme with motion allowed', () => {
     document.documentElement.dataset.skin = 'galenti'
   })
 
-  it('renders each boundary as an inert band with treatment and night-zone interior', () => {
+  it('renders each boundary as an inert band with treatment and night-zone interior', async () => {
     renderStory()
     const markers = screen.getAllByTestId('scroll-retheme')
+    // The band dressing arrives at the idle slot (LCP guardrail).
+    await waitFor(() => expect(markers[0].querySelector('[data-retheme-band]')).not.toBeNull())
     const band = markers[0].querySelector('[data-retheme-band]')
-    expect(band).not.toBeNull()
     expect(band).toHaveAttribute('aria-hidden', 'true')
     expect(band).toHaveAttribute('data-retheme-treatment', 'crt')
     const interior = markers[0].querySelector('[data-retheme-band] [data-zone="night"]')
     expect(interior).toHaveAttribute('data-skin', 'rails-era')
   })
 
-  it("binds the sweep-home band to the story's base skin, with no era treatment", () => {
+  it("binds the sweep-home band to the story's base skin, with no era treatment", async () => {
     renderStory()
     const sweep = screen.getAllByTestId('scroll-retheme')[2]
     expect(sweep).toHaveAttribute('data-era-skin', 'galenti')
+    await waitFor(() => expect(sweep.querySelector('[data-retheme-band]')).not.toBeNull())
     const band = sweep.querySelector('[data-retheme-band]')
     expect(band).not.toHaveAttribute('data-retheme-treatment')
     const interior = sweep.querySelector('[data-retheme-band] [data-zone="night"]')
     expect(interior).toHaveAttribute('data-skin', 'galenti')
   })
 
-  it('renders the HUD caption as per-character spans for the type-out', () => {
+  it('renders the HUD caption as per-character spans for the type-out', async () => {
     renderStory()
     const agenticMarker = screen.getAllByTestId('scroll-retheme')[1]
-    const text = Array.from(agenticMarker.querySelectorAll('[data-retheme-caption-char]'))
-      .map((el) => el.textContent)
-      .join('')
-    expect(text).toBe('$ kiln up')
+    await waitFor(() => {
+      const text = Array.from(agenticMarker.querySelectorAll('[data-retheme-caption-char]'))
+        .map((el) => el.textContent)
+        .join('')
+      expect(text).toBe('$ kiln up')
+    })
   })
 
   it('defers the swap to the crossing choreography once the chunk is resident', async () => {
     renderStory()
-    // The mount pass prefetches the motion chunk (jsdom rects sit at 0 —
-    // within the prefetch horizon); give the dynamic import a beat to land.
+    // Wait for the idle dress (bands resident) — the mount pass has also
+    // prefetched the motion chunk by then (jsdom rects sit at 0, inside the
+    // prefetch horizon).
+    await waitFor(() => expect(document.querySelector('[data-retheme-band]')).not.toBeNull())
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 50))
     })
@@ -279,6 +285,7 @@ describe('ScrollRetheme with motion allowed', () => {
 
   it('swaps instantly on upward scrubs — the band is a downward-only moment', async () => {
     renderStory()
+    await waitFor(() => expect(document.querySelector('[data-retheme-band]')).not.toBeNull())
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 50))
     })

@@ -4,11 +4,16 @@
 // (ember) inside a host box, deterministic per index so runs reproduce.
 // Same discipline as the original: motes exist only in motion mode (the base
 // render never carries them), the holder is aria-hidden, and every style is
-// written inline off semantic tokens — this chunk stays CSS-free. Inside a
+// written inline off semantic tokens — this chunk stays CSS-free (the
+// keyframes ride a scoped <style> the mount owns). Inside a
 // data-zone="night" island the same accent vars resolve to embers on their
 // own; the preset only tunes count, scale, and motion.
-// Pauses offscreen (IntersectionObserver) and in hidden tabs, like marquee.
-import { gsap } from './runtime'
+//
+// COMPOSITOR-ONLY on purpose: an atmosphere that idles on screen (the
+// liftoff beat is the LCP viewport) must cost the main thread nothing — a
+// rAF/ticker drift bills continuous style work that Lighthouse charges
+// straight against the route. CSS transform/opacity animations run on the
+// compositor; browsers throttle them offscreen for free.
 import type { FxHandle } from './types'
 
 export type DriftPreset = 'bone' | 'ember'
@@ -26,12 +31,14 @@ interface PresetConfig {
   /** Semantic color tokens cycled across motes. */
   colors: readonly string[]
   opacity: number
-  /** Vertical rise in px/s; 0 = anchored wander (bone). */
-  rise: number
+  /** 'wander' anchors each mote; 'rise' climbs and wraps (embers). */
+  mode: 'wander' | 'rise'
   /** Horizontal sway amplitude in px. */
   sway: number
-  /** Seconds per sway period. */
+  /** Seconds per sway period (varied ±35% by index). */
   period: number
+  /** Seconds per full rise (rise mode; varied by index). */
+  risePeriod: number
 }
 
 const PRESETS: Record<DriftPreset, PresetConfig> = {
@@ -40,30 +47,31 @@ const PRESETS: Record<DriftPreset, PresetConfig> = {
     size: 'var(--space-2)',
     colors: ['--color-line-strong', '--color-accent-muted', '--color-line'],
     opacity: 0.5,
-    rise: 0,
+    mode: 'wander',
     sway: 22,
     period: 13,
+    risePeriod: 0,
   },
   ember: {
     count: 12,
     size: 'var(--space-1)',
     colors: ['--color-accent', '--color-glow-ink', '--color-accent-muted'],
     opacity: 0.75,
-    rise: 26,
+    mode: 'rise',
     sway: 12,
     period: 8,
+    risePeriod: 14,
   },
 }
 
-const GOLDEN = 2.399963 // radians — spreads phases without repetition
+// Scopes concurrent mounts' keyframe names (deterministic per mount order —
+// no randomness, so runs reproduce).
+let instanceCounter = 0
 
-/**
- * Mount the drift atmosphere inside `host` (which must establish a containing
- * block — position: relative or better). Returns the standard fx handle.
- */
 export function mountDrift(host: HTMLElement, options: DriftOptions = {}): FxHandle {
   const preset = PRESETS[options.preset ?? 'bone']
   const count = options.count ?? preset.count
+  const scope = `fx-drift-${instanceCounter++}`
 
   const holder = document.createElement('div')
   holder.setAttribute('aria-hidden', 'true')
@@ -75,101 +83,60 @@ export function mountDrift(host: HTMLElement, options: DriftOptions = {}): FxHan
     pointerEvents: 'none',
   })
 
-  interface Mote {
-    el: HTMLElement
-    setX: (v: number) => void
-    setY: (v: number) => void
-    anchorX: number // fraction of host width
-    anchorY: number // fraction of host height
-    phase: number
-    scale: number
-  }
+  // Keyframes owned by this mount — transform/opacity only, every length a
+  // fixed px/rem. No container units: a dynamic length inside an animated
+  // transform de-composites the animation back onto the main thread, which
+  // is exactly what this module exists to avoid. The rise travel is a
+  // generous fixed distance; the island clips overflow and the opacity
+  // envelope has faded the mote long before the top.
+  const style = document.createElement('style')
+  style.textContent = `
+    @keyframes ${scope}-sway { from { transform: translateX(-${preset.sway}px) } to { transform: translateX(${preset.sway}px) } }
+    @keyframes ${scope}-bob { from { transform: translateY(-${Math.round(preset.sway * 0.6)}px) } to { transform: translateY(${Math.round(preset.sway * 0.6)}px) } }
+    @keyframes ${scope}-rise {
+      0% { transform: translateY(0); opacity: 0 }
+      12% { opacity: ${preset.opacity} }
+      82% { opacity: ${preset.opacity} }
+      100% { transform: translateY(-42rem); opacity: 0 }
+    }
+  `
+  holder.appendChild(style)
 
-  const motes: Mote[] = []
   for (let i = 0; i < count; i++) {
+    const scale = 0.6 + (i % 3) * 0.3
+    // Two nested spans split the axes so each rides its own animation —
+    // a lissajous wander (or rise + sway) with zero script per frame.
+    const outer = document.createElement('span')
     const mote = document.createElement('span')
     mote.dataset.driftMote = ''
-    const scale = 0.6 + (i % 3) * 0.3
-    Object.assign(mote.style, {
+
+    const swayDuration = preset.period * (0.65 + ((i * 29) % 70) / 100)
+    const swayDelay = (-((i * 37) % 100) / 100) * swayDuration
+
+    Object.assign(outer.style, {
       position: 'absolute',
+      left: `${(i * 37) % 100}%`,
+      top: preset.mode === 'rise' ? '100%' : `${(i * 53) % 100}%`,
+      animation:
+        preset.mode === 'rise'
+          ? `${scope}-rise ${preset.risePeriod * (0.6 + ((i * 41) % 80) / 100)}s linear ${-(((i * 53) % 100) / 100) * preset.risePeriod}s infinite`
+          : `${scope}-bob ${swayDuration * 1.27}s ease-in-out ${swayDelay * 1.13}s infinite alternate`,
+    })
+
+    Object.assign(mote.style, {
+      display: 'block',
       width: `calc(${preset.size} * ${scale})`,
       height: `calc(${preset.size} * ${scale})`,
       borderRadius: '50%',
       backgroundColor: `var(${preset.colors[i % preset.colors.length]})`,
-      opacity: `${preset.opacity}`,
-      left: '0',
-      top: '0',
-      willChange: 'transform',
+      opacity: preset.mode === 'rise' ? '1' : `${preset.opacity}`,
+      animation: `${scope}-sway ${swayDuration}s ease-in-out ${swayDelay}s infinite alternate`,
     })
-    holder.appendChild(mote)
-    motes.push({
-      el: mote,
-      setX: gsap.quickSetter(mote, 'x', 'px') as (v: number) => void,
-      setY: gsap.quickSetter(mote, 'y', 'px') as (v: number) => void,
-      anchorX: ((i * 37) % 100) / 100,
-      anchorY: ((i * 53) % 100) / 100,
-      phase: i * GOLDEN,
-      scale,
-    })
+
+    outer.appendChild(mote)
+    holder.appendChild(outer)
   }
   host.appendChild(holder)
-
-  // Host box cached; re-read on resize only (never per tick).
-  let width = 0
-  let height = 0
-  const measure = (): void => {
-    const rect = host.getBoundingClientRect()
-    width = rect.width
-    height = rect.height
-  }
-  measure()
-  window.addEventListener('resize', measure)
-
-  let elapsed = 0
-  const tick = (_time: number, deltaTime: number): void => {
-    elapsed += deltaTime / 1000
-    if (width <= 0 || height <= 0) return
-    const omega = (Math.PI * 2) / preset.period
-    for (const m of motes) {
-      const swayX = preset.sway * Math.sin(elapsed * omega + m.phase)
-      if (preset.rise === 0) {
-        // Anchored wander — a slow lissajous around the mote's home point.
-        const swayY = preset.sway * 0.6 * Math.cos(elapsed * omega * 0.8 + m.phase)
-        m.setX(m.anchorX * width + swayX)
-        m.setY(m.anchorY * height + swayY)
-      } else {
-        // Ember rise — climb, wrap at the top, fade through the edges.
-        const travel = (m.anchorY * height + elapsed * preset.rise * m.scale) % height
-        const y = height - travel
-        m.setX(m.anchorX * width + swayX)
-        m.setY(y)
-        const edge = Math.min(travel / (height * 0.12), (height - travel) / (height * 0.18), 1)
-        m.el.style.opacity = `${preset.opacity * Math.max(edge, 0)}`
-      }
-    }
-  }
-
-  let running = false
-  let intersecting = false
-  const sync = (): void => {
-    const shouldRun = intersecting && document.visibilityState === 'visible'
-    if (shouldRun && !running) {
-      running = true
-      gsap.ticker.add(tick)
-    } else if (!shouldRun && running) {
-      running = false
-      gsap.ticker.remove(tick)
-    }
-  }
-
-  const onVisibility = (): void => sync()
-  document.addEventListener('visibilitychange', onVisibility)
-
-  const io = new IntersectionObserver(([entry]) => {
-    intersecting = entry.isIntersecting
-    sync()
-  })
-  io.observe(host)
 
   let destroyed = false
 
@@ -177,13 +144,6 @@ export function mountDrift(host: HTMLElement, options: DriftOptions = {}): FxHan
     destroy(): void {
       if (destroyed) return
       destroyed = true
-      io.disconnect()
-      document.removeEventListener('visibilitychange', onVisibility)
-      window.removeEventListener('resize', measure)
-      if (running) {
-        running = false
-        gsap.ticker.remove(tick)
-      }
       holder.remove()
     },
   }

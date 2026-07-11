@@ -104,43 +104,6 @@
   max-width: 48rem;
 }
 
-/* ── React-era artifact — the 2018 flat-material component sheet ─────────── */
-
-.sheet {
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-surface);
-  background-color: var(--color-surface-raised);
-  box-shadow: var(--shadow-raised);
-  overflow: hidden;
-}
-
-.sheet-bar {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding-block: var(--space-2);
-  padding-inline: var(--space-4);
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-line);
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  color: var(--color-ink-muted);
-}
-
-.sheet-body {
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.sheet-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
 /* ── The kiln island (beat 05) — dark drama, contained ───────────────────── */
 
 .kiln-island {
@@ -196,52 +159,6 @@
       color-mix(in srgb, var(--color-ink) 55%, transparent) 99%,
       transparent
     );
-}
-
-.kiln-header {
-  position: relative;
-  margin: 0 0 var(--space-5);
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  letter-spacing: var(--type-mono-tracking);
-  color: var(--color-accent);
-}
-
-.kiln-lines {
-  position: relative;
-  display: grid;
-  gap: var(--space-3);
-  margin: 0;
-}
-
-.kiln-line {
-  margin: 0;
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  line-height: var(--type-mono-line);
-  letter-spacing: var(--type-mono-tracking);
-  color: var(--color-ink);
-}
-
-/* Typewriter caret — a static block riding the last revealed character. */
-.kiln-line [data-caret]::after {
-  content: '';
-  display: inline-block;
-  width: 0.55em;
-  height: 1em;
-  margin-left: 0.08em;
-  background-color: var(--color-accent);
-  vertical-align: text-bottom;
-}
-
-.kiln-totals {
-  position: relative;
-  margin: var(--space-6) 0 0;
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  color: var(--color-ink-muted);
 }
 
 /* ── Wordmark beat (06) — the one viewport-wide moment ───────────────────── */

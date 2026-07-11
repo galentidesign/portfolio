@@ -1,4 +1,5 @@
-import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { Suspense, useEffect, useState, type ReactNode } from 'react'
+import { whenIdle } from '@/ds/motion/capabilities'
 
 export interface IslandMountProps {
   /** Space reserved before the island mounts, so boundaries don't jump. */
@@ -8,39 +9,18 @@ export interface IslandMountProps {
 
 /**
  * Below-fold island gate (the LCP guardrail): defers mounting a lazy beat
- * interior until the visitor scrolls within a viewport of it, holding its
- * reserved height so the scroll ladder's geometry stays stable. Where
- * IntersectionObserver is unavailable (jsdom) it mounts immediately — the
- * static story is never gated on an observer.
+ * interior until after load + an idle slot (the M10 deferral pattern), so
+ * island chunks never race the LCP paint. Idle — not viewport approach — on
+ * purpose: the page's geometry goes FINAL moments after load, which keeps
+ * anchor jumps (the hatch) and the scroll ladder's boundary math stable; an
+ * approach-mounted island growing above the viewport would strand the
+ * reader mid-story. Reserved height holds the slot until then.
  */
 export function IslandMount({ placeholderHeight = '24rem', children }: IslandMountProps) {
-  const hostRef = useRef<HTMLDivElement | null>(null)
-  const [near, setNear] = useState(() => typeof IntersectionObserver === 'undefined')
+  const [ready, setReady] = useState(false)
 
-  useEffect(() => {
-    if (near) return
-    const host = hostRef.current
-    if (host === null) return
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setNear(true)
-          io.disconnect()
-        }
-      },
-      { rootMargin: '100% 0px' },
-    )
-    io.observe(host)
-    return () => io.disconnect()
-  }, [near])
+  useEffect(() => whenIdle(() => setReady(true)), [])
 
-  return (
-    <div ref={hostRef} style={near ? undefined : { minHeight: placeholderHeight }}>
-      {near ? (
-        <Suspense fallback={<div style={{ minHeight: placeholderHeight }} aria-hidden="true" />}>
-          {children}
-        </Suspense>
-      ) : null}
-    </div>
-  )
+  if (!ready) return <div style={{ minHeight: placeholderHeight }} />
+  return <Suspense fallback={<div style={{ minHeight: placeholderHeight }} />}>{children}</Suspense>
 }

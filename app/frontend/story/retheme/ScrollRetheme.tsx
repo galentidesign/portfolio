@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { skins, type SkinName } from '@/ds/tokens/generated/skins'
+import { useMotionPref } from '@/ds/motion/useMotionPref'
 import { RethemeBand, type RethemeTreatment } from './RethemeBand'
 import { useScrollRethemeStory } from './ScrollRethemeStory'
 
@@ -40,8 +41,17 @@ export function ScrollRetheme({
   warmFonts,
   caption,
 }: ScrollRethemeProps) {
-  const { register, baseSkin } = useScrollRethemeStory()
+  const { register, baseSkin, approached } = useScrollRethemeStory()
+  const { reduced } = useMotionPref()
   const markerRef = useRef<HTMLDivElement | null>(null)
+  // The band dressing (and the era fonts its interior's text pulls in) waits
+  // for the coordinator's APPROACH signal: home is the LCP route, and a
+  // boundary's crossing sits viewports below the fold — unlike a chapter's
+  // EraRetheme, which crosses the moment it mounts. A session that never
+  // scrolls near the story pays nothing; an early crossing that outruns the
+  // dressing simply swaps instantly, band-less. Reduced motion never shows
+  // a band at all.
+  const dressed = approached && !reduced
 
   const bandSkin = skin ?? baseSkin
   const label = skins.find((s) => s.name === bandSkin)?.label ?? bandSkin
@@ -59,18 +69,23 @@ export function ScrollRetheme({
     return register({ el, skin, announce: message })
   }, [register, skin, message])
 
-  // Font warm-up (both modes): the era type must be resident before the swap.
+  // Warm the era type on approach (both modes — reduced-motion crossings
+  // swap instantly and must not FOUT either): resident a viewport before
+  // any crossing, invisible to the LCP window.
   useEffect(() => {
+    if (!approached) return
     if (warmFonts === undefined || typeof document.fonts?.load !== 'function') return
     for (const family of warmFonts) {
       document.fonts.load(`1em '${family}'`).catch(() => {})
       document.fonts.load(`700 1em '${family}'`).catch(() => {})
     }
-  }, [warmFonts])
+  }, [approached, warmFonts])
 
   return (
     <div ref={markerRef} data-testid="scroll-retheme" data-era-skin={bandSkin}>
-      <RethemeBand skin={bandSkin} treatment={treatment} captionLines={captionLines} />
+      {dressed ? (
+        <RethemeBand skin={bandSkin} treatment={treatment} captionLines={captionLines} />
+      ) : null}
     </div>
   )
 }
