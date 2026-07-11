@@ -267,7 +267,7 @@ test('palette: copy email writes the clipboard and confirms with the shell toast
 // transient blend frames. Its axe coverage (settled motion + reduced motion)
 // lives in retheme.spec.ts.
 
-const NEW_ROUTES = ['/', '/work', '/resume', '/colophon']
+const NEW_ROUTES = ['/', '/work', '/resume', '/colophon', '/gallery', '/gallery/pivvot-aim']
 
 for (const route of NEW_ROUTES) {
   test(`axe: ${route} has zero violations (galenti skin)`, async ({ page }) => {
