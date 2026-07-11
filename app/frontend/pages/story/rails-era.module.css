@@ -28,76 +28,8 @@
   margin-block: var(--space-5) var(--space-4);
 }
 
-/* ── Browser chrome frame ─────────────────────────────────────────────────── */
-
-.artifact-frame {
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-surface);
-  background-color: var(--color-surface-raised);
-  box-shadow: var(--shadow-raised);
-  overflow: hidden;
-}
-
-/* Chrome title bar: three window dots + address bar */
-.chrome-bar {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding-block: var(--space-2);
-  padding-inline: var(--space-4);
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-line);
-}
-
-.chrome-dots {
-  display: flex;
-  gap: var(--space-2);
-  flex-shrink: 0;
-}
-
-.chrome-dot {
-  display: block;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: var(--radius-pill);
-  background-color: var(--color-line);
-}
-
-.chrome-address {
-  flex: 1;
-  min-width: 0;
-  font-family: var(--type-mono-family);
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  line-height: var(--type-mono-line);
-  letter-spacing: var(--type-mono-tracking);
-  color: var(--color-ink-muted);
-  background-color: var(--color-surface-sunken);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-control);
-  padding-block: var(--space-1);
-  padding-inline: var(--space-3);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* ── Exhibit body (inert — live DS components as visual evidence) ─────────── */
-
-.exhibit-body {
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-/* Toolbar row: primary action, secondary action, filter field */
-.toolbar {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
+/* Browser chrome frame + exhibit body: extracted to
+   story/artifacts/railsArtifact.module.css (shared with the home era beat). */
 
 /* ── Frame caption (visible narrative text below the artifact) ────────────── */
 

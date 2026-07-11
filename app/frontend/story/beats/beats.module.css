@@ -1,0 +1,392 @@
+/* ── Home-as-Story beats — scale & air composition ───────────────────────────
+ * The nine-beat scroll's below-the-assembly sections (design-direction §2–§4):
+ * macro-whitespace, staggered editorial columns (headline left, lede offset
+ * right-lower), oversized beat numerals, dark islands on the bone ground.
+ * Semantic tokens only; era beats inherit their look from the skin the
+ * scroll ladder applies.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+.beat {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--density-pad);
+  padding-block: clamp(5rem, 16vh, 11rem);
+}
+
+/* Oversized beat numeral — decorative index of the nine-beat scroll. */
+.beat-numeral {
+  display: block;
+  font-family: var(--type-numeral-family);
+  font-size: calc(var(--type-numeral-size) * 0.5);
+  font-weight: var(--type-numeral-weight);
+  line-height: var(--type-numeral-line);
+  letter-spacing: var(--type-numeral-tracking);
+  color: var(--color-ink-faint);
+}
+
+/* ── Staggered editorial columns ─────────────────────────────────────────── */
+
+.era-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.era-label {
+  margin: 0 0 var(--space-3);
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-muted);
+}
+
+.era-title {
+  margin: 0;
+  font-family: var(--type-display-family);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
+  color: var(--color-ink);
+  max-width: 16ch;
+}
+
+/* The lede rides the right column, dropped low — the offset is the point. */
+.era-lede {
+  margin: clamp(3rem, 9vh, 6rem) 0 0;
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-line);
+  color: var(--color-ink-muted);
+  max-width: 34ch;
+}
+
+.era-island {
+  margin-block: clamp(3rem, 8vh, 5.5rem) 0;
+}
+
+/* Deep-dive card — offset right, narrow: a door, not a destination. */
+.era-deepdive {
+  max-width: 26rem;
+  margin-block-start: var(--space-7);
+  margin-inline-start: auto;
+}
+
+.chapter-title {
+  margin: 0;
+  font-family: var(--type-heading-family);
+  font-size: calc(var(--type-heading-size) * 0.78);
+  font-weight: var(--type-heading-weight);
+  line-height: var(--type-heading-line);
+  color: var(--color-ink);
+}
+
+.chapter-summary {
+  margin: var(--space-2) 0 0;
+  color: var(--color-ink-muted);
+}
+
+/* ── Artifact figure (home-side framing of the shared artifacts) ─────────── */
+
+.artifact-figure {
+  margin: 0;
+}
+
+.frame-caption {
+  margin-top: var(--space-3);
+  font-family: var(--type-body-family);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-ink-muted);
+  max-width: 48rem;
+}
+
+/* ── React-era artifact — the 2018 flat-material component sheet ─────────── */
+
+.sheet {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-surface);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-raised);
+  overflow: hidden;
+}
+
+.sheet-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-line);
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  color: var(--color-ink-muted);
+}
+
+.sheet-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sheet-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ── The kiln island (beat 05) — dark drama, contained ───────────────────── */
+
+.kiln-island {
+  position: relative;
+  border-radius: var(--radius-surface);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-glow-accent);
+  padding: clamp(2.5rem, 6vw, 5rem);
+  overflow: hidden;
+}
+
+/* Starfield — static CSS speckle; ink resolves near-white inside the night
+   zone, so the dots read as stars only where the island is dark. */
+.kiln-island::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(
+      circle 1px at 12% 22%,
+      color-mix(in srgb, var(--color-ink) 60%, transparent) 99%,
+      transparent
+    ),
+    radial-gradient(
+      circle 1px at 34% 68%,
+      color-mix(in srgb, var(--color-ink) 40%, transparent) 99%,
+      transparent
+    ),
+    radial-gradient(
+      circle 1px at 58% 14%,
+      color-mix(in srgb, var(--color-ink) 55%, transparent) 99%,
+      transparent
+    ),
+    radial-gradient(
+      circle 1px at 71% 51%,
+      color-mix(in srgb, var(--color-ink) 35%, transparent) 99%,
+      transparent
+    ),
+    radial-gradient(
+      circle 1px at 88% 30%,
+      color-mix(in srgb, var(--color-ink) 50%, transparent) 99%,
+      transparent
+    ),
+    radial-gradient(
+      circle 1px at 22% 87%,
+      color-mix(in srgb, var(--color-ink) 45%, transparent) 99%,
+      transparent
+    ),
+    radial-gradient(
+      circle 1px at 79% 82%,
+      color-mix(in srgb, var(--color-ink) 55%, transparent) 99%,
+      transparent
+    );
+}
+
+.kiln-header {
+  position: relative;
+  margin: 0 0 var(--space-5);
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-accent);
+}
+
+.kiln-lines {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.kiln-line {
+  margin: 0;
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  line-height: var(--type-mono-line);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink);
+}
+
+/* Typewriter caret — a static block riding the last revealed character. */
+.kiln-line [data-caret]::after {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 0.08em;
+  background-color: var(--color-accent);
+  vertical-align: text-bottom;
+}
+
+.kiln-totals {
+  position: relative;
+  margin: var(--space-6) 0 0;
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  color: var(--color-ink-muted);
+}
+
+/* ── Wordmark beat (06) — the one viewport-wide moment ───────────────────── */
+
+.wordmark-beat {
+  max-width: none;
+  padding-inline: 0;
+  overflow-x: clip;
+  text-align: center;
+}
+
+.wordmark-kicker {
+  margin: 0 0 var(--space-5);
+  font-family: var(--type-mono-family);
+  font-size: var(--type-mono-size);
+  letter-spacing: var(--type-mono-tracking);
+  color: var(--color-ink-muted);
+}
+
+.wordmark {
+  font-family: var(--type-hero-family);
+  font-size: clamp(4.5rem, 17vw, 24rem);
+  font-weight: var(--type-numeral-weight);
+  line-height: 0.85;
+  letter-spacing: -0.045em;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.wordmark-coda {
+  margin: var(--space-6) auto 0;
+  max-width: 44ch;
+  font-family: var(--type-title-family);
+  font-size: var(--type-title-size);
+  line-height: var(--type-title-line);
+  color: var(--color-ink-muted);
+  padding-inline: var(--density-pad);
+}
+
+/* ── Work beat (07) — the skim destination ───────────────────────────────── */
+
+.work-tiles {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--space-5);
+  align-items: start;
+  margin-block-start: clamp(3rem, 8vh, 5.5rem);
+}
+
+/* The light tile drops below its dark sibling — staggered, not aligned. */
+.work-tile-b {
+  margin-block-start: var(--space-8);
+}
+
+.tile-lede {
+  margin: 0;
+  color: var(--color-ink-muted);
+}
+
+.gallery-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-7);
+  align-items: stretch;
+}
+
+.gallery-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.work-links {
+  margin-block-start: var(--space-6);
+  display: flex;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.quiet-link {
+  font-family: var(--type-body-family);
+  color: var(--color-ink-muted);
+  text-decoration-color: var(--color-line-strong);
+  text-underline-offset: 0.2em;
+}
+
+.quiet-link:hover {
+  color: var(--color-ink);
+}
+
+/* ── Close beat (08) — quiet ─────────────────────────────────────────────── */
+
+.close-system {
+  max-width: 44rem;
+  margin-block-start: clamp(2.5rem, 6vh, 4rem);
+}
+
+.chip-row {
+  display: inline-flex;
+  gap: var(--space-2);
+  margin-inline-start: var(--space-3);
+  vertical-align: middle;
+}
+
+.chip {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-line);
+}
+
+.close-act {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  margin-block-start: var(--space-7);
+}
+
+/* ── Narrow viewports: columns collapse, air compresses ──────────────────── */
+
+@media (width <= 48rem) {
+  .era-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .era-lede {
+    margin-block-start: var(--space-4);
+  }
+
+  .work-tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work-tile-b {
+    margin-block-start: 0;
+  }
+
+  .gallery-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .era-deepdive {
+    margin-inline-start: 0;
+  }
+}
