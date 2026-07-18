@@ -42,7 +42,7 @@ group :development do
   gem "web-console"
 end
 
-gem "inertia_rails", "~> 3.21"
+gem "inertia_rails", "~> 3.22"
 
 gem "vite_rails", "~> 3.11"
 
