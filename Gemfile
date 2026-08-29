@@ -34,7 +34,7 @@ group :development, :test do
 
   # Headless Chrome driver for `rake og:generate` (OG card screenshots).
   # Dev/test only — OG images are generated artifacts, never rendered at runtime.
-  gem "ferrum", "~> 0.17", require: false
+  gem "ferrum", "~> 0.18", require: false
 end
 
 group :development do
